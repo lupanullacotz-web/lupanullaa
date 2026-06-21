@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viwango vya NECTA | Lupanulla</title>
+    <meta name="description" content="Viwango kamili vya NECTA: PSLE, FTNA, CSEE (O-Level), na ACSEE (A-Level). Madaraja, pointi, na mgawanyiko wa matokeo.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        bgDark:      '#f8fafc',
+                        panelLight:  '#ffffff',
+                        textMain:    '#0f172a',
+                        textMuted:   '#64748b',
+                        primaryBlue: '#020617',
+                        accentTeal:  '#0891b2',
+                        accentRed:   '#e11d48',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #f8fafc; color: #0f172a; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        /* Tab system */
+        .tab-btn.active { color: #0891b2; border-bottom: 2px solid #0891b2; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Grade color badges */
+        .grade-A { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .grade-B { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .grade-C { background: #fef9c3; color: #a16207; border: 1px solid #fef08a; }
+        .grade-D { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+        .grade-E { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .grade-F { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .grade-S { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+        /* Division badges */
+        .div-I   { background: #020617; color: #fbbf24; }
+        .div-II  { background: #1e40af; color: #fff; }
+        .div-III { background: #0891b2; color: #fff; }
+        .div-IV  { background: #64748b; color: #fff; }
+        .div-0   { background: #e11d48; color: #fff; }
+
+        /* Table rows alternate */
+        tbody tr:nth-child(even) { background: #f8fafc; }
+        tbody tr:hover { background: #e0f2fe; transition: background 0.15s; }
+
+        /* Sticky level nav pill */
+        .level-pill { transition: all 0.2s; }
+        .level-pill.active { background: #0891b2; color: #fff; }
+        .level-pill:not(.active):hover { background: #e0f2fe; }
+
+        /* Info card animation */
+        .info-card { transition: transform 0.25s, box-shadow 0.25s; }
+        .info-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px -4px rgba(8,145,178,0.15); }
+
+        /* Progress bar */
+        .bar { height: 8px; border-radius: 9999px; }
+        .bar-A { background: #16a34a; }
+        .bar-B { background: #2563eb; }
+        .bar-C { background: #ca8a04; }
+        .bar-D { background: #ea580c; }
+        .bar-E { background: #dc2626; }
+    </style>
+</head>
+<body class="antialiased font-sans">
+
+<!-- ── Top Thin Bar ── -->
+<div class="bg-primaryBlue text-white text-xs py-2 px-4 hidden md:block">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <span class="flex items-center gap-1 text-accentTeal font-medium">
+                <i class="ph-fill ph-check-circle"></i> Viwango Rasmi vya NECTA Tanzania
+            </span>
+            <span class="text-gray-400">|</span>
+            <a href="index.html" class="hover:text-white transition-colors">Nyumbani</a>
+            <a href="mitihani.html" class="hover:text-white transition-colors">Mitihani (Past Papers)</a>
+            <a href="calculator.html" class="hover:text-white transition-colors">Kikokotoo cha Ufaulu</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="auth.html" class="hover:text-white transition-colors flex items-center gap-1">
+                <i class="ph ph-user"></i> Ingia
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ── Navigation ── -->
+<nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                <span class="font-display font-bold text-2xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+            </a>
+            <div class="hidden lg:flex space-x-1 items-center font-display font-medium text-lg">
+                <a href="blogu.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Habari</a>
+                <a href="masomo.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Masomo</a>
+                <a href="mitihani.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Mitihani</a>
+                <a href="viwango.html" class="px-4 py-2 text-accentTeal border-b-2 border-accentTeal">Viwango</a>
+                <a href="videos.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Lupa+ (Video)</a>
+            </div>
+            <div class="hidden md:flex items-center gap-3">
+                <a href="search.html" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-textMain hover:bg-gray-200 transition-colors">
+                    <i class="ph ph-magnifying-glass text-xl"></i>
+                </a>
+                <a href="fisimaji.html" class="flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium hover:bg-purple-200 transition-colors">
+                    <i class="ph-fill ph-robot"></i> Lupanulla AI
+                </a>
+            </div>
+            <div class="lg:hidden flex items-center">
+                <button id="mobile-menu-btn" class="text-textMain p-2">
+                    <i class="ph ph-list text-3xl" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white">
+        <div class="px-4 py-3 space-y-1 font-display font-medium">
+            <a href="blogu.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Habari</a>
+            <a href="masomo.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Masomo</a>
+            <a href="mitihani.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Mitihani</a>
+            <a href="viwango.html" class="block px-3 py-2 rounded-md text-accentTeal bg-accentTeal/10">Viwango</a>
+            <a href="videos.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Lupa+ (Video)</a>
+            <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-purple-700 flex items-center gap-2">
+                <i class="ph-fill ph-robot"></i> Lupanulla AI
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ── Page Hero ── -->
+<div class="bg-primaryBlue text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div>
+                <span class="inline-flex items-center gap-2 text-accentTeal text-xs font-bold uppercase tracking-widest mb-3">
+                    <i class="ph-fill ph-certificate"></i> NECTA Tanzania
+                </span>
+                <h1 class="font-display font-bold text-4xl md:text-5xl leading-tight mb-3">
+                    Viwango vya Ufaulu
+                </h1>
+                <p class="text-gray-400 text-lg max-w-2xl">
+                    Mfumo rasmi wa madaraja na mgawanyiko wa matokeo kwa mitihani yote ya NECTA — PSLE, FTNA, CSEE na ACSEE.
+                </p>
+            </div>
+            <div class="flex-shrink-0">
+                <a href="calculator.html" class="inline-flex items-center gap-2 bg-accentTeal text-white font-bold px-6 py-3 rounded-full hover:bg-cyan-600 transition-colors">
+                    <i class="ph-fill ph-calculator"></i> Hesabu Pointi Zako
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick stat cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <p class="font-display font-bold text-3xl text-accentTeal">4</p>
+                <p class="text-xs text-gray-400 mt-1 uppercase tracking-wide">Aina za Mitihani</p>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <p class="font-display font-bold text-3xl text-yellow-400">5</p>
+                <p class="text-xs text-gray-400 mt-1 uppercase tracking-wide">Madaraja (A–E/F)</p>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <p class="font-display font-bold text-3xl text-green-400">Div I–IV</p>
+                <p class="text-xs text-gray-400 mt-1 uppercase tracking-wide">Mgawanyiko</p>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                <p class="font-display font-bold text-3xl text-purple-400">7</p>
+                <p class="text-xs text-gray-400 mt-1 uppercase tracking-wide">Masomo Bora (CSEE)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Sticky Level Selector ── -->
+<div class="bg-panelLight border-b border-gray-200 sticky top-20 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex gap-2 py-3 overflow-x-auto hide-scrollbar">
+            <button onclick="showLevel('psle')" id="pill-psle"
+                class="level-pill active flex-shrink-0 flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border border-gray-200">
+                <i class="ph-fill ph-pencil-simple-line"></i> Darasa la 7 (PSLE)
+            </button>
+            <button onclick="showLevel('ftna')" id="pill-ftna"
+                class="level-pill flex-shrink-0 flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border border-gray-200 text-textMuted">
+                <i class="ph-fill ph-book-open"></i> Kidato cha 2 (FTNA)
+            </button>
+            <button onclick="showLevel('csee')" id="pill-csee"
+                class="level-pill flex-shrink-0 flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border border-gray-200 text-textMuted">
+                <i class="ph-fill ph-graduation-cap"></i> Kidato cha 4 (CSEE)
+            </button>
+            <button onclick="showLevel('acsee')" id="pill-acsee"
+                class="level-pill flex-shrink-0 flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold border border-gray-200 text-textMuted">
+                <i class="ph-fill ph-star"></i> Kidato cha 6 (ACSEE)
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════ MAIN CONTENT ══════════════════════════════ -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- ══ PSLE ══ -->
+    <section id="level-psle" class="tab-panel active">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                <i class="ph-fill ph-pencil-simple-line text-green-600 text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="font-display font-bold text-3xl text-primaryBlue">Darasa la 7 — PSLE</h2>
+                <p class="text-textMuted text-sm">Primary School Leaving Examination</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Grades table -->
+            <div class="lg:col-span-2 bg-panelLight rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue uppercase flex items-center gap-2">
+                        <i class="ph-fill ph-list-numbers text-accentTeal"></i> Madaraja ya Masomo
+                    </h3>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-primaryBlue text-white">
+                            <th class="px-6 py-3 text-left font-bold">Daraja</th>
+                            <th class="px-6 py-3 text-left font-bold">Alama (%)</th>
+                            <th class="px-6 py-3 text-left font-bold">Maana</th>
+                            <th class="px-6 py-3 text-left font-bold hidden md:table-cell">Kiwango</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-6 py-4">
+                                <span class="grade-A inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">A</span>
+                            </td>
+                            <td class="px-6 py-4 font-bold text-textMain">76 – 100</td>
+                            <td class="px-6 py-4 text-textMain">Bora Sana (Excellent)</td>
+                            <td class="px-6 py-4 hidden md:table-cell">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-A" style="width:100%"></div></div>
+                                    <span class="text-xs text-textMuted">100%</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">
+                                <span class="grade-B inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">B</span>
+                            </td>
+                            <td class="px-6 py-4 font-bold text-textMain">61 – 75</td>
+                            <td class="px-6 py-4 text-textMain">Bora (Good)</td>
+                            <td class="px-6 py-4 hidden md:table-cell">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-B" style="width:75%"></div></div>
+                                    <span class="text-xs text-textMuted">75%</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">
+                                <span class="grade-C inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">C</span>
+                            </td>
+                            <td class="px-6 py-4 font-bold text-textMain">41 – 60</td>
+                            <td class="px-6 py-4 text-textMain">Wastani (Average)</td>
+                            <td class="px-6 py-4 hidden md:table-cell">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-C" style="width:60%"></div></div>
+                                    <span class="text-xs text-textMuted">60%</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">
+                                <span class="grade-D inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">D</span>
+                            </td>
+                            <td class="px-6 py-4 font-bold text-textMain">21 – 40</td>
+                            <td class="px-6 py-4 text-textMain">Chini ya Wastani (Below Avg)</td>
+                            <td class="px-6 py-4 hidden md:table-cell">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-D" style="width:40%"></div></div>
+                                    <span class="text-xs text-textMuted">40%</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">
+                                <span class="grade-E inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">E</span>
+                            </td>
+                            <td class="px-6 py-4 font-bold text-textMain">0 – 20</td>
+                            <td class="px-6 py-4 text-textMain">Mbaya (Poor)</td>
+                            <td class="px-6 py-4 hidden md:table-cell">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-E" style="width:20%"></div></div>
+                                    <span class="text-xs text-textMuted">20%</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Info sidebar -->
+            <div class="flex flex-col gap-4">
+                <div class="info-card bg-green-50 border border-green-200 rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="ph-fill ph-info text-green-700 text-xl"></i>
+                        <h4 class="font-bold text-green-800">Jinsi ya Kupima</h4>
+                    </div>
+                    <ul class="text-sm text-green-900 space-y-2">
+                        <li class="flex gap-2"><i class="ph ph-check-circle text-green-600 mt-0.5 flex-shrink-0"></i>Alama za masomo yote zinajumlishwa</li>
+                        <li class="flex gap-2"><i class="ph ph-check-circle text-green-600 mt-0.5 flex-shrink-0"></i>Jumla inagawanywa na idadi ya masomo</li>
+                        <li class="flex gap-2"><i class="ph ph-check-circle text-green-600 mt-0.5 flex-shrink-0"></i>Wastani huo ndio unaotoa daraja</li>
+                    </ul>
+                </div>
+                <div class="info-card bg-panelLight border border-gray-200 rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="ph-fill ph-books text-accentTeal text-xl"></i>
+                        <h4 class="font-bold text-primaryBlue">Masomo Yanayopimwa</h4>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Kiswahili</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">English</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Hesabu</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Sayansi</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Maarifa ya Jamii</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ FTNA ══ -->
+    <section id="level-ftna" class="tab-panel">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                <i class="ph-fill ph-book-open text-blue-600 text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="font-display font-bold text-3xl text-primaryBlue">Kidato cha 2 — FTNA</h2>
+                <p class="text-textMuted text-sm">Form Two National Assessment</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="lg:col-span-2 bg-panelLight rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue uppercase flex items-center gap-2">
+                        <i class="ph-fill ph-list-numbers text-accentTeal"></i> Madaraja ya Masomo
+                    </h3>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-primaryBlue text-white">
+                            <th class="px-6 py-3 text-left font-bold">Daraja</th>
+                            <th class="px-6 py-3 text-left font-bold">Alama (%)</th>
+                            <th class="px-6 py-3 text-left font-bold">Maana</th>
+                            <th class="px-6 py-3 text-left font-bold hidden md:table-cell">Kiwango</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-6 py-4"><span class="grade-A inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">A</span></td>
+                            <td class="px-6 py-4 font-bold">75 – 100</td>
+                            <td class="px-6 py-4">Bora Sana (Excellent)</td>
+                            <td class="px-6 py-4 hidden md:table-cell"><div class="flex items-center gap-2"><div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-A" style="width:100%"></div></div><span class="text-xs text-textMuted">100%</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4"><span class="grade-B inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">B</span></td>
+                            <td class="px-6 py-4 font-bold">65 – 74</td>
+                            <td class="px-6 py-4">Bora (Very Good)</td>
+                            <td class="px-6 py-4 hidden md:table-cell"><div class="flex items-center gap-2"><div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-B" style="width:74%"></div></div><span class="text-xs text-textMuted">74%</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4"><span class="grade-C inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">C</span></td>
+                            <td class="px-6 py-4 font-bold">45 – 64</td>
+                            <td class="px-6 py-4">Wastani (Credit)</td>
+                            <td class="px-6 py-4 hidden md:table-cell"><div class="flex items-center gap-2"><div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-C" style="width:64%"></div></div><span class="text-xs text-textMuted">64%</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4"><span class="grade-D inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">D</span></td>
+                            <td class="px-6 py-4 font-bold">30 – 44</td>
+                            <td class="px-6 py-4">Chini ya Wastani (Pass)</td>
+                            <td class="px-6 py-4 hidden md:table-cell"><div class="flex items-center gap-2"><div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-D" style="width:44%"></div></div><span class="text-xs text-textMuted">44%</span></div></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4"><span class="grade-E inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">E</span></td>
+                            <td class="px-6 py-4 font-bold">0 – 29</td>
+                            <td class="px-6 py-4">Halikufaulu (Fail)</td>
+                            <td class="px-6 py-4 hidden md:table-cell"><div class="flex items-center gap-2"><div class="w-24 bg-gray-200 rounded-full h-2"><div class="bar bar-E" style="width:29%"></div></div><span class="text-xs text-textMuted">29%</span></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="info-card bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="ph-fill ph-lightbulb text-blue-700 text-xl"></i>
+                        <h4 class="font-bold text-blue-800">Kumbuka</h4>
+                    </div>
+                    <p class="text-sm text-blue-900 leading-relaxed">FTNA ni tathmini (assessment) na si mtihani rasmi wa kupita au kushindwa. Matokeo yanasaidia kupanga mwelekeo wa elimu ya kidato cha 3 na 4.</p>
+                </div>
+                <div class="info-card bg-panelLight border border-gray-200 rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="ph-fill ph-books text-accentTeal text-xl"></i>
+                        <h4 class="font-bold text-primaryBlue">Masomo Yanayopimwa</h4>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Kiswahili</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">English</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Hisabati</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Biology</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Physics</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Chemistry</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">History</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Geography</span>
+                        <span class="bg-gray-100 text-textMain px-3 py-1 rounded-full font-medium">Civics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CSEE (O-Level) ══ -->
+    <section id="level-csee" class="tab-panel">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
+                <i class="ph-fill ph-graduation-cap text-cyan-700 text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="font-display font-bold text-3xl text-primaryBlue">Kidato cha 4 — CSEE (O-Level)</h2>
+                <p class="text-textMuted text-sm">Certificate of Secondary Education Examination</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Subject grades -->
+            <div class="bg-panelLight rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue uppercase flex items-center gap-2">
+                        <i class="ph-fill ph-exam text-accentTeal"></i> Daraja la Somo
+                    </h3>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-primaryBlue text-white">
+                            <th class="px-5 py-3 text-left font-bold">Daraja</th>
+                            <th class="px-5 py-3 text-left font-bold">Alama (%)</th>
+                            <th class="px-5 py-3 text-left font-bold">Pointi</th>
+                            <th class="px-5 py-3 text-left font-bold">Maana</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-A inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">A</span></td>
+                            <td class="px-5 py-4 font-bold">75 – 100</td>
+                            <td class="px-5 py-4"><span class="bg-green-100 text-green-700 font-display font-bold px-3 py-1 rounded-full text-lg">1</span></td>
+                            <td class="px-5 py-4 text-textMuted">Bora Sana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-B inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">B</span></td>
+                            <td class="px-5 py-4 font-bold">65 – 74</td>
+                            <td class="px-5 py-4"><span class="bg-blue-100 text-blue-700 font-display font-bold px-3 py-1 rounded-full text-lg">2</span></td>
+                            <td class="px-5 py-4 text-textMuted">Bora</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-C inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">C</span></td>
+                            <td class="px-5 py-4 font-bold">45 – 64</td>
+                            <td class="px-5 py-4"><span class="bg-yellow-100 text-yellow-700 font-display font-bold px-3 py-1 rounded-full text-lg">3</span></td>
+                            <td class="px-5 py-4 text-textMuted">Wastani</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-D inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">D</span></td>
+                            <td class="px-5 py-4 font-bold">30 – 44</td>
+                            <td class="px-5 py-4"><span class="bg-orange-100 text-orange-700 font-display font-bold px-3 py-1 rounded-full text-lg">4</span></td>
+                            <td class="px-5 py-4 text-textMuted">Chini ya Wastani</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-E inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">E</span></td>
+                            <td class="px-5 py-4 font-bold">0 – 29</td>
+                            <td class="px-5 py-4"><span class="bg-red-100 text-red-700 font-display font-bold px-3 py-1 rounded-full text-lg">5</span></td>
+                            <td class="px-5 py-4 text-textMuted">Halikufaulu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Divisions -->
+            <div class="bg-panelLight rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue uppercase flex items-center gap-2">
+                        <i class="ph-fill ph-medal text-accentTeal"></i> Mgawanyiko (Masomo 7 Bora)
+                    </h3>
+                </div>
+                <div class="p-5 space-y-3">
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-yellow-200 bg-yellow-50">
+                        <span class="div-I inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>I</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Kwanza</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">7 – 17</span></p>
+                            <p class="text-xs text-textMuted mt-1">Ufaulu wa hali ya juu sana</p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-blue-200 bg-blue-50">
+                        <span class="div-II inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>II</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Pili</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">18 – 21</span></p>
+                            <p class="text-xs text-textMuted mt-1">Ufaulu wa hali nzuri</p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-cyan-200 bg-cyan-50">
+                        <span class="div-III inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>III</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Tatu</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">22 – 25</span></p>
+                            <p class="text-xs text-textMuted mt-1">Ufaulu wa wastani</p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50">
+                        <span class="div-IV inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>IV</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Nne</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">26 – 33</span></p>
+                            <p class="text-xs text-textMuted mt-1">Ufaulu wa chini</p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50">
+                        <span class="div-0 inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-2xl flex-shrink-0">0</span>
+                        <div>
+                            <p class="font-bold text-accentRed">Sifuri (Halikufaulu)</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-accentRed">34 – 35</span> au zaidi</p>
+                            <p class="text-xs text-textMuted mt-1">Hukufaulu kiwango cha chini</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How points work callout -->
+        <div class="bg-accentTeal/5 border border-accentTeal/30 rounded-2xl p-6 mb-4">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-accentTeal/10 flex items-center justify-center flex-shrink-0 mt-1">
+                    <i class="ph-fill ph-question text-accentTeal text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-primaryBlue mb-2">Jinsi ya Kuhesabu Pointi za CSEE</h4>
+                    <p class="text-sm text-textMuted leading-relaxed">
+                        Kila somo linapewa pointi kulingana na daraja (A=1, B=2, C=3, D=4, E=5). 
+                        Pointi za <strong class="text-textMain">masomo 7 yenye thamani ndogo</strong> (bora zaidi) 
+                        zinajumlishwa. Mwanafunzi aliyepata A katika masomo 7 yote atakuwa na jumla ya pointi 7 — 
+                        Daraja la Kwanza. <strong class="text-textMain">Kadiri pointi unavyopungua, ndivyo unavyofanya vizuri zaidi.</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ ACSEE (A-Level) ══ -->
+    <section id="level-acsee" class="tab-panel">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center">
+                <i class="ph-fill ph-star text-yellow-600 text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="font-display font-bold text-3xl text-primaryBlue">Kidato cha 6 — ACSEE (A-Level)</h2>
+                <p class="text-textMuted text-sm">Advanced Certificate of Secondary Education Examination</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Subject grades -->
+            <div class="bg-panelLight rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue uppercase flex items-center gap-2">
+                        <i class="ph-fill ph-exam text-accentTeal"></i> Madaraja ya Masomo Makuu
+                    </h3>
+                    <p class="text-xs text-textMuted mt-1">Principal Subjects (3 masomo)</p>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-primaryBlue text-white">
+                            <th class="px-5 py-3 text-left font-bold">Daraja</th>
+                            <th class="px-5 py-3 text-left font-bold">Alama (%)</th>
+                            <th class="px-5 py-3 text-left font-bold">Pointi</th>
+                            <th class="px-5 py-3 text-left font-bold">Maana</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-A inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">A</span></td>
+                            <td class="px-5 py-4 font-bold">80 – 100</td>
+                            <td class="px-5 py-4"><span class="bg-green-100 text-green-700 font-display font-bold px-3 py-1 rounded-full text-lg">1</span></td>
+                            <td class="px-5 py-4 text-textMuted">Bora Sana</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-B inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">B</span></td>
+                            <td class="px-5 py-4 font-bold">70 – 79</td>
+                            <td class="px-5 py-4"><span class="bg-blue-100 text-blue-700 font-display font-bold px-3 py-1 rounded-full text-lg">2</span></td>
+                            <td class="px-5 py-4 text-textMuted">Bora</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-C inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">C</span></td>
+                            <td class="px-5 py-4 font-bold">60 – 69</td>
+                            <td class="px-5 py-4"><span class="bg-yellow-100 text-yellow-700 font-display font-bold px-3 py-1 rounded-full text-lg">3</span></td>
+                            <td class="px-5 py-4 text-textMuted">Wastani</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-D inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">D</span></td>
+                            <td class="px-5 py-4 font-bold">50 – 59</td>
+                            <td class="px-5 py-4"><span class="bg-orange-100 text-orange-700 font-display font-bold px-3 py-1 rounded-full text-lg">4</span></td>
+                            <td class="px-5 py-4 text-textMuted">Chini ya Wastani</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-E inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">E</span></td>
+                            <td class="px-5 py-4 font-bold">40 – 49</td>
+                            <td class="px-5 py-4"><span class="bg-red-100 text-red-700 font-display font-bold px-3 py-1 rounded-full text-lg">5</span></td>
+                            <td class="px-5 py-4 text-textMuted">Ufaulu wa Chini</td>
+                        </tr>
+                        <tr class="border-t-2 border-dashed border-gray-300">
+                            <td class="px-5 py-4"><span class="grade-S inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">S</span></td>
+                            <td class="px-5 py-4 font-bold">35 – 39</td>
+                            <td class="px-5 py-4"><span class="bg-purple-100 text-purple-700 font-display font-bold px-3 py-1 rounded-full text-base">Msaada</span></td>
+                            <td class="px-5 py-4 text-textMuted">Subsidiary Pass</td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4"><span class="grade-F inline-flex items-center justify-center w-9 h-9 rounded-full font-display font-bold text-xl">F</span></td>
+                            <td class="px-5 py-4 font-bold">0 – 34</td>
+                            <td class="px-5 py-4"><span class="bg-gray-100 text-gray-600 font-display font-bold px-3 py-1 rounded-full text-base">—</span></td>
+                            <td class="px-5 py-4 text-textMuted">Halikufaulu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Divisions -->
+            <div class="bg-panelLight rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue uppercase flex items-center gap-2">
+                        <i class="ph-fill ph-medal text-accentTeal"></i> Mgawanyiko (Masomo 3 Makuu)
+                    </h3>
+                </div>
+                <div class="p-5 space-y-3">
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-yellow-200 bg-yellow-50">
+                        <span class="div-I inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>I</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Kwanza</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">3 – 7</span></p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-blue-200 bg-blue-50">
+                        <span class="div-II inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>II</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Pili</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">8 – 10</span></p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-cyan-200 bg-cyan-50">
+                        <span class="div-III inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>III</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Tatu</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">11 – 13</span></p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-gray-200 bg-gray-50">
+                        <span class="div-IV inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-xl flex-shrink-0">DIV<br>IV</span>
+                        <div>
+                            <p class="font-bold text-primaryBlue">Daraja la Nne</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-primaryBlue">14 – 17</span></p>
+                        </div>
+                    </div>
+                    <div class="info-card flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50">
+                        <span class="div-0 inline-flex items-center justify-center w-14 h-14 rounded-xl font-display font-bold text-2xl flex-shrink-0">0</span>
+                        <div>
+                            <p class="font-bold text-accentRed">Sifuri (Halikufaulu)</p>
+                            <p class="text-sm text-textMuted">Jumla ya pointi: <span class="font-bold text-accentRed">18+</span> au F katika somo kuu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subsidiary note -->
+        <div class="bg-purple-50 border border-purple-200 rounded-2xl p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <i class="ph-fill ph-info text-purple-700 text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-purple-900 mb-2">Daraja S — Masomo ya Msaada (Subsidiary)</h4>
+                    <p class="text-sm text-purple-800 leading-relaxed">
+                        Kwa masomo ya msaada (General Studies na masomo mengine ya subsidiary), alama za 35–39 zinatosha kupata daraja S.
+                        Masomo ya msaada <strong>hayahesabiwi katika pointi</strong> za mgawanyiko, lakini ni lazima yafaulu kwa mwanafunzi kupewa cheti.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Shared Quick Reference ── -->
+    <div class="mt-12 bg-primaryBlue rounded-2xl p-8 text-white">
+        <h3 class="font-display font-bold text-2xl mb-6 uppercase tracking-wide flex items-center gap-3">
+            <i class="ph-fill ph-table text-accentTeal text-2xl"></i> Jedwali la Haraka — Madaraja Yote
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[560px]">
+                <thead>
+                    <tr class="border-b border-white/20">
+                        <th class="pb-3 text-left text-accentTeal font-bold uppercase tracking-wide">Daraja</th>
+                        <th class="pb-3 text-left text-gray-300 font-medium">PSLE (Std 7)</th>
+                        <th class="pb-3 text-left text-gray-300 font-medium">FTNA (Kdt 2)</th>
+                        <th class="pb-3 text-left text-gray-300 font-medium">CSEE (O-Level)</th>
+                        <th class="pb-3 text-left text-gray-300 font-medium">ACSEE (A-Level)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10">
+                    <tr>
+                        <td class="py-3"><span class="grade-A inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-lg">A</span></td>
+                        <td class="py-3 font-medium">76–100</td>
+                        <td class="py-3 font-medium">75–100</td>
+                        <td class="py-3 font-medium">75–100 <span class="text-gray-400">(1 pt)</span></td>
+                        <td class="py-3 font-medium">80–100 <span class="text-gray-400">(1 pt)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3"><span class="grade-B inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-lg">B</span></td>
+                        <td class="py-3 font-medium">61–75</td>
+                        <td class="py-3 font-medium">65–74</td>
+                        <td class="py-3 font-medium">65–74 <span class="text-gray-400">(2 pt)</span></td>
+                        <td class="py-3 font-medium">70–79 <span class="text-gray-400">(2 pt)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3"><span class="grade-C inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-lg">C</span></td>
+                        <td class="py-3 font-medium">41–60</td>
+                        <td class="py-3 font-medium">45–64</td>
+                        <td class="py-3 font-medium">45–64 <span class="text-gray-400">(3 pt)</span></td>
+                        <td class="py-3 font-medium">60–69 <span class="text-gray-400">(3 pt)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3"><span class="grade-D inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-lg">D</span></td>
+                        <td class="py-3 font-medium">21–40</td>
+                        <td class="py-3 font-medium">30–44</td>
+                        <td class="py-3 font-medium">30–44 <span class="text-gray-400">(4 pt)</span></td>
+                        <td class="py-3 font-medium">50–59 <span class="text-gray-400">(4 pt)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3"><span class="grade-E inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-lg">E</span></td>
+                        <td class="py-3 font-medium">0–20</td>
+                        <td class="py-3 font-medium">0–29</td>
+                        <td class="py-3 font-medium">0–29 <span class="text-gray-400">(5 pt)</span></td>
+                        <td class="py-3 font-medium">40–49 <span class="text-gray-400">(5 pt)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3"><span class="grade-S inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-base">S</span></td>
+                        <td class="py-3 text-gray-500">—</td>
+                        <td class="py-3 text-gray-500">—</td>
+                        <td class="py-3 text-gray-500">—</td>
+                        <td class="py-3 font-medium">35–39 <span class="text-gray-400">(Msaada)</span></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3"><span class="grade-F inline-flex items-center justify-center w-8 h-8 rounded-full font-display font-bold text-base">F</span></td>
+                        <td class="py-3 text-gray-500">—</td>
+                        <td class="py-3 text-gray-500">—</td>
+                        <td class="py-3 text-gray-500">—</td>
+                        <td class="py-3 text-accentRed font-medium">0–34</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="calculator.html" class="info-card bg-accentTeal text-white rounded-2xl p-6 flex items-center gap-4 group">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="ph-fill ph-calculator text-white text-2xl"></i>
+            </div>
+            <div>
+                <p class="font-display font-bold text-xl">Kikokotoo cha Ufaulu</p>
+                <p class="text-cyan-100 text-sm">Hesabu pointi na daraja lako la CSEE/ACSEE haraka</p>
+            </div>
+            <i class="ph-bold ph-arrow-right ml-auto text-xl group-hover:translate-x-1 transition-transform"></i>
+        </a>
+        <a href="mitihani.html" class="info-card bg-panelLight border border-gray-200 rounded-2xl p-6 flex items-center gap-4 group">
+            <div class="w-12 h-12 bg-accentTeal/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="ph-fill ph-file-text text-accentTeal text-2xl"></i>
+            </div>
+            <div>
+                <p class="font-display font-bold text-xl text-primaryBlue">Maktaba ya Mitihani</p>
+                <p class="text-textMuted text-sm">Maswali ya miaka iliyopita ya NECTA yote</p>
+            </div>
+            <i class="ph-bold ph-arrow-right ml-auto text-xl text-textMuted group-hover:translate-x-1 transition-transform"></i>
+        </a>
+    </div>
+</main>
+
+<!-- ── Footer ── -->
+<footer class="bg-primaryBlue text-white pt-16 pb-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                <a href="index.html" class="flex items-center gap-2 mb-6">
+                    <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-display font-bold text-2xl tracking-tight text-white uppercase">Lupanulla</span>
+                </a>
+                <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                    Lango lako kuu la raslimali za elimu, habari, na miongozo ya kitaaluma kwa wanafunzi, walimu, na wazazi nchini Tanzania.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 transition-colors"><i class="ph-fill ph-youtube-logo text-xl"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Chunguza</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="masomo.html" class="hover:text-white transition-colors">Masomo Yote</a></li>
+                    <li><a href="mitihani.html" class="hover:text-white transition-colors">Maktaba ya Mitihani</a></li>
+                    <li><a href="viwango.html" class="hover:text-white text-white transition-colors">Viwango vya NECTA</a></li>
+                    <li><a href="videos.html" class="hover:text-white transition-colors">Lupa+ Video</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Kalenda ya Elimu</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Zana & Huduma</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="fisimaji.html" class="hover:text-accentTeal text-accentTeal transition-colors flex items-center gap-1"><i class="ph-fill ph-robot"></i> Lupanulla AI</a></li>
+                    <li><a href="calculator.html" class="hover:text-white transition-colors">Kikokotoo cha Ufaulu</a></li>
+                    <li><a href="vyuo.html" class="hover:text-white transition-colors">Taarifa za Vyuo (TCU/NACTE)</a></li>
+                    <li><a href="https://www.heslb.go.tz" target="_blank" rel="noopener" class="hover:text-white transition-colors">Bodi ya Mikopo (HESLB)</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Pata App Yetu</h4>
+                <p class="text-gray-400 text-sm mb-4">Jifunze popote, muda wowote kupitia simu yako ya mkononi.</p>
+                <a href="#" class="bg-black border border-gray-700 rounded-lg px-4 py-2 flex items-center gap-3 hover:border-gray-500 transition-colors w-fit">
+                    <i class="ph-fill ph-google-play-logo text-2xl text-green-400"></i>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-gray-400 leading-none">PAKUA KUTOKA</span>
+                        <span class="text-sm font-bold leading-tight">Google Play</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+            <p>&copy; 2024 Lupanulla Elimu Hub. Haki zote zimehifadhiwa.</p>
+            <div class="flex gap-4">
+                <a href="terms.html" class="hover:text-white">Vigezo na Masharti</a>
+                <a href="privacy.html" class="hover:text-white">Sera ya Faragha</a>
+                <a href="mailto:lupanulla.co.tz@gmail.com" class="hover:text-white">Wasiliana Nasi</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        menuIcon.classList.toggle('ph-list');
+        menuIcon.classList.toggle('ph-x');
+    });
+
+    // Level tabs / pills
+    function showLevel(level) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.level-pill').forEach(b => {
+            b.classList.remove('active');
+            b.classList.add('text-textMuted');
+        });
+        document.getElementById('level-' + level).classList.add('active');
+        const pill = document.getElementById('pill-' + level);
+        pill.classList.add('active');
+        pill.classList.remove('text-textMuted');
+    }
+
+    // If URL has hash like #csee, show that tab
+    const hash = location.hash.replace('#','');
+    if (['psle','ftna','csee','acsee'].includes(hash)) showLevel(hash);
+</script>
+</body>
+</html>

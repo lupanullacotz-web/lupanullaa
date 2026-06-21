@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitihani (Past Papers) | Lupanulla</title>
+
+    <meta name="description" content="Pakua na soma hakikisho la mitihani ya NECTA, Mock, na majaribio mbalimbali bure kabisa kwa ajili ya kujinoa na kujitayarisha na mitihani yako.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], },
+                    colors: {
+                        bgDark: '#0a0a0f', panelDark: '#12121a', borderDark: '#2a2a35',
+                        neonTeal: '#00f0ff', neonPurple: '#b026ff', textMain: '#e2e8f0', textMuted: '#94a3b8'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: theme('colors.bgDark'); color: theme('colors.textMain'); }
+        .glass-nav { background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(16px); border-bottom: 1px solid theme('colors.borderDark'); }
+        .filter-select { background: theme('colors.panelDark'); border: 1px solid theme('colors.borderDark'); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; outline: none; }
+        .filter-select:focus { border-color: theme('colors.neonTeal'); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: theme('colors.bgDark'); }
+        ::-webkit-scrollbar-thumb { background: theme('colors.borderDark'); border-radius: 4px; }
+
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .doc-card { background: theme('colors.panelDark'); border: 1px solid theme('colors.borderDark'); }
+
+        .pill { background: theme('colors.panelDark'); border: 1px solid theme('colors.borderDark'); color: theme('colors.textMuted'); white-space: nowrap; }
+        .pill.active { background: theme('colors.neonTeal'); border-color: theme('colors.neonTeal'); color: theme('colors.bgDark'); }
+        .pill:hover:not(.active) { border-color: rgba(0,240,255,0.5); color: white; }
+
+        @keyframes modalIn { from { opacity:0; transform: scale(.96); } to { opacity:1; transform: scale(1); } }
+        @keyframes toastIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+        .modal-panel { animation: modalIn .2s ease-out; }
+        .toast-item { animation: toastIn .2s ease-out; }
+
+        *:focus-visible { outline: 2px solid theme('colors.neonTeal'); outline-offset: 2px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+        }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans flex flex-col min-h-screen">
+
+    <nav class="fixed w-full top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <img src="/assets/images/logo.png" alt="" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-bold text-xl tracking-wider text-white">LUPANULLA</span>
+                </a>
+
+                <div class="hidden md:flex space-x-2 items-center">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Nyumbani</a>
+                    <a href="masomo.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Masomo</a>
+                    <a href="mitihani.html" class="px-3 py-2 rounded-md text-sm font-medium text-neonTeal bg-neonTeal/10">Mitihani</a>
+                    <a href="fisimaji.html" class="px-3 py-2 rounded-md text-sm font-medium text-neonPurple hover:bg-white/5 transition-colors flex items-center gap-1">
+                        <i class="ph-fill ph-robot"></i> Fisi Maji AI
+                    </a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMuted hover:text-white p-2">
+                        <i class="ph ph-list text-2xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden bg-panelDark border-b border-borderDark absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Nyumbani</a>
+                <a href="masomo.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Masomo Yote</a>
+                <a href="mitihani.html" class="block px-3 py-2 rounded-md text-base font-medium text-neonTeal bg-neonTeal/10">Mitihani</a>
+                <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-base font-medium text-neonPurple hover:bg-white/5 flex items-center gap-2"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+
+        <!-- Header + Search -->
+        <div class="mb-8 border-b border-borderDark pb-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-5">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Maktaba ya <span class="text-neonTeal">Mitihani</span></h1>
+                    <p class="text-textMuted text-sm max-w-xl">Tazama hakikisho la mtihani kabla ya kupakua, hifadhi unazozipenda, na pakua zote bure kabisa.</p>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-textMuted">
+                    <span class="flex items-center gap-1"><i class="ph-bold ph-file-pdf text-red-400"></i> <span id="statTotal">0</span> Mitihani</span>
+                    <span class="w-1 h-1 rounded-full bg-borderDark"></span>
+                    <span class="flex items-center gap-1"><i class="ph-bold ph-bookmark-simple text-neonTeal"></i> <span id="statBookmarks">0</span> Zilizohifadhiwa</span>
+                </div>
+            </div>
+
+            <div class="relative w-full">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-textMuted text-lg"></i>
+                <input id="searchInput" type="text" placeholder="Tafuta kwa somo, mwaka, kidato... mfano: 'Hisabati 2024'" class="w-full bg-panelDark border border-borderDark rounded-xl py-3.5 pl-12 pr-4 text-white focus:outline-none focus:border-neonTeal text-sm placeholder:text-textMuted/70">
+            </div>
+        </div>
+
+        <!-- Category pills -->
+        <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 mb-8" id="pillRow">
+            <button class="pill active px-4 py-2 rounded-full text-sm font-medium transition-colors" data-type="Zote">Zote</button>
+            <button class="pill px-4 py-2 rounded-full text-sm font-medium transition-colors" data-type="NECTA">NECTA</button>
+            <button class="pill px-4 py-2 rounded-full text-sm font-medium transition-colors" data-type="Mock">Mock</button>
+            <button class="pill px-4 py-2 rounded-full text-sm font-medium transition-colors" data-type="Pre-NECTA">Pre-NECTA</button>
+            <button class="pill px-4 py-2 rounded-full text-sm font-medium transition-colors" data-type="Terminal">Mtihani wa Muhula</button>
+            <button class="pill px-4 py-2 rounded-full text-sm font-medium transition-colors" data-type="Majibu">Majibu</button>
+        </div>
+
+        <!-- Trending -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-white font-semibold flex items-center gap-2"><i class="ph-fill ph-fire text-orange-400"></i> Yanayopakuliwa Zaidi</h2>
+                <div class="hidden sm:flex items-center gap-2">
+                    <button id="trendLeft" aria-label="Nyuma" class="w-8 h-8 rounded-full border border-borderDark hover:border-neonTeal text-textMuted hover:text-white flex items-center justify-center transition-colors"><i class="ph-bold ph-caret-left"></i></button>
+                    <button id="trendRight" aria-label="Mbele" class="w-8 h-8 rounded-full border border-borderDark hover:border-neonTeal text-textMuted hover:text-white flex items-center justify-center transition-colors"><i class="ph-bold ph-caret-right"></i></button>
+                </div>
+            </div>
+            <div id="trendingRow" class="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"></div>
+        </section>
+
+        <!-- Filters -->
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-6 bg-panelDark/50 p-4 rounded-xl border border-borderDark">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-grow">
+                <div class="flex flex-col">
+                    <label class="text-xs text-textMuted mb-1 uppercase tracking-wider">Aina ya Mtihani</label>
+                    <select id="filterType" class="filter-select text-sm appearance-none cursor-pointer">
+                        <option value="Zote">Zote (All)</option>
+                        <option value="NECTA">NECTA (Taifa)</option>
+                        <option value="Mock">Mock (Mikoa)</option>
+                        <option value="Pre-NECTA">Pre-Necta</option>
+                        <option value="Terminal">Terminal/Annual</option>
+                        <option value="Majibu">Majibu (Marking Scheme)</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-xs text-textMuted mb-1 uppercase tracking-wider">Ngazi/Darasa</label>
+                    <select id="filterLevel" class="filter-select text-sm appearance-none cursor-pointer">
+                        <option value="Zote">Zote (All)</option>
+                        <option value="Darasa la 4">Darasa la 4</option>
+                        <option value="Darasa la 7">Darasa la 7</option>
+                        <option value="Kidato cha 2">Kidato cha 2</option>
+                        <option value="Kidato cha 4">Kidato cha 4</option>
+                        <option value="Kidato cha 6">Kidato cha 6</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-xs text-textMuted mb-1 uppercase tracking-wider">Somo</label>
+                    <select id="filterSubject" class="filter-select text-sm appearance-none cursor-pointer">
+                        <option value="Zote">Masomo Yote</option>
+                        <option value="Hisabati">Hisabati</option>
+                        <option value="Hisabati ya Ziada">Hisabati ya Ziada</option>
+                        <option value="Kiingereza">Kiingereza</option>
+                        <option value="Kiswahili">Kiswahili</option>
+                        <option value="Baiolojia">Baiolojia</option>
+                        <option value="Fizikia">Fizikia</option>
+                        <option value="Kemia">Kemia</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Uraia">Uraia</option>
+                        <option value="Jiografia">Jiografia</option>
+                        <option value="Sayansi">Sayansi</option>
+                        <option value="Computer Studies">Computer Studies</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-xs text-textMuted mb-1 uppercase tracking-wider">Mwaka</label>
+                    <select id="filterYear" class="filter-select text-sm appearance-none cursor-pointer">
+                        <option value="Zote">Miaka Yote</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2019">2019 &amp; Nyuma</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex flex-col lg:w-48">
+                <label class="text-xs text-textMuted mb-1 uppercase tracking-wider">Panga kwa</label>
+                <select id="sortBy" class="filter-select text-sm appearance-none cursor-pointer">
+                    <option value="mpya">Mpya Kwanza</option>
+                    <option value="maarufu">Maarufu Zaidi</option>
+                    <option value="az">A - Z</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Results meta -->
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <p class="text-sm text-textMuted"><span id="resultCount" class="text-white font-semibold">0</span> mitihani imepatikana</p>
+            <button id="clearFilters" class="hidden text-xs text-neonTeal hover:underline items-center gap-1"><i class="ph-bold ph-x-circle"></i> Futa Vichujio</button>
+        </div>
+
+        <!-- Paper Grid -->
+        <div id="examGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+        <!-- Empty state -->
+        <div id="emptyState" style="display:none" class="flex-col items-center justify-center text-center py-16">
+            <i class="ph ph-folder-open text-5xl text-textMuted/40 mb-3"></i>
+            <p class="text-white font-medium mb-1">Hakuna mtihani uliopatikana</p>
+            <p class="text-textMuted text-sm">Jaribu kubadilisha vichujio au tafuta neno jingine.</p>
+        </div>
+
+        <!-- Pagination Button -->
+        <div class="mt-10 flex justify-center">
+            <button id="loadMoreBtn" class="px-6 py-2 rounded-xl border border-borderDark bg-panelDark hover:border-neonTeal text-textMuted hover:text-white transition-colors flex items-center gap-2">
+                Onyesha Zaidi <i class="ph-bold ph-caret-down"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Document Viewer Modal -->
+    <div id="viewerModal" style="display:none" class="fixed inset-0 z-[100] items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="viewerTitle">
+        <div id="viewerBackdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div class="modal-panel relative bg-panelDark border border-borderDark rounded-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-borderDark flex-shrink-0">
+                <div class="min-w-0">
+                    <h3 id="viewerTitle" class="text-white font-semibold text-sm sm:text-base truncate"></h3>
+                    <p id="viewerMeta" class="text-textMuted text-xs mt-0.5"></p>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button id="viewerDownload" class="px-3 py-1.5 rounded-lg bg-neonTeal text-bgDark text-xs font-semibold flex items-center gap-1 hover:bg-neonTeal/90 transition-colors">
+                        <i class="ph-bold ph-download-simple"></i> <span class="hidden sm:inline">Pakua PDF</span>
+                    </button>
+                    <button id="viewerClose" aria-label="Funga" class="w-8 h-8 rounded-full hover:bg-white/10 text-textMuted hover:text-white flex items-center justify-center transition-colors">
+                        <i class="ph-bold ph-x text-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-grow overflow-y-auto p-5 sm:p-8 space-y-6" id="viewerBody"></div>
+            <div class="flex items-center justify-between px-5 py-3 border-t border-borderDark flex-shrink-0">
+                <button id="viewerPrev" class="text-xs text-textMuted hover:text-white flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed"><i class="ph-bold ph-caret-left"></i> Nyuma</button>
+                <span id="viewerPosition" class="text-xs text-textMuted"></span>
+                <button id="viewerNext" class="text-xs text-textMuted hover:text-white flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed">Mbele <i class="ph-bold ph-caret-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 items-end max-w-[90vw]"></div>
+
+    <script>
+        // ---------- Mobile menu ----------
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.classList.remove('ph-x'); icon.classList.add('ph-list');
+            } else {
+                icon.classList.remove('ph-list'); icon.classList.add('ph-x');
+            }
+        });
+
+        // ---------- DATA ----------
+        // TODO(Yohana): Hapa ndipo utakapounganisha Firebase Realtime Database.
+        // Mfano: firebase.database().ref('mitihani').once('value').then(snap => { ...badilisha EXAMS_DATA... renderTrending(); renderGrid(); });
+        const EXAMS_DATA = [
+            { id:1,  type:'NECTA',     level:'Kidato cha 4', subject:'Hisabati',            year:2024, paperNo:'Karatasi ya 1',          title:'NECTA Hisabati - Kidato cha 4 (CSEE)',        desc:'Mtihani wa Taifa wa Hisabati ya Msingi, CSEE 2024.',        downloads:2150, sizeKB:980,  dateAdded:'2025-11-10', pages:8,  accent:'red'     },
+            { id:2,  type:'NECTA',     level:'Kidato cha 4', subject:'Kiingereza',          year:2024, paperNo:'Karatasi ya 2',          title:'NECTA English Language - Form 4',             desc:'CSEE 2024 English Language paper kamili.',                 downloads:1870, sizeKB:760,  dateAdded:'2025-11-09', pages:6,  accent:'red'     },
+            { id:3,  type:'Mock',      level:'Kidato cha 4', subject:'Baiolojia',           year:2024, paperNo:'Karatasi 1 &amp; 2',     title:'Mock Mkoa wa Arusha - Baiolojia F4',           desc:'Mtihani wa Mock wa Mkoa wa Arusha, Baiolojia.',             downloads:1340, sizeKB:1120, dateAdded:'2025-09-21', pages:10, accent:'sky'     },
+            { id:4,  type:'NECTA',     level:'Darasa la 7',  subject:'Kiswahili',           year:2023, paperNo:'&mdash;',               title:'NECTA Kiswahili - Darasa la 7 (PSLE)',         desc:'Mtihani wa kumaliza elimu ya msingi, Kiswahili.',           downloads:2890, sizeKB:540,  dateAdded:'2024-10-15', pages:5,  accent:'red'     },
+            { id:5,  type:'Pre-NECTA', level:'Kidato cha 6', subject:'Hisabati ya Ziada',   year:2024, paperNo:'Karatasi ya 1',          title:'Pre-NECTA Hisabati ya Ziada - Form 6',         desc:'Maandalizi ya ACSEE, Hisabati ya Ziada.',                   downloads:760,  sizeKB:890,  dateAdded:'2025-08-30', pages:9,  accent:'violet'  },
+            { id:6,  type:'NECTA',     level:'Kidato cha 6', subject:'Fizikia',             year:2023, paperNo:'Karatasi ya 2',          title:'NECTA Fizikia - Kidato cha 6 (ACSEE)',         desc:'Mtihani wa Taifa wa Fizikia, A-Level.',                     downloads:980,  sizeKB:1010, dateAdded:'2024-11-02', pages:7,  accent:'red'     },
+            { id:7,  type:'Terminal',  level:'Kidato cha 2', subject:'Uraia',               year:2024, paperNo:'FTNA',                   title:'FTNA Uraia - Kidato cha 2',                    desc:'Tathmini ya Taifa ya Kidato cha Pili, Uraia.',              downloads:540,  sizeKB:430,  dateAdded:'2025-06-12', pages:4,  accent:'amber'   },
+            { id:8,  type:'Majibu',    level:'Kidato cha 4', subject:'Hisabati',            year:2024, paperNo:'Mwongozo wa Kusahihisha', title:'Majibu ya Hisabati - NECTA 2024',            desc:'Mwongozo rasmi wa kusahihisha, Hisabati F4.',               downloads:1620, sizeKB:320,  dateAdded:'2025-11-12', pages:6,  accent:'emerald' },
+            { id:9,  type:'Mock',      level:'Darasa la 7',  subject:'Hisabati',            year:2024, paperNo:'Mkoa wa Dodoma',         title:'Mock Mkoa wa Dodoma - Hisabati D.7',           desc:'Mtihani wa Mock kabla ya PSLE, Hisabati.',                  downloads:690,  sizeKB:480,  dateAdded:'2025-07-18', pages:5,  accent:'sky'     },
+            { id:10, type:'NECTA',     level:'Kidato cha 4', subject:'Kemia',               year:2022, paperNo:'Karatasi ya 1',          title:'NECTA Kemia - Kidato cha 4',                   desc:'Mtihani wa Taifa wa Kemia, CSEE 2022.',                     downloads:1450, sizeKB:870,  dateAdded:'2023-10-20', pages:8,  accent:'red'     },
+            { id:11, type:'Mock',      level:'Kidato cha 4', subject:'Historia',            year:2024, paperNo:'Mkoa wa Mwanza',         title:'Mock Mkoa wa Mwanza - Historia F4',            desc:'Mtihani wa Mock, Historia ya Tanzania na Dunia.',           downloads:410,  sizeKB:610,  dateAdded:'2025-08-05', pages:6,  accent:'sky'     },
+            { id:12, type:'Pre-NECTA', level:'Kidato cha 4', subject:'Jiografia',           year:2024, paperNo:'Karatasi ya 2',          title:'Pre-NECTA Jiografia - Form 4',                 desc:'Maandalizi ya CSEE, Jiografia Karatasi ya 2.',              downloads:330,  sizeKB:590,  dateAdded:'2025-09-02', pages:7,  accent:'violet'  },
+            { id:13, type:'NECTA',     level:'Kidato cha 6', subject:'Kiingereza',          year:2023, paperNo:'Karatasi ya 1',          title:'NECTA English - Kidato cha 6 (ACSEE)',         desc:'ACSEE 2023, Lugha ya Kiingereza.',                          downloads:720,  sizeKB:700,  dateAdded:'2024-11-05', pages:6,  accent:'red'     },
+            { id:14, type:'Terminal',  level:'Darasa la 7',  subject:'Sayansi',             year:2024, paperNo:'Muhula wa Pili',         title:'Mtihani wa Muhula - Sayansi D.7',              desc:'Mtihani wa muhula wa pili, Sayansi Darasa la 7.',           downloads:290,  sizeKB:380,  dateAdded:'2025-07-25', pages:4,  accent:'amber'   },
+            { id:15, type:'Majibu',    level:'Kidato cha 2', subject:'Hisabati',            year:2023, paperNo:'Mwongozo wa FTNA',       title:'Majibu FTNA - Hisabati Kidato 2',              desc:'Mwongozo wa kusahihisha FTNA Hisabati.',                    downloads:880,  sizeKB:260,  dateAdded:'2024-07-14', pages:5,  accent:'emerald' },
+            { id:16, type:'NECTA',     level:'Kidato cha 4', subject:'Computer Studies',    year:2024, paperNo:'Karatasi ya 1',          title:'NECTA Computer Studies - Form 4',              desc:'CSEE 2024, Masomo ya Kompyuta.',                            downloads:1990, sizeKB:910,  dateAdded:'2025-11-08', pages:7,  accent:'red'     },
+            { id:17, type:'Mock',      level:'Kidato cha 6', subject:'Kemia',               year:2024, paperNo:'Mkoa wa Kilimanjaro',    title:'Mock Mkoa wa Kilimanjaro - Kemia F6',          desc:'Mtihani wa Mock, Kemia A-Level.',                           downloads:250,  sizeKB:940,  dateAdded:'2025-09-10', pages:9,  accent:'sky'     },
+            { id:18, type:'NECTA',     level:'Darasa la 4',  subject:'Hisabati',            year:2019, paperNo:'&mdash;',               title:'Mtihani wa Taifa - Hisabati Darasa la 4',      desc:'Tathmini ya kitaifa, Hisabati Darasa la 4.',                downloads:610,  sizeKB:350,  dateAdded:'2020-01-15', pages:4,  accent:'red'     },
+            { id:19, type:'Mock',      level:'Kidato cha 4', subject:'Uraia',               year:2021, paperNo:'Mkoa wa Tanga',          title:'Mock Mkoa wa Tanga - Uraia F4',                desc:'Mtihani wa Mock, Uraia kwa wanafunzi wa Kidato cha 4.',     downloads:200,  sizeKB:410,  dateAdded:'2022-08-01', pages:5,  accent:'sky'     }
+        ];
+
+        const TYPE_LABELS = { 'NECTA':'NECTA', 'Mock':'Mock', 'Pre-NECTA':'Pre-NECTA', 'Terminal':'Mtihani wa Muhula', 'Majibu':'Majibu' };
+        const ACCENT_CLASSES = {
+            red:     { fold:'border-r-red-400',     badge:'bg-red-500/15 text-red-400' },
+            sky:     { fold:'border-r-sky-400',     badge:'bg-sky-500/15 text-sky-400' },
+            violet:  { fold:'border-r-violet-400',  badge:'bg-violet-500/15 text-violet-400' },
+            amber:   { fold:'border-r-amber-400',   badge:'bg-amber-500/15 text-amber-400' },
+            emerald: { fold:'border-r-emerald-400', badge:'bg-emerald-500/15 text-emerald-400' }
+        };
+
+        // ---------- BOOKMARKS (localStorage - hii ni faili halisi ya tovuti, si artifact ya Claude) ----------
+        const BOOKMARK_KEY = 'lupanulla_mitihani_bookmarks';
+        function getBookmarks(){ try { return JSON.parse(localStorage.getItem(BOOKMARK_KEY)) || []; } catch(e){ return []; } }
+        function isBookmarked(id){ return getBookmarks().includes(id); }
+        function toggleBookmark(id){
+            let list = getBookmarks();
+            if (list.includes(id)) { list = list.filter(x => x !== id); showToast('Imeondolewa kwenye Hifadhi', 'ph-bold ph-bookmark-simple'); }
+            else { list.push(id); showToast('Imehifadhiwa! Itapatikana hapa baadaye', 'ph-fill ph-bookmark-simple-fill'); }
+            localStorage.setItem(BOOKMARK_KEY, JSON.stringify(list));
+            document.querySelectorAll(`[data-bookmark-id="${id}"]`).forEach(btn => {
+                const icon = btn.querySelector('i');
+                const on = list.includes(id);
+                icon.className = on ? 'ph-fill ph-bookmark-simple-fill text-sm' : 'ph ph-bookmark-simple text-sm';
+                btn.classList.toggle('text-neonTeal', on);
+                btn.classList.toggle('text-white/80', !on);
+            });
+            updateStats();
+        }
+
+        // ---------- STATE ----------
+        const state = { type:'Zote', level:'Zote', subject:'Zote', year:'Zote', search:'', sort:'mpya', visibleCount:9 };
+
+        function matchesFilters(e){
+            if (state.type !== 'Zote' && e.type !== state.type) return false;
+            if (state.level !== 'Zote' && e.level !== state.level) return false;
+            if (state.subject !== 'Zote' && e.subject !== state.subject) return false;
+            if (state.year !== 'Zote') {
+                if (state.year === '2019') { if (e.year > 2019) return false; }
+                else if (String(e.year) !== state.year) return false;
+            }
+            if (state.search.trim()) {
+                const q = state.search.trim().toLowerCase();
+                const hay = `${e.title} ${e.subject} ${e.level} ${e.year} ${e.type}`.toLowerCase();
+                if (!hay.includes(q)) return false;
+            }
+            return true;
+        }
+
+        function getFiltered(){
+            let list = EXAMS_DATA.filter(matchesFilters);
+            if (state.sort === 'mpya') list.sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            else if (state.sort === 'maarufu') list.sort((a,b) => b.downloads - a.downloads);
+            else if (state.sort === 'az') list.sort((a,b) => a.title.localeCompare(b.title));
+            return list;
+        }
+
+        // ---------- CARD RENDER ----------
+        function paperLines(seed){
+            const widths = [['w-full','w-5/6','w-4/6'], ['w-5/6','w-full','w-3/6'], ['w-4/6','w-5/6','w-full']];
+            return widths[seed % widths.length];
+        }
+
+        function renderCard(e, compact){
+            const accent = ACCENT_CLASSES[e.accent] || ACCENT_CLASSES.red;
+            const lines = paperLines(e.id);
+            const bookmarked = isBookmarked(e.id);
+            return `
+            <article class="doc-card group relative rounded-2xl overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:border-neonTeal/60 hover:-translate-y-1 ${compact ? 'w-60 flex-shrink-0 snap-start' : ''}" data-open-id="${e.id}" tabindex="0" role="button" aria-label="Fungua ${e.title}">
+                <div class="relative h-44 bg-gradient-to-b from-white to-gray-100 flex flex-col items-center px-4 pt-4 pb-3 overflow-hidden">
+                    <div class="absolute top-0 right-0 w-0 h-0 border-t-0 border-l-0 border-r-[26px] border-b-[26px] border-b-transparent ${accent.fold}"></div>
+                    <button data-bookmark-id="${e.id}" class="bookmark-btn absolute top-2 left-2 z-10 w-7 h-7 rounded-full bg-black/40 backdrop-blur flex items-center justify-center transition-colors ${bookmarked ? 'text-neonTeal' : 'text-white/80'}" aria-label="Hifadhi mtihani huu">
+                        <i class="${bookmarked ? 'ph-fill ph-bookmark-simple-fill' : 'ph ph-bookmark-simple'} text-sm"></i>
+                    </button>
+                    <p class="text-[7px] tracking-widest text-gray-400 uppercase font-medium mt-1">Jamhuri ya Muungano wa Tanzania</p>
+                    <p class="text-[6px] tracking-wider text-gray-400 uppercase">Baraza la Mitihani la Tanzania</p>
+                    <div class="w-10 h-px bg-gray-300 my-1.5"></div>
+                    <p class="text-gray-800 font-bold text-[13px] leading-tight text-center px-2">${e.subject}</p>
+                    <p class="text-gray-500 text-[10px] mt-0.5">${e.level} &bull; ${e.paperNo}</p>
+                    <div class="w-full mt-3 space-y-1.5 px-1">
+                        <div class="h-1 bg-gray-200 rounded-full ${lines[0]}"></div>
+                        <div class="h-1 bg-gray-200 rounded-full ${lines[1]}"></div>
+                        <div class="h-1 bg-gray-200 rounded-full ${lines[2]}"></div>
+                    </div>
+                    <div class="absolute inset-0 bg-bgDark/0 group-hover:bg-bgDark/70 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span class="px-3 py-1.5 rounded-full bg-neonTeal text-bgDark text-xs font-semibold flex items-center gap-1"><i class="ph-bold ph-eye"></i> Tazama Hakikisho</span>
+                    </div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${accent.badge}">${TYPE_LABELS[e.type]}</span>
+                        <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-white/5 text-textMuted">${e.year}</span>
+                    </div>
+                    <h3 class="text-white text-sm font-semibold leading-snug line-clamp-2">${e.title}</h3>
+                    <p class="text-textMuted text-xs mt-1 mb-3 line-clamp-1">${e.desc}</p>
+                    <div class="mt-auto flex items-center justify-between pt-2 border-t border-borderDark/60">
+                        <span class="text-[11px] text-textMuted flex items-center gap-1"><i class="ph ph-download-simple"></i> ${e.downloads.toLocaleString()} &bull; ${e.sizeKB}KB</span>
+                        <button data-download-id="${e.id}" class="download-btn flex items-center gap-1 px-2.5 py-1 rounded-lg bg-neonTeal/10 text-neonTeal text-xs font-medium hover:bg-neonTeal/20 transition-colors">
+                            <i class="ph-bold ph-download-simple"></i> Pakua
+                        </button>
+                    </div>
+                </div>
+            </article>`;
+        }
+
+        function renderTrending(){
+            const top = [...EXAMS_DATA].sort((a,b) => b.downloads - a.downloads).slice(0, 8);
+            document.getElementById('trendingRow').innerHTML = top.map(e => renderCard(e, true)).join('');
+        }
+
+        function renderGrid(){
+            const filtered = getFiltered();
+            const visible = filtered.slice(0, state.visibleCount);
+            document.getElementById('examGrid').innerHTML = visible.map(e => renderCard(e, false)).join('');
+            document.getElementById('resultCount').textContent = filtered.length;
+            document.getElementById('emptyState').style.display = filtered.length === 0 ? 'flex' : 'none';
+            document.getElementById('loadMoreBtn').style.display = state.visibleCount < filtered.length ? 'flex' : 'none';
+            const filtersActive = state.type !== 'Zote' || state.level !== 'Zote' || state.subject !== 'Zote' || state.year !== 'Zote' || state.search.trim() !== '';
+            const clearBtn = document.getElementById('clearFilters');
+            clearBtn.style.display = filtersActive ? 'inline-flex' : 'none';
+        }
+
+        function updateStats(){
+            document.getElementById('statTotal').textContent = EXAMS_DATA.length;
+            document.getElementById('statBookmarks').textContent = getBookmarks().length;
+        }
+
+        // ---------- TOAST ----------
+        function showToast(msg, icon){
+            const el = document.createElement('div');
+            el.className = 'toast-item bg-panelDark border border-borderDark text-white text-sm px-4 py-3 rounded-xl flex items-center gap-2 shadow-lg';
+            el.innerHTML = `<i class="${icon || 'ph-bold ph-check-circle'} text-neonTeal"></i> <span>${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(el);
+            setTimeout(() => {
+                el.style.transition = 'opacity .3s';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 300);
+            }, 2800);
+        }
+
+        function handleDownload(id){
+            const exam = EXAMS_DATA.find(x => x.id === id);
+            if (!exam) return;
+            showToast(`Faili la "${exam.subject}" litapakuliwa hivi karibuni &mdash; tunakamilisha uunganisho na Firebase Storage.`, 'ph-bold ph-cloud-arrow-down');
+        }
+
+        // ---------- VIEWER MODAL ----------
+        let viewerCurrentId = null;
+
+        function openViewer(id){
+            const exam = EXAMS_DATA.find(x => x.id === id);
+            if (!exam) return;
+            viewerCurrentId = id;
+            document.getElementById('viewerTitle').textContent = exam.title;
+            document.getElementById('viewerMeta').textContent = `${TYPE_LABELS[exam.type]} \u2022 ${exam.level} \u2022 ${exam.year} \u2022 ${exam.pages} kurasa`;
+            document.getElementById('viewerDownload').onclick = () => handleDownload(exam.id);
+            document.getElementById('viewerBody').innerHTML = buildViewerPages(exam);
+            document.getElementById('viewerBody').scrollTop = 0;
+            updateViewerNav();
+            const modal = document.getElementById('viewerModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function buildViewerPages(exam){
+            return `
+            <div class="bg-white rounded-lg p-6 sm:p-10 text-gray-800 mx-auto max-w-lg shadow-xl">
+                <p class="text-[9px] tracking-widest text-gray-400 uppercase text-center font-medium">Jamhuri ya Muungano wa Tanzania</p>
+                <p class="text-[8px] tracking-wider text-gray-400 uppercase text-center mb-3">Baraza la Mitihani la Tanzania</p>
+                <div class="w-16 h-px bg-gray-300 mx-auto mb-4"></div>
+                <p class="text-center font-bold text-lg">${exam.subject}</p>
+                <p class="text-center text-sm text-gray-500 mb-1">${exam.level} &mdash; ${exam.paperNo}</p>
+                <p class="text-center text-xs text-gray-400 mb-6">${TYPE_LABELS[exam.type]} ${exam.year}</p>
+                <p class="text-xs font-semibold mb-2">MAELEKEZO</p>
+                <ul class="text-xs text-gray-600 space-y-1.5 list-disc list-inside">
+                    <li>Andika jina lako na namba ya mtihani kwenye nafasi iliyoachwa.</li>
+                    <li>Hii ni karatasi yenye kurasa ${exam.pages}, hakikisha zote zipo.</li>
+                    <li>Jibu maswali yote sehemu husika kwa wino wa bluu au mweusi.</li>
+                    <li>Simu za mkononi na vifaa vya kielektroniki havikubaliki chumba cha mtihani.</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-lg p-6 sm:p-10 text-gray-800 mx-auto max-w-lg shadow-xl relative overflow-hidden">
+                <p class="text-xs font-semibold mb-3 text-gray-500">SEHEMU A &mdash; Mfano wa Swali</p>
+                <p class="text-sm mb-4">1. Eleza dhana muhimu zinazohusiana na ${exam.subject} ukitumia mfano halisi wa maisha ya kila siku.</p>
+                <p class="text-sm mb-4">2. Tatua tatizo lifuatalo huku ukionyesha hatua zote za kazi yako kwa ufasaha.</p>
+                <p class="text-sm">3. Linganisha na linganua dhana mbili tofauti zilizojifunzwa katika somo hili.</p>
+                <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/90 to-transparent flex items-end justify-center pb-3">
+                    <button onclick="handleDownload(${exam.id})" class="px-4 py-2 rounded-lg bg-bgDark text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-black transition-colors">
+                        <i class="ph-bold ph-lock-simple-open"></i> Pakua PDF Kamili Kuona Kurasa Zote
+                    </button>
+                </div>
+            </div>
+            <p class="text-center text-textMuted text-[11px]">Hii ni hakikisho tu. Maudhui kamili yatapatikana kwenye faili la PDF.</p>`;
+        }
+
+        function updateViewerNav(){
+            const list = getFiltered();
+            const idx = list.findIndex(x => x.id === viewerCurrentId);
+            document.getElementById('viewerPosition').textContent = list.length ? `${idx + 1} / ${list.length}` : '';
+            document.getElementById('viewerPrev').disabled = idx <= 0;
+            document.getElementById('viewerNext').disabled = idx === -1 || idx >= list.length - 1;
+        }
+
+        function viewerStep(dir){
+            const list = getFiltered();
+            const idx = list.findIndex(x => x.id === viewerCurrentId);
+            const next = list[idx + dir];
+            if (next) openViewer(next.id);
+        }
+
+        function closeViewer(){
+            document.getElementById('viewerModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // ---------- EVENTS ----------
+        document.getElementById('searchInput').addEventListener('input', (ev) => {
+            state.search = ev.target.value; state.visibleCount = 9; renderGrid();
+        });
+        document.getElementById('filterType').addEventListener('change', (ev) => {
+            state.type = ev.target.value; state.visibleCount = 9; syncPills(); renderGrid();
+        });
+        document.getElementById('filterLevel').addEventListener('change', (ev) => { state.level = ev.target.value; state.visibleCount = 9; renderGrid(); });
+        document.getElementById('filterSubject').addEventListener('change', (ev) => { state.subject = ev.target.value; state.visibleCount = 9; renderGrid(); });
+        document.getElementById('filterYear').addEventListener('change', (ev) => { state.year = ev.target.value; state.visibleCount = 9; renderGrid(); });
+        document.getElementById('sortBy').addEventListener('change', (ev) => { state.sort = ev.target.value; renderGrid(); });
+        document.getElementById('loadMoreBtn').addEventListener('click', () => { state.visibleCount += 9; renderGrid(); });
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            state.type = 'Zote'; state.level = 'Zote'; state.subject = 'Zote'; state.year = 'Zote'; state.search = ''; state.visibleCount = 9;
+            document.getElementById('filterType').value = 'Zote';
+            document.getElementById('filterLevel').value = 'Zote';
+            document.getElementById('filterSubject').value = 'Zote';
+            document.getElementById('filterYear').value = 'Zote';
+            document.getElementById('searchInput').value = '';
+            syncPills(); renderGrid();
+        });
+
+        function syncPills(){
+            document.querySelectorAll('#pillRow .pill').forEach(p => p.classList.toggle('active', p.dataset.type === state.type));
+        }
+        document.getElementById('pillRow').addEventListener('click', (ev) => {
+            const btn = ev.target.closest('.pill');
+            if (!btn) return;
+            state.type = btn.dataset.type; state.visibleCount = 9;
+            document.getElementById('filterType').value = state.type;
+            syncPills(); renderGrid();
+        });
+
+        function handleCardAreaClick(ev){
+            const dl = ev.target.closest('.download-btn');
+            if (dl) { ev.stopPropagation(); handleDownload(Number(dl.dataset.downloadId)); return; }
+            const bm = ev.target.closest('.bookmark-btn');
+            if (bm) { ev.stopPropagation(); toggleBookmark(Number(bm.dataset.bookmarkId)); return; }
+            const card = ev.target.closest('[data-open-id]');
+            if (card) { openViewer(Number(card.dataset.openId)); }
+        }
+        document.getElementById('examGrid').addEventListener('click', handleCardAreaClick);
+        document.getElementById('trendingRow').addEventListener('click', handleCardAreaClick);
+
+        document.getElementById('trendLeft').addEventListener('click', () => document.getElementById('trendingRow').scrollBy({ left: -280, behavior: 'smooth' }));
+        document.getElementById('trendRight').addEventListener('click', () => document.getElementById('trendingRow').scrollBy({ left: 280, behavior: 'smooth' }));
+
+        document.getElementById('viewerClose').addEventListener('click', closeViewer);
+        document.getElementById('viewerBackdrop').addEventListener('click', closeViewer);
+        document.getElementById('viewerPrev').addEventListener('click', () => viewerStep(-1));
+        document.getElementById('viewerNext').addEventListener('click', () => viewerStep(1));
+
+        document.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Escape') {
+                if (document.getElementById('viewerModal').style.display === 'flex') closeViewer();
+                return;
+            }
+            if (ev.key === 'Enter' || ev.key === ' ') {
+                const card = ev.target.closest('[data-open-id]');
+                if (card && !ev.target.closest('.download-btn') && !ev.target.closest('.bookmark-btn')) {
+                    ev.preventDefault();
+                    openViewer(Number(card.dataset.openId));
+                }
+            }
+        });
+
+        // ---------- INIT ----------
+        renderTrending();
+        renderGrid();
+        updateStats();
+    </script>
+</body>
+</html>

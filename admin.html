@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="sw">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | Lupanulla</title>
+  <meta name="description" content="Dashibodi ya msimamizi wa Lupanulla.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body class="lupa-page antialiased">
+  <main class="min-h-screen grid lg:grid-cols-[280px_1fr]">
+    <aside class="bg-slate-950 text-slate-300 p-6">
+      <a href="index.html" class="flex items-center gap-2 text-white font-extrabold">
+        <img src="/assets/images/logo.png" alt="" class="w-9 h-9 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+        <span>Lupanulla Admin</span>
+      </a>
+      <nav class="mt-8 grid gap-1 text-sm font-semibold">
+        <a href="admin.html" class="rounded-lg bg-white/10 px-3 py-2 text-white">Muhtasari</a>
+        <a href="dashboard.html" class="rounded-lg px-3 py-2 hover:bg-white/10">Dashibodi ya mwanafunzi</a>
+        <a href="matangazo.html" class="rounded-lg px-3 py-2 hover:bg-white/10">Matangazo</a>
+        <a href="index.html" class="rounded-lg px-3 py-2 hover:bg-white/10">Tovuti</a>
+      </nav>
+    </aside>
+
+    <section class="p-5 md:p-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-3xl font-extrabold tracking-tight">Muhtasari wa usimamizi</h1>
+          <p class="mt-2 text-slate-600">Mfano wa dashibodi kwa maudhui, watumiaji, na matangazo.</p>
+        </div>
+        <button class="inline-flex items-center gap-2 rounded-lg bg-cyan-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-cyan-800"><i class="ph ph-plus"></i> Chapisha tangazo</button>
+      </div>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-4">
+        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Wanafunzi</p><p class="mt-2 text-3xl font-extrabold">1,248</p></div>
+        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Masomo</p><p class="mt-2 text-3xl font-extrabold">82</p></div>
+        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Video</p><p class="mt-2 text-3xl font-extrabold">36</p></div>
+        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Mitihani</p><p class="mt-2 text-3xl font-extrabold">214</p></div>
+      </div>
+
+      <div class="mt-8 grid gap-5 lg:grid-cols-[1fr_360px]">
+        <section class="lupa-card overflow-hidden">
+          <div class="p-5 border-b border-slate-200">
+            <h2 class="text-xl font-extrabold">Kazi za hivi karibuni</h2>
+          </div>
+          <table class="lupa-table">
+            <tbody>
+              <tr><td class="font-bold">Mitihani Form IV</td><td>Ilihaririwa</td><td class="text-slate-500">Leo</td></tr>
+              <tr><td class="font-bold">Tangazo la nafasi za kazi</td><td>Rasimu</td><td class="text-slate-500">Jana</td></tr>
+              <tr><td class="font-bold">Video za Biology</td><td>Zimeongezwa</td><td class="text-slate-500">Wiki hii</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="lupa-card p-5">
+          <h2 class="text-xl font-extrabold">Kuingia kwa msimamizi</h2>
+          <form class="mt-4 grid gap-3">
+            <label class="grid gap-1 text-sm font-bold text-slate-700">Barua pepe <input class="lupa-focus rounded-lg border border-slate-300 px-3 py-2" type="email" placeholder="admin@lupanulla.co.tz"></label>
+            <label class="grid gap-1 text-sm font-bold text-slate-700">Nenosiri <input class="lupa-focus rounded-lg border border-slate-300 px-3 py-2" type="password" placeholder="********"></label>
+            <button type="button" class="rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">Ingia</button>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

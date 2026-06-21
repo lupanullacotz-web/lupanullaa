@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigezo na Masharti | Lupanulla</title>
+    <meta name="description" content="Vigezo na Masharti ya matumizi ya jukwaa la elimu la Lupanulla.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+                    colors: {
+                        bgLight: '#f8fafc', panelLight: '#ffffff', textMain: '#0f172a', textMuted: '#64748b',
+                        primaryBlue: '#020617', accentTeal: '#0891b2', accentRed: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: theme('colors.bgLight'); color: theme('colors.textMain'); }
+        .legal h2 { font-family: 'Oswald', sans-serif; font-weight: 600; color: theme('colors.primaryBlue'); margin-top: 2rem; margin-bottom: 0.75rem; font-size: 1.35rem; }
+        .legal p, .legal li { color: theme('colors.textMain'); margin-bottom: 0.75rem; line-height: 1.7; }
+        .legal ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Nav rahisi -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="/assets/images/logo.png" alt="" class="w-9 h-9 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                <span class="font-display font-bold text-xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+            </a>
+            <a href="index.html" class="text-sm font-medium text-textMuted hover:text-accentTeal flex items-center gap-1">
+                <i class="ph ph-arrow-left"></i> Rudi Nyumbani
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+        <span class="text-accentTeal text-sm font-bold uppercase tracking-wider">Lupanulla Education &amp; Health Foundation</span>
+        <h1 class="font-display font-bold text-3xl sm:text-4xl text-primaryBlue mt-2 mb-2">Vigezo na Masharti</h1>
+        <p class="text-textMuted text-sm mb-8">Ilisasishwa: Juni 2026</p>
+
+        <div class="legal">
+            <p>Kwa kutumia tovuti ya Lupanulla (lupanulla.co.tz) na huduma zake, unakubali masharti yafuatayo. Tafadhali yasome kwa makini kabla ya kutumia jukwaa.</p>
+
+            <h2>1. Kukubali Masharti</h2>
+            <p>Kwa kufungua, kujisajili, au kutumia huduma za Lupanulla, unakubali kufungwa na Vigezo na Masharti haya pamoja na Sera yetu ya Faragha. Ikiwa hukubaliani na masharti haya, tafadhali usitumie huduma zetu.</p>
+
+            <h2>2. Maelezo ya Huduma</h2>
+            <p>Lupanulla ni jukwaa la elimu linalotoa: notisi za masomo, mitihani ya zamani ya NECTA (past papers), maswali ya mazoezi, video za mafunzo, kalenda ya maandalizi ya mitihani, na huduma ya msaidizi wa AI ("Fisi Maji AI") kwa ajili ya wanafunzi wa shule za msingi, sekondari (O-Level na A-Level), na walimu nchini Tanzania.</p>
+
+            <h2>3. Akaunti za Watumiaji</h2>
+            <ul>
+                <li>Baadhi ya huduma (k.m. Teacher Portal, Admin Dashboard) zinahitaji kujisajili kwa kutumia barua pepe, namba ya simu, au akaunti ya Google.</li>
+                <li>Wewe unawajibika kulinda nenosiri lako na kutoshiriki taarifa za kuingia kwenye akaunti yako na mtu mwingine.</li>
+                <li>Wanafunzi walio chini ya miaka 18 wanashauriwa kutumia huduma chini ya uongozi wa mzazi, mlezi, au mwalimu.</li>
+                <li>Lupanulla inaweza kusitisha au kuzuia akaunti yoyote inayotumiwa kinyume na masharti haya.</li>
+            </ul>
+
+            <h2>4. Matumizi Yanayokubalika</h2>
+            <p>Unakubali kutotumia jukwaa kwa:</p>
+            <ul>
+                <li>Kupakia maudhui ya uongo, ya kashfa, ya udanganyifu, au yanayokiuka sheria za Tanzania.</li>
+                <li>Kujifanya kuwa mtu mwingine au kutoa taarifa za usajili za uongo.</li>
+                <li>Kuvuruga utendaji wa mfumo (k.m. kutuma virusi, kujaribu kuingilia mfumo wa Firebase bila ruhusa, au "scraping" ya data kiholela).</li>
+                <li>Kuuza au kusambaza tena maudhui ya Lupanulla bila ruhusa ya maandishi.</li>
+            </ul>
+
+            <h2>5. Haki Miliki</h2>
+            <p>Maudhui yaliyoandaliwa na Lupanulla (notisi, michoro, miongozo, video) ni mali ya Lupanulla Education &amp; Health Foundation au washirika wake, na yanalindwa na sheria za hakimiliki. Mitihani ya zamani ya NECTA inayoonyeshwa hutolewa kwa madhumuni ya mazoezi ya kielimu pekee. Unaweza kupakua na kutumia maudhui kwa matumizi yako ya kibinafsi ya kujifunzia, lakini usiyasambaze kibiashara bila idhini yetu.</p>
+
+            <h2>6. Mchango wa Walimu na Watumiaji</h2>
+            <p>Walimu wanaopakia maudhui (notisi, mitihani, video) kwenye Teacher Portal wanathibitisha kuwa wana haki ya kuyasambaza, na wanakubali Lupanulla kuyatumia kwenye jukwaa kwa lengo la kuwafikia wanafunzi.</p>
+
+            <h2>7. Kusitishwa kwa Huduma</h2>
+            <p>Lupanulla inaweza kubadilisha, kusitisha, au kuzuia kipengele chochote cha huduma wakati wowote, kwa lengo la kuboresha jukwaa au kwa sababu za kiufundi/kisheria, bila taarifa ya awali ikiwa hali inahitaji hivyo.</p>
+
+            <h2>8. Kikomo cha Dhima</h2>
+            <p>Maudhui ya Lupanulla yanatolewa kwa nia njema ya kuelimisha, lakini hatuwezi kuhakikisha usahihi kamili wa kila notisi au jibu la AI (Fisi Maji AI). Wanafunzi wanashauriwa kuhakiki taarifa muhimu kwa vitabu rasmi vya NECTA au kwa kushauriana na walimu wao. Lupanulla haitawajibika kwa hasara yoyote inayotokana na kutegemea pekee maudhui ya jukwaa hili kwa maamuzi muhimu ya kitaaluma.</p>
+
+            <h2>9. Mabadiliko ya Masharti</h2>
+            <p>Tunaweza kusasisha Vigezo na Masharti haya mara kwa mara. Matumizi yanayoendelea ya jukwaa baada ya mabadiliko yanahesabika kama kukubali masharti mapya.</p>
+
+            <h2>10. Sheria Inayotumika</h2>
+            <p>Masharti haya yanatawaliwa na sheria za Jamhuri ya Muungano wa Tanzania.</p>
+
+            <h2>11. Wasiliana Nasi</h2>
+            <ul>
+                <li>Barua pepe: <a href="mailto:lupanulla.co.tz@gmail.com" class="text-accentTeal font-medium">lupanulla.co.tz@gmail.com</a></li>
+                <li>Simu: <a href="tel:+255743548225" class="text-accentTeal font-medium">+255 743 548 225</a></li>
+            </ul>
+
+            <p class="text-xs text-textMuted border-t border-gray-200 pt-4 mt-8">Kumbuka: Hii ni waraka wa kawaida (template) uliotengenezwa kuelekeza msingi wa vigezo na masharti kwa Lupanulla. Inashauriwa kupitiwa na mtaalamu wa sheria nchini Tanzania kabla ya kuchapishwa rasmi.</p>
+        </div>
+    </main>
+
+    <footer class="bg-primaryBlue text-white text-center py-6 mt-12 text-sm">
+        <p>&copy; 2026 Lupanulla Education &amp; Health Foundation. Haki zote zimehifadhiwa.</p>
+        <div class="mt-2">
+            <a href="privacy.html" class="text-gray-400 hover:text-white mx-2">Sera ya Faragha</a>|
+            <a href="index.html" class="text-gray-400 hover:text-white mx-2">Nyumbani</a>
+        </div>
+    </footer>
+</body>
+</html>

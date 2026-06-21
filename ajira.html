@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajira za Kielimu | Lupanulla</title>
+    <meta name="description" content="Nafasi za kazi kwa walimu, watumishi wa elimu na wahitimu Tanzania - ualimu, utawala wa shule, vyuo na mashirika ya elimu.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+                    colors: {
+                        bgDark: '#f8fafc', panelLight: '#ffffff', textMain: '#0f172a', textMuted: '#64748b',
+                        primaryBlue: '#020617', accentTeal: '#0891b2', accentRed: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: theme('colors.bgDark'); color: theme('colors.textMain'); overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .job-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .job-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -10px rgba(0,0,0,0.12); }
+
+        .filter-chip { transition: all 0.15s ease; }
+        .filter-chip.active { background: theme('colors.accentTeal'); color: white; border-color: theme('colors.accentTeal'); }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Top Small Bar -->
+    <div class="bg-primaryBlue text-white text-xs py-2 px-4 hidden md:block">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1 text-accentTeal font-medium"><i class="ph-fill ph-check-circle"></i> Mtaala wa NECTA Zinasasishwa</span>
+                <span class="text-gray-400">|</span>
+                <a href="dashboard.html" class="hover:text-white transition-colors">Toleo la Shule</a>
+                <a href="walimu.html" class="hover:text-white transition-colors">Kwa Walimu</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-translate"></i> Swahili</a>
+                <a href="#" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-user"></i> Ingia</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-display font-bold text-2xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+                </a>
+
+                <div class="hidden lg:flex space-x-1 items-center font-display font-medium text-lg">
+                    <a href="blogu.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Habari</a>
+                    <a href="masomo.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Masomo</a>
+                    <a href="mitihani.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Mitihani (Past Papers)</a>
+                    <a href="mikoa.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Viwango (Rankings)</a>
+                    <a href="videos.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Lupa+ (Video)</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="ajira.html" class="flex items-center gap-2 bg-accentTeal/10 text-accentTeal px-4 py-2 rounded-full font-medium hover:bg-accentTeal/20 transition-colors">
+                        <i class="ph-fill ph-briefcase"></i> Ajira
+                    </a>
+                    <a href="fisimaji.html" class="flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium hover:bg-purple-200 transition-colors">
+                        <i class="ph-fill ph-robot"></i> Fisi Maji AI
+                    </a>
+                </div>
+
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMain p-2">
+                        <i class="ph ph-list text-3xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white">
+            <div class="px-4 py-3 space-y-1 font-display font-medium">
+                <a href="blogu.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Habari</a>
+                <a href="masomo.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Masomo</a>
+                <a href="mitihani.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Mitihani (Past Papers)</a>
+                <a href="mikoa.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Viwango (Rankings)</a>
+                <a href="videos.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Lupa+ (Video)</a>
+                <a href="ajira.html" class="block px-3 py-2 rounded-md text-accentTeal bg-accentTeal/10">Ajira</a>
+                <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-purple-700 flex items-center gap-2"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="bg-primaryBlue text-white py-12 sm:py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span class="text-accentTeal text-sm font-bold uppercase tracking-wider">Lupanulla Ajira</span>
+            <h1 class="font-display font-bold text-3xl sm:text-4xl md:text-5xl mt-2 mb-4">Nafasi za Kazi za Kielimu</h1>
+            <p class="text-gray-300 max-w-2xl mb-8">Tafuta nafasi za ualimu, utawala wa shule, kazi za vyuo na mashirika ya elimu kutoka kote Tanzania - zikisasishwa kila wiki.</p>
+
+            <div class="relative max-w-xl">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-textMuted text-xl"></i>
+                <input id="job-search" type="text" placeholder="Tafuta nafasi, mfano: Mwalimu wa Hisabati..." class="w-full bg-white border border-gray-200 rounded-xl py-3 pl-12 pr-4 text-textMain focus:outline-none focus:border-accentTeal focus:ring-1 focus:ring-accentTeal transition-all">
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Job Listings -->
+            <div class="lg:col-span-2">
+
+                <!-- Filter chips -->
+                <div class="flex flex-wrap gap-2 mb-6" id="filter-chips">
+                    <button data-cat="zote" class="filter-chip active px-4 py-2 rounded-full border border-gray-200 text-sm font-medium bg-white">Zote</button>
+                    <button data-cat="ualimu" class="filter-chip px-4 py-2 rounded-full border border-gray-200 text-sm font-medium bg-white text-textMuted">Ualimu</button>
+                    <button data-cat="utawala" class="filter-chip px-4 py-2 rounded-full border border-gray-200 text-sm font-medium bg-white text-textMuted">Utawala wa Shule</button>
+                    <button data-cat="vyuo" class="filter-chip px-4 py-2 rounded-full border border-gray-200 text-sm font-medium bg-white text-textMuted">Vyuo</button>
+                    <button data-cat="ngo" class="filter-chip px-4 py-2 rounded-full border border-gray-200 text-sm font-medium bg-white text-textMuted">Mashirika/NGO</button>
+                </div>
+
+                <p class="text-sm text-textMuted mb-4" id="results-count">Nafasi 8 zinaonyeshwa</p>
+
+                <div class="space-y-4" id="job-list">
+                    <!-- Cards injected by JS -->
+                </div>
+                <p id="no-job-results" class="hidden text-center text-textMuted py-12">Hakuna nafasi iliyopatikana. Jaribu kigezo tofauti cha utafutaji.</p>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="space-y-6">
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-accentTeal/10 flex items-center justify-center mb-4">
+                        <i class="ph-fill ph-bell-ringing text-accentTeal text-2xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-primaryBlue mb-2">Pokea Arifa za Ajira</h3>
+                    <p class="text-sm text-textMuted mb-4">Tutakutumia barua pepe kila wiki kuhusu nafasi mpya za ualimu na elimu.</p>
+                    <form id="alert-form" class="space-y-2">
+                        <input type="email" required placeholder="Barua pepe yako" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accentTeal focus:ring-1 focus:ring-accentTeal">
+                        <button type="submit" class="w-full bg-accentTeal text-white font-medium py-2 rounded-lg hover:bg-accentTeal/90 transition-colors text-sm">Jisajili</button>
+                        <p id="alert-success" class="hidden text-xs text-green-600 flex items-center gap-1"><i class="ph-fill ph-check-circle"></i> Umesajiliwa! Asante.</p>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-display font-bold text-lg text-primaryBlue mb-4">Vidokezo vya CV</h3>
+                    <ul class="space-y-3 text-sm text-textMain">
+                        <li class="flex items-start gap-2"><i class="ph-fill ph-check-circle text-accentTeal mt-0.5"></i> Weka cheti chako cha TSC au sifa za ualimu mwanzoni.</li>
+                        <li class="flex items-start gap-2"><i class="ph-fill ph-check-circle text-accentTeal mt-0.5"></i> Taja masomo unayofundisha na ngazi (O-Level/A-Level).</li>
+                        <li class="flex items-start gap-2"><i class="ph-fill ph-check-circle text-accentTeal mt-0.5"></i> Onyesha matokeo ya wanafunzi wako kama yanapatikana.</li>
+                        <li class="flex items-start gap-2"><i class="ph-fill ph-check-circle text-accentTeal mt-0.5"></i> CV isizidi kurasa mbili - iwe fupi na sahihi.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-primaryBlue rounded-2xl p-6 text-white">
+                    <i class="ph-fill ph-robot text-3xl text-purple-300 mb-3 block"></i>
+                    <h3 class="font-display font-bold text-lg mb-2">Tayarisha Barua ya Maombi</h3>
+                    <p class="text-sm text-gray-300 mb-4">Mwambie Fisi Maji AI nafasi unayoomba, akusaidie kuandika barua ya maombi kwa Kiswahili fasaha.</p>
+                    <a href="fisimaji.html" class="inline-flex items-center gap-2 bg-white text-primaryBlue font-medium px-4 py-2 rounded-full text-sm hover:bg-gray-100 transition-colors">
+                        Anza Sasa <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primaryBlue text-white pt-16 pb-8 mt-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <a href="index.html" class="flex items-center gap-2 mb-6">
+                        <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                        <span class="font-display font-bold text-2xl tracking-tight text-white uppercase">Lupanulla</span>
+                    </a>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                        Lango lako kuu la raslimali za elimu, habari, na miongozo ya kitaaluma kwa wanafunzi, walimu, na wazazi nchini Tanzania.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 transition-colors"><i class="ph-fill ph-youtube-logo text-xl"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Chunguza</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="masomo.html" class="hover:text-white transition-colors">Masomo Yote</a></li>
+                        <li><a href="mitihani.html" class="hover:text-white transition-colors">Maktaba ya Mitihani</a></li>
+                        <li><a href="mikoa.html" class="hover:text-white transition-colors">Viwango vya Shule</a></li>
+                        <li><a href="videos.html" class="hover:text-white transition-colors">Lupa+ Video</a></li>
+                        <li><a href="ajira.html" class="hover:text-white transition-colors">Ajira za Kielimu</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Zana &amp; Huduma</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="fisimaji.html" class="hover:text-accentTeal text-accentTeal transition-colors flex items-center gap-1"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a></li>
+                        <li><a href="calculator.html" class="hover:text-white transition-colors">Kikokotoo cha Ufaulu</a></li>
+                        <li><a href="vyuo.html" class="hover:text-white transition-colors">Taarifa za Vyuo (TCU/NACTE)</a></li>
+                        <li><a href="https://www.heslb.go.tz" target="_blank" rel="noopener" class="hover:text-white transition-colors">Bodi ya Mikopo (HESLB)</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Pata App Yetu</h4>
+                    <p class="text-gray-400 text-sm mb-4">Jifunze popote, muda wowote kupitia simu yako ya mkononi.</p>
+                    <div class="flex flex-col gap-3">
+                        <a href="#" class="bg-black border border-gray-700 rounded-lg px-4 py-2 flex items-center gap-3 hover:border-gray-500 transition-colors">
+                            <i class="ph-fill ph-google-play-logo text-2xl text-green-400"></i>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] text-gray-400 leading-none">PAKUA KUTOKA</span>
+                                <span class="text-sm font-bold leading-tight">Google Play</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <p>&copy; 2026 Lupanulla Elimu Hub. Haki zote zimehifadhiwa.</p>
+                <div class="flex gap-4">
+                    <a href="terms.html" class="hover:text-white">Vigezo na Masharti</a>
+                    <a href="privacy.html" class="hover:text-white">Sera ya Faragha</a>
+                    <a href="mailto:lupanulla.co.tz@gmail.com" class="hover:text-white">Wasiliana Nasi</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('ph-x'); menuIcon.classList.add('ph-list');
+            } else {
+                menuIcon.classList.remove('ph-list'); menuIcon.classList.add('ph-x');
+            }
+        });
+
+        // ---- Job data (illustrative samples) ----
+        const jobs = [
+            { cat: 'ualimu', title: 'Mwalimu wa Hisabati na Fizikia (O-Level)', employer: 'Shule ya Sekondari Feza Boys', loc: 'Dar es Salaam', type: 'Muda Wote', posted: 'Siku 2 zilizopita', deadline: '30 Juni 2026', desc: 'Tunatafuta mwalimu mwenye Shahada ya Ualimu (Hisabati/Fizikia) na uzoefu wa miaka 2+ kufundisha kidato cha 1-4.' },
+            { cat: 'ualimu', title: 'Mwalimu wa Kiingereza (A-Level)', employer: 'St. Constantine\'s International School', loc: 'Arusha', type: 'Mkataba', posted: 'Siku 3 zilizopita', deadline: '5 Julai 2026', desc: 'Nafasi kwa mwalimu mwenye uzoefu wa mtaala wa Cambridge/A-Level kufundisha English Language na Literature.' },
+            { cat: 'utawala', title: 'Mwalimu Mkuu Msaidizi (Academics)', employer: 'Shule ya Sekondari Kilakala Girls', loc: 'Morogoro', type: 'Muda Wote', posted: 'Wiki 1 iliyopita', deadline: '15 Julai 2026', desc: 'Tunahitaji kiongozi mwenye uzoefu wa miaka 5+ katika usimamizi wa taaluma na matokeo ya NECTA.' },
+            { cat: 'vyuo', title: 'Msaidizi wa Mhadhiri - Elimu (Education Studies)', employer: 'Chuo Kikuu cha Dodoma (UDOM)', loc: 'Dodoma', type: 'Muda Wote', posted: 'Wiki 1 iliyopita', deadline: '10 Julai 2026', desc: 'Sifa: Shahada ya Uzamili (Masters) katika Elimu au sayansi husika. Uzoefu wa kufundisha chuoni utapewa kipaumbele.' },
+            { cat: 'ngo', title: 'Afisa Mradi - Elimu Jumuishi', employer: 'Plan International Tanzania', loc: 'Mwanza', type: 'Mkataba (Miaka 2)', posted: 'Wiki 2 zilizopita', deadline: '1 Agosti 2026', desc: 'Tunatafuta Afisa Mradi kusimamia programu za elimu jumuishi kwa watoto wenye mahitaji maalum mkoani Mwanza.' },
+            { cat: 'ualimu', title: 'Mwalimu wa Kemia na Biolojia', employer: 'Mkwawa High School', loc: 'Iringa', type: 'Muda Wote', posted: 'Wiki 2 zilizopita', deadline: '20 Julai 2026', desc: 'Nafasi kwa mwalimu wa sayansi mwenye uwezo wa kuongoza maabara na kuandaa wanafunzi kwa ACSEE.' },
+            { cat: 'ngo', title: 'Mratibu wa Mafunzo kwa Walimu', employer: 'VVOB Tanzania', loc: 'Dar es Salaam', type: 'Muda Wote', posted: 'Wiki 3 zilizopita', deadline: '25 Julai 2026', desc: 'Kuratibu warsha za maendeleo ya kitaaluma kwa walimu katika mikoa mitano ya Tanzania Bara.' },
+            { cat: 'utawala', title: 'Katibu Mtendaji wa Shule (Bursar)', employer: 'Shule ya Msingi Oysterbay', loc: 'Dar es Salaam', type: 'Muda Wote', posted: 'Mwezi 1 uliopita', deadline: '12 Julai 2026', desc: 'Kusimamia fedha za shule, malipo ya ada na taarifa za kihasibu kwa uongozi wa shule.' },
+        ];
+
+        const jobList = document.getElementById('job-list');
+        const noResults = document.getElementById('no-job-results');
+        const resultsCount = document.getElementById('results-count');
+        const searchInput = document.getElementById('job-search');
+        const chips = document.querySelectorAll('.filter-chip');
+        let activeCat = 'zote';
+
+        const catLabel = { ualimu: 'Ualimu', utawala: 'Utawala wa Shule', vyuo: 'Vyuo', ngo: 'Mashirika/NGO' };
+        const catColor = { ualimu: 'bg-accentTeal/10 text-accentTeal', utawala: 'bg-purple-100 text-purple-700', vyuo: 'bg-amber-100 text-amber-700', ngo: 'bg-rose-100 text-rose-700' };
+
+        function renderJobs() {
+            const q = searchInput.value.trim().toLowerCase();
+            const filtered = jobs.filter(j => {
+                const matchesCat = activeCat === 'zote' || j.cat === activeCat;
+                const matchesQ = q === '' || (j.title + ' ' + j.employer + ' ' + j.loc).toLowerCase().includes(q);
+                return matchesCat && matchesQ;
+            });
+
+            resultsCount.textContent = `Nafasi ${filtered.length} zinaonyeshwa`;
+            noResults.classList.toggle('hidden', filtered.length !== 0);
+
+            jobList.innerHTML = filtered.map(j => `
+                <div class="job-card bg-white border border-gray-200 rounded-xl p-5 sm:p-6">
+                    <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${catColor[j.cat]}">${catLabel[j.cat]}</span>
+                        <span class="text-xs text-textMuted">${j.posted}</span>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-primaryBlue mb-1">${j.title}</h3>
+                    <p class="text-sm text-textMain font-medium mb-2">${j.employer}</p>
+                    <p class="text-sm text-textMuted mb-4">${j.desc}</p>
+                    <div class="flex flex-wrap items-center gap-4 text-xs text-textMuted mb-4">
+                        <span class="flex items-center gap-1"><i class="ph ph-map-pin"></i> ${j.loc}</span>
+                        <span class="flex items-center gap-1"><i class="ph ph-clock"></i> ${j.type}</span>
+                        <span class="flex items-center gap-1 text-accentRed"><i class="ph ph-calendar-x"></i> Mwisho: ${j.deadline}</span>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 bg-primaryBlue text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-accentTeal transition-colors">
+                        Ona Maelezo / Omba Sasa <i class="ph-bold ph-arrow-right"></i>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => { c.classList.remove('active'); c.classList.add('text-textMuted'); });
+                chip.classList.add('active'); chip.classList.remove('text-textMuted');
+                activeCat = chip.dataset.cat;
+                renderJobs();
+            });
+        });
+
+        searchInput.addEventListener('input', renderJobs);
+        renderJobs();
+
+        // Job alert form (front-end only demo)
+        document.getElementById('alert-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            document.getElementById('alert-success').classList.remove('hidden');
+            e.target.querySelector('input[type=email]').value = '';
+        });
+    </script>
+</body>
+</html>

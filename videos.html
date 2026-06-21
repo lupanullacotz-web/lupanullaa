@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupa+ Video | Lupanulla</title>
+    <meta name="description" content="Jifunze kwa vitendo kupitia video za mafunzo zinazofuata mtaala wa NECTA - Lupa+ kutoka Lupanulla.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], },
+                    colors: {
+                        bgDark: '#0a0a0f', panelDark: '#12121a', borderDark: '#2a2a35',
+                        neonTeal: '#00f0ff', neonPurple: '#b026ff', accentRed: '#e11d48', textMain: '#e2e8f0', textMuted: '#94a3b8'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: theme('colors.bgDark'); color: theme('colors.textMain'); }
+        .glass-nav { background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: theme('colors.bgDark'); }
+        ::-webkit-scrollbar-thumb { background: theme('colors.borderDark'); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.textMuted'); }
+
+        .video-card { background: rgba(18, 18, 26, 0.6); border: 1px solid theme('colors.borderDark'); transition: all 0.3s ease; }
+        .video-card:hover { border-color: theme('colors.neonTeal'); transform: translateY(-4px); }
+        .video-card:hover .thumb-zoom { transform: scale(1.05); }
+        .thumb-zoom { transition: transform 0.5s ease; }
+
+        .filter-btn { transition: all 0.2s ease; }
+        .filter-btn.active { background: theme('colors.neonTeal'); color: theme('colors.bgDark'); border-color: theme('colors.neonTeal'); }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <nav class="fixed w-full top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <img src="/assets/images/logo.png" alt="" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-bold text-xl tracking-wider text-white">LUPANULLA</span>
+                </a>
+
+                <div class="hidden md:flex space-x-2 items-center">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Nyumbani</a>
+                    <a href="masomo.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Masomo</a>
+                    <a href="mitihani.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Mitihani</a>
+                    <a href="videos.html" class="px-3 py-2 rounded-md text-sm font-medium text-neonTeal bg-neonTeal/10">Lupa+ Video</a>
+                    <a href="fisimaji.html" class="px-3 py-2 rounded-md text-sm font-medium text-neonPurple hover:bg-white/5 transition-colors flex items-center gap-1">
+                        <i class="ph-fill ph-robot"></i> Fisi Maji AI
+                    </a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMuted hover:text-white p-2">
+                        <i class="ph ph-list text-2xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden bg-panelDark border-b border-borderDark absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Nyumbani</a>
+                <a href="masomo.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Masomo Yote</a>
+                <a href="mitihani.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Mitihani</a>
+                <a href="videos.html" class="block px-3 py-2 rounded-md text-base font-medium text-neonTeal bg-neonTeal/10">Lupa+ Video</a>
+                <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-base font-medium text-neonPurple hover:bg-white/5 flex items-center gap-2"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+
+        <div class="text-center max-w-3xl mx-auto mb-10">
+            <span class="text-neonTeal text-sm font-bold uppercase tracking-wider">Jifunze kwa Vitendo</span>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mt-2 mb-4">Lupa<span class="text-neonTeal">+</span> Video</h1>
+            <p class="text-lg text-textMuted mb-8">Video za mafunzo zinazoelezea mada ngumu kwa ufasaha, zikifuata mtaala wa NECTA.</p>
+
+            <div class="relative max-w-xl mx-auto">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-textMuted text-xl"></i>
+                <input id="video-search" type="text" placeholder="Tafuta video, mfano: Biology, Hisabati..." class="w-full bg-panelDark border border-borderDark rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-neonTeal focus:ring-1 focus:ring-neonTeal transition-all">
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap justify-center gap-2 mb-10" id="filter-tabs">
+            <button data-level="zote" class="filter-btn active px-4 py-2 rounded-full border border-borderDark text-sm font-medium text-white">Zote</button>
+            <button data-level="msingi" class="filter-btn px-4 py-2 rounded-full border border-borderDark text-sm font-medium text-textMuted hover:text-white">Shule ya Msingi</button>
+            <button data-level="o-level" class="filter-btn px-4 py-2 rounded-full border border-borderDark text-sm font-medium text-textMuted hover:text-white">O-Level</button>
+            <button data-level="a-level" class="filter-btn px-4 py-2 rounded-full border border-borderDark text-sm font-medium text-textMuted hover:text-white">A-Level</button>
+        </div>
+
+        <!-- Video Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="video-grid">
+
+            <div class="video-card rounded-xl overflow-hidden cursor-pointer" data-level="o-level" data-title="biology muundo wa seli ya mimea plant cell">
+                <div class="relative w-full h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1628126235206-5260b9ea6441?q=80&w=2070&auto=format&fit=crop" alt="Biology" class="w-full h-full object-cover thumb-zoom">
+                    <div class="absolute inset-0 bg-black/30"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-neonPurple rounded-full flex items-center justify-center"><i class="ph-fill ph-play text-white text-xl ml-0.5"></i></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">12:45</div>
+                </div>
+                <div class="p-4">
+                    <span class="text-neonTeal text-xs font-bold uppercase tracking-wider block mb-1">Biology • O-Level</span>
+                    <h3 class="font-bold text-white leading-tight">Muundo wa Seli ya Mimea (Plant Cell Structure)</h3>
+                </div>
+            </div>
+
+            <div class="video-card rounded-xl overflow-hidden cursor-pointer" data-level="a-level" data-title="mathematics integration by parts hisabati">
+                <div class="relative w-full h-44 overflow-hidden bg-blue-900 flex items-center justify-center">
+                    <i class="ph ph-math-operations text-6xl text-white/30"></i>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-neonPurple rounded-full flex items-center justify-center"><i class="ph-fill ph-play text-white text-xl ml-0.5"></i></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">24:10</div>
+                </div>
+                <div class="p-4">
+                    <span class="text-neonTeal text-xs font-bold uppercase tracking-wider block mb-1">Mathematics • A-Level</span>
+                    <h3 class="font-bold text-white leading-tight">Integration by Parts (Hatua kwa Hatua)</h3>
+                </div>
+            </div>
+
+            <div class="video-card rounded-xl overflow-hidden cursor-pointer" data-level="o-level" data-title="chemistry volumetric analysis titration">
+                <div class="relative w-full h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?q=80&w=2069&auto=format&fit=crop" alt="Chemistry" class="w-full h-full object-cover thumb-zoom">
+                    <div class="absolute inset-0 bg-black/30"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-neonPurple rounded-full flex items-center justify-center"><i class="ph-fill ph-play text-white text-xl ml-0.5"></i></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">08:30</div>
+                </div>
+                <div class="p-4">
+                    <span class="text-neonTeal text-xs font-bold uppercase tracking-wider block mb-1">Chemistry • O-Level</span>
+                    <h3 class="font-bold text-white leading-tight">Volumetric Analysis (Titration Practical)</h3>
+                </div>
+            </div>
+
+            <div class="video-card rounded-xl overflow-hidden cursor-pointer" data-level="msingi" data-title="geography mfumo wa jua solar system">
+                <div class="relative w-full h-44 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=1974&auto=format&fit=crop" alt="Geography" class="w-full h-full object-cover thumb-zoom">
+                    <div class="absolute inset-0 bg-black/30"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-neonPurple rounded-full flex items-center justify-center"><i class="ph-fill ph-play text-white text-xl ml-0.5"></i></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">15:05</div>
+                </div>
+                <div class="p-4">
+                    <span class="text-neonTeal text-xs font-bold uppercase tracking-wider block mb-1">Geography • Msingi</span>
+                    <h3 class="font-bold text-white leading-tight">Mfumo wa Jua na Sayari Zake (Solar System)</h3>
+                </div>
+            </div>
+
+            <div class="video-card rounded-xl overflow-hidden cursor-pointer" data-level="o-level" data-title="physics mzunguko wa umeme electric circuits">
+                <div class="relative w-full h-44 overflow-hidden bg-indigo-900 flex items-center justify-center">
+                    <i class="ph ph-lightning text-6xl text-white/30"></i>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-neonPurple rounded-full flex items-center justify-center"><i class="ph-fill ph-play text-white text-xl ml-0.5"></i></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">18:20</div>
+                </div>
+                <div class="p-4">
+                    <span class="text-neonTeal text-xs font-bold uppercase tracking-wider block mb-1">Physics • O-Level</span>
+                    <h3 class="font-bold text-white leading-tight">Mzunguko wa Umeme (Electric Circuits)</h3>
+                </div>
+            </div>
+
+            <div class="video-card rounded-xl overflow-hidden cursor-pointer" data-level="msingi" data-title="hisabati mpangilio wa nambari darasa la 7">
+                <div class="relative w-full h-44 overflow-hidden bg-green-900 flex items-center justify-center">
+                    <i class="ph ph-hash text-6xl text-white/30"></i>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-12 h-12 bg-neonPurple rounded-full flex items-center justify-center"><i class="ph-fill ph-play text-white text-xl ml-0.5"></i></div>
+                    </div>
+                    <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">10:55</div>
+                </div>
+                <div class="p-4">
+                    <span class="text-neonTeal text-xs font-bold uppercase tracking-wider block mb-1">Hisabati • Darasa la 7</span>
+                    <h3 class="font-bold text-white leading-tight">Mpangilio na Mfululizo wa Nambari</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <p id="no-results" class="hidden text-center text-textMuted mt-12">Hakuna video zilizopatikana. Jaribu neno tofauti la utafutaji.</p>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.classList.remove('ph-x'); icon.classList.add('ph-list');
+            } else {
+                icon.classList.remove('ph-list'); icon.classList.add('ph-x');
+            }
+        });
+
+        // Filter + Search
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('#video-grid > div');
+        const searchInput = document.getElementById('video-search');
+        const noResults = document.getElementById('no-results');
+        let activeLevel = 'zote';
+
+        function applyFilters() {
+            const query = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+            cards.forEach(card => {
+                const matchesLevel = activeLevel === 'zote' || card.dataset.level === activeLevel;
+                const matchesSearch = query === '' || card.dataset.title.includes(query);
+                const show = matchesLevel && matchesSearch;
+                card.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+            noResults.classList.toggle('hidden', visibleCount !== 0);
+        }
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'text-white');
+                    b.classList.add('text-textMuted');
+                });
+                btn.classList.add('active');
+                btn.classList.remove('text-textMuted');
+                activeLevel = btn.dataset.level;
+                applyFilters();
+            });
+        });
+
+        searchInput.addEventListener('input', applyFilters);
+    </script>
+</body>
+</html>

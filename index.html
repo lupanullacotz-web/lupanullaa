@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupanulla | Kitovu cha Elimu</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Lupanulla - Jukwaa la kwanza la kidijitali Tanzania linalounganisha mtaala mzima.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts: Inter & Roboto Condensed (for sports-like bold headers) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'], // Fonti nzito kama za michezo/habari
+                    },
+                    colors: {
+                        bgDark: '#f8fafc',      // Light background for a clean portal look
+                        panelLight: '#ffffff',
+                        textMain: '#0f172a',
+                        textMuted: '#64748b',
+                        primaryBlue: '#020617', // Dark navy/black like FIFA's dark elements
+                        accentTeal: '#0891b2',  // Primary brand color
+                        accentRed: '#e11d48'    // For live events/breaking news
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: theme('colors.bgDark');
+            color: theme('colors.textMain');
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Card Hover Effects */
+        .portal-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .portal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .portal-card:hover .card-img-zoom {
+            transform: scale(1.05);
+        }
+        
+        .card-img-zoom {
+            transition: transform 0.5s ease;
+        }
+
+        /* Gradient Overlay for Images */
+        .img-gradient-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+        }
+        
+        /* Video Section Dark Theme */
+        .dark-section {
+            background-color: #0f172a;
+            color: white;
+        }
+
+        /* Floating "Matukio Muhimu" ticker — cards glide continuously from left to right */
+        .ticker-viewport {
+            -webkit-mask-image: linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
+            mask-image: linear-gradient(to right, transparent, black 28px, black calc(100% - 28px), transparent);
+        }
+        .ticker-track {
+            animation: ticker-ltr 26s linear infinite;
+            will-change: transform;
+        }
+        .ticker-track.is-paused {
+            animation-play-state: paused;
+        }
+        /* Goes from -50% to 0% so the duplicated card set slides in from the left edge
+           and exits on the right — i.e. movement reads left -> right (kushoto -> kulia). */
+        @keyframes ticker-ltr {
+            0%   { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ticker-track { animation: none; }
+        }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Top Small Bar (Like FIFA's top thin bar for languages/sponsors) -->
+    <div class="bg-primaryBlue text-white text-xs py-2 px-4 hidden md:block">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1 text-accentTeal font-medium"><i class="ph-fill ph-check-circle"></i> Mtaala wa NECTA Zinasasishwa</span>
+                <span class="text-gray-400">|</span>
+                <a href="dashboard.html" class="hover:text-white transition-colors">Toleo la Shule</a>
+                <a href="walimu-portal.html" class="hover:text-white transition-colors">Kwa Walimu</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-translate"></i> Swahili</a>
+                <a href="auth.html" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-user"></i> Ingia</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-display font-bold text-2xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+                </a>
+
+                <!-- Desktop Menu (Dense, Portal Style) -->
+                <div class="hidden lg:flex space-x-1 items-center font-display font-medium text-lg">
+                    <a href="blogu.html" class="px-4 py-2 text-accentTeal border-b-2 border-accentTeal">Habari</a>
+                    <a href="masomo.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Masomo</a>
+                    <a href="mitihani.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Mitihani (Past Papers)</a>
+                    <!-- TODO: ukurasa wa viwango.html bado haujajengwa -->
+                    <a href="viwango.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Viwango (Rankings)</a>
+                    <a href="videos.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Lupa+ (Video)</a>
+                </div>
+
+                <!-- Search & AI -->
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="search.html" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-textMain hover:bg-gray-200 transition-colors">
+                        <i class="ph ph-magnifying-glass text-xl"></i>
+                    </a>
+                    <a href="fisimaji.html" class="flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium hover:bg-purple-200 transition-colors">
+                        <i class="ph-fill ph-robot"></i> Lupanulla AI
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMain p-2">
+                        <i class="ph ph-list text-3xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (hidden by default, toggled by JS at bottom of page) -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white">
+            <div class="px-4 py-3 space-y-1 font-display font-medium">
+                <a href="blogu.html" class="block px-3 py-2 rounded-md text-accentTeal bg-accentTeal/10">Habari</a>
+                <a href="masomo.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Masomo</a>
+                <a href="mitihani.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Mitihani (Past Papers)</a>
+                <!-- TODO: ukurasa wa viwango.html bado haujajengwa -->
+                <a href="viwango.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Viwango (Rankings)</a>
+                <a href="videos.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Lupa+ (Video)</a>
+                <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-purple-700 flex items-center gap-2"><i class="ph-fill ph-robot"></i> Lupanulla AI</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- "Matukio Muhimu" - Floating, sticky, auto-scrolling events ticker (cards move left -> right) -->
+    <div class="sticky top-20 z-40 py-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white border border-gray-200 rounded-2xl shadow-lg shadow-slate-300/50 py-3 pl-4 pr-2 flex items-center overflow-hidden">
+
+                <div class="flex-shrink-0 mr-4 pr-4 border-r border-gray-300 font-display font-bold text-accentRed flex items-center gap-2 whitespace-nowrap">
+                    <span class="w-2 h-2 rounded-full bg-accentRed animate-pulse"></span>
+                    MATUKIO MUHIMU
+                </div>
+
+                <!-- Auto-scrolling viewport (fades at edges, content glides left -> right) -->
+                <div id="ticker-viewport" class="ticker-viewport flex-grow overflow-hidden">
+                    <div id="ticker-track" class="ticker-track flex items-center gap-4 w-max">
+
+                        <!-- Group A (real content) -->
+                        <div class="flex items-center gap-4">
+                            <a href="mitihani.html" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-textMuted font-medium uppercase">Kidato cha 4 (CSEE)</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">Novemba 4 - 22</span>
+                                </div>
+                                <i class="ph-fill ph-calendar-blank text-gray-400"></i>
+                            </a>
+
+                            <a href="mitihani.html" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-textMuted font-medium uppercase">Darasa la 7 (PSLE)</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">Septemba 11 - 12</span>
+                                </div>
+                                <i class="ph-fill ph-calendar-blank text-gray-400"></i>
+                            </a>
+
+                            <a href="mitihani.html" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-textMuted font-medium uppercase">Kidato cha 2 (FTNA)</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">Oktoba 28 - Nov 8</span>
+                                </div>
+                                <i class="ph-fill ph-calendar-blank text-gray-400"></i>
+                            </a>
+
+                            <a href="mitihani.html" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-accentRed font-medium uppercase">Matokeo Mapya</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">A-Level (ACSEE) 2023</span>
+                                </div>
+                                <i class="ph-fill ph-arrow-circle-right text-accentRed"></i>
+                            </a>
+                        </div>
+
+                        <!-- Group B (exact duplicate so the loop is seamless; hidden from screen readers) -->
+                        <div class="flex items-center gap-4" aria-hidden="true">
+                            <a href="mitihani.html" tabindex="-1" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-textMuted font-medium uppercase">Kidato cha 4 (CSEE)</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">Novemba 4 - 22</span>
+                                </div>
+                                <i class="ph-fill ph-calendar-blank text-gray-400"></i>
+                            </a>
+
+                            <a href="mitihani.html" tabindex="-1" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-textMuted font-medium uppercase">Darasa la 7 (PSLE)</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">Septemba 11 - 12</span>
+                                </div>
+                                <i class="ph-fill ph-calendar-blank text-gray-400"></i>
+                            </a>
+
+                            <a href="mitihani.html" tabindex="-1" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-textMuted font-medium uppercase">Kidato cha 2 (FTNA)</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">Oktoba 28 - Nov 8</span>
+                                </div>
+                                <i class="ph-fill ph-calendar-blank text-gray-400"></i>
+                            </a>
+
+                            <a href="mitihani.html" tabindex="-1" class="flex-shrink-0 flex items-center gap-3 bg-gray-50 border border-gray-200 px-4 py-2 rounded-lg hover:border-accentTeal transition-colors group whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-accentRed font-medium uppercase">Matokeo Mapya</span>
+                                    <span class="text-sm font-bold text-primaryBlue group-hover:text-accentTeal">A-Level (ACSEE) 2023</span>
+                                </div>
+                                <i class="ph-fill ph-arrow-circle-right text-accentRed"></i>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="flex-shrink-0 ml-2 hidden md:block">
+                    <button id="ticker-toggle" type="button" aria-label="Simamisha au endeleza kutembea kwa matukio" class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors">
+                        <i class="ph ph-pause" id="ticker-toggle-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Top Section: Hero Article + Sidebar Rankings -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+            
+            <!-- Main Hero Article (Col span 2) -->
+            <div class="lg:col-span-2 relative rounded-2xl overflow-hidden shadow-lg group cursor-pointer" style="min-height: 450px;">
+                <!-- Background Image Placeholder (Uses placehold.co for demo) -->
+                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop" alt="Students studying" class="absolute inset-0 w-full h-full object-cover card-img-zoom">
+                
+                <!-- Gradient Overlay -->
+                <div class="absolute inset-0 img-gradient-overlay"></div>
+                
+                <!-- Content positioned at the bottom -->
+                <div class="absolute bottom-0 left-0 w-full p-6 sm:p-8 flex flex-col justify-end">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="bg-accentRed text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">Mtanange wa NECTA</span>
+                        <span class="text-gray-300 text-sm"><i class="ph ph-clock"></i> Saa 2 zilizopita</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white leading-tight mb-4 group-hover:text-gray-200 transition-colors">
+                        Maandalizi ya Mitihani ya Taifa: Mbinu 5 za Kufaulu kwa Alama za Juu
+                    </h1>
+                    <p class="text-gray-300 text-lg hidden sm:block max-w-2xl mb-6">
+                        Wataalamu wa elimu na walimu wazoefu wanashiriki siri za jinsi ya kupangilia muda wako na kujibu maswali ya mitihani ya NECTA kwa ufasaha.
+                    </p>
+                    <div>
+                        <span class="inline-flex items-center justify-center bg-white text-primaryBlue font-bold px-6 py-3 rounded-full hover:bg-gray-100 transition-colors">
+                            Soma Makala <i class="ph-bold ph-arrow-right ml-2"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar: Rankings / Standings -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-display font-bold text-2xl text-primaryBlue uppercase">Viwango NECTA</h2>
+                    <a href="viwango.html" class="text-accentTeal text-sm font-medium hover:underline">Ona Zote</a>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex space-x-2 border-b border-gray-200 mb-4 pb-2">
+                    <button class="px-3 py-1 font-medium text-accentTeal border-b-2 border-accentTeal">Shule (CSEE)</button>
+                    <button class="px-3 py-1 font-medium text-textMuted hover:text-primaryBlue transition-colors">Mikoa</button>
+                    <button class="px-3 py-1 font-medium text-textMuted hover:text-primaryBlue transition-colors">ACSEE</button>
+                </div>
+
+                <!-- Ranking List -->
+                <div class="flex-grow flex flex-col gap-3">
+                    <!-- Rank 1 -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100 hover:border-accentTeal transition-colors cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <span class="font-display font-bold text-xl w-6 text-center">1</span>
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">KF</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-primaryBlue">Kemebos</h4>
+                                <p class="text-xs text-textMuted">Kagera</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-green-600 font-medium text-sm">
+                            <i class="ph-bold ph-trend-up"></i>
+                        </div>
+                    </div>
+
+                    <!-- Rank 2 -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100 hover:border-accentTeal transition-colors cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <span class="font-display font-bold text-xl w-6 text-center">2</span>
+                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-xs">ST</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-primaryBlue">St. Francis</h4>
+                                <p class="text-xs text-textMuted">Mbeya</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-gray-400 font-medium text-sm">
+                            <i class="ph-bold ph-minus"></i>
+                        </div>
+                    </div>
+
+                    <!-- Rank 3 -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100 hover:border-accentTeal transition-colors cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <span class="font-display font-bold text-xl w-6 text-center">3</span>
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-700 font-bold text-xs">WM</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-primaryBlue">Waja Springs</h4>
+                                <p class="text-xs text-textMuted">Geita</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-green-600 font-medium text-sm">
+                            <i class="ph-bold ph-trend-up"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Rank 4 -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100 hover:border-accentTeal transition-colors cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <span class="font-display font-bold text-xl w-6 text-center text-gray-500">4</span>
+                            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold text-xs">MR</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-primaryBlue">Marian Boys</h4>
+                                <p class="text-xs text-textMuted">Pwani</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-red-500 font-medium text-sm">
+                            <i class="ph-bold ph-trend-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Rank 5 -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100 hover:border-accentTeal transition-colors cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <span class="font-display font-bold text-xl w-6 text-center text-gray-500">5</span>
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs">FT</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-primaryBlue">Feza Boys</h4>
+                                <p class="text-xs text-textMuted">Dar es Salaam</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 text-gray-400 font-medium text-sm">
+                            <i class="ph-bold ph-minus"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="mt-4 w-full block text-center py-3 bg-gray-100 hover:bg-gray-200 text-primaryBlue font-bold rounded-lg transition-colors">
+                    Orodha Kamili
+                </a>
+            </div>
+        </div>
+
+        <!-- Latest News & Resources Grid -->
+        <div class="mb-8">
+            <h2 class="font-display font-bold text-3xl text-primaryBlue uppercase border-b-4 border-accentTeal inline-block mb-6 pb-1">Habari & Zana Mpya</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1 -->
+                <a href="masomo.html" class="portal-card bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 flex flex-col group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop" alt="Books" class="w-full h-full object-cover card-img-zoom">
+                        <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">NOTISI</div>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col">
+                        <span class="text-xs text-gray-500 mb-2">Kidato cha 3 • Physics</span>
+                        <h3 class="font-bold text-lg text-primaryBlue leading-tight mb-3 group-hover:text-accentTeal transition-colors">Notisi Zote za Physics Kidato cha 3 Zimeongezwa</h3>
+                        <p class="text-sm text-textMuted flex-grow line-clamp-2">Pata notisi zilizopangwa vizuri zikifuata mtaala mpya wa NECTA kukurahisishia usomaji.</p>
+                        <span class="mt-4 text-accentTeal font-medium text-sm flex items-center">Pakua Sasa <i class="ph-bold ph-arrow-right ml-1"></i></span>
+                    </div>
+                </a>
+
+                <!-- Card 2 -->
+                <a href="fisimaji.html" class="portal-card bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 flex flex-col group">
+                    <div class="h-48 overflow-hidden relative">
+                        <div class="w-full h-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center card-img-zoom">
+                            <i class="ph-fill ph-robot text-6xl text-white opacity-80"></i>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded">AI TOOLS</div>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col">
+                        <span class="text-xs text-gray-500 mb-2">Teknolojia Mpya</span>
+                        <h3 class="font-bold text-lg text-primaryBlue leading-tight mb-3 group-hover:text-purple-600 transition-colors">Jinsi Lupanulla AI Inavyoweza Kukusaidia Kutatua Hesabu</h3>
+                        <p class="text-sm text-textMuted flex-grow line-clamp-2">Gundua jinsi msaidizi wetu wa kidijitali anavyotoa maelezo hatua kwa hatua kwenye maswali magumu.</p>
+                        <span class="mt-4 text-purple-600 font-medium text-sm flex items-center">Soma Zaidi <i class="ph-bold ph-arrow-right ml-1"></i></span>
+                    </div>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="mitihani.html" class="portal-card bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 flex flex-col group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?q=80&w=2070&auto=format&fit=crop" alt="Exams" class="w-full h-full object-cover card-img-zoom">
+                        <div class="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">MITIHANI</div>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col">
+                        <span class="text-xs text-gray-500 mb-2">Past Papers • O-Level</span>
+                        <h3 class="font-bold text-lg text-primaryBlue leading-tight mb-3 group-hover:text-orange-500 transition-colors">Mitihani ya Mock 2023 Mikoa Yote Ipo Hapa</h3>
+                        <p class="text-sm text-textMuted flex-grow line-clamp-2">Jipime uwezo wako kwa kufanya mitihani ya majaribio kutoka mikoa mbalimbali Tanzania.</p>
+                        <span class="mt-4 text-orange-500 font-medium text-sm flex items-center">Anza Mazoezi <i class="ph-bold ph-arrow-right ml-1"></i></span>
+                    </div>
+                </a>
+
+                <!-- Card 4 (List-style card for updates) -->
+                <div class="bg-gray-100 rounded-xl overflow-hidden shadow-inner border border-gray-200 p-5 flex flex-col">
+                    <h3 class="font-display font-bold text-xl text-primaryBlue mb-4 flex items-center gap-2">
+                        <i class="ph-fill ph-bell-ringing text-accentTeal"></i> Matangazo
+                    </h3>
+                    <ul class="space-y-4 flex-grow">
+                        <li class="border-b border-gray-200 pb-3">
+                            <a href="matangazo.html" class="group">
+                                <span class="text-xs text-textMuted block mb-1">Leo</span>
+                                <span class="text-sm font-medium text-primaryBlue group-hover:text-accentTeal transition-colors line-clamp-2">Nafasi za kujiunga na kidato cha tano kwa shule za serikali zimetangazwa.</span>
+                            </a>
+                        </li>
+                        <li class="border-b border-gray-200 pb-3">
+                            <a href="matangazo.html" class="group">
+                                <span class="text-xs text-textMuted block mb-1">Jana</span>
+                                <span class="text-sm font-medium text-primaryBlue group-hover:text-accentTeal transition-colors line-clamp-2">HESLB yafungua dirisha la maombi ya mikopo kwa mwaka 2024/2025.</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="matangazo.html" class="group">
+                                <span class="text-xs text-textMuted block mb-1">Siku 3 zilizopita</span>
+                                <span class="text-sm font-medium text-primaryBlue group-hover:text-accentTeal transition-colors line-clamp-2">Mabadiliko katika muundo wa mtihani wa Civics kidato cha nne.</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <a href="matangazo.html" class="mt-4 text-center text-sm font-bold text-accentTeal hover:text-primaryBlue transition-colors w-full border border-accentTeal rounded-lg py-2">
+                        Ona Yote
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Lupa+ (Video Content Section - Dark Theme) -->
+    <section class="dark-section py-16 border-t-4 border-accentRed">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <img src="https://placehold.co/100x40/020617/00f0ff?text=LUPA+" alt="Lupa Plus Logo" class="h-8 mb-2 rounded border border-gray-700">
+                    <h2 class="font-display font-bold text-3xl uppercase">Jifunze kwa Vitendo</h2>
+                    <p class="text-gray-400 mt-1">Video za mafunzo zinazoelezea mada ngumu kwa ufasaha.</p>
+                </div>
+                <a href="videos.html" class="hidden sm:flex items-center gap-2 font-bold hover:text-accentTeal transition-colors bg-white/10 px-4 py-2 rounded-full">
+                    Maktaba ya Video <i class="ph-bold ph-caret-right"></i>
+                </a>
+            </div>
+
+            <!-- Horizontal Video Scroll -->
+            <div class="flex overflow-x-auto hide-scrollbar gap-6 pb-6 snap-x">
+                
+                <!-- Video Item -->
+                <div class="flex-shrink-0 w-80 snap-start group cursor-pointer">
+                    <div class="relative w-full h-48 rounded-xl overflow-hidden mb-3">
+                        <img src="https://images.unsplash.com/photo-1628126235206-5260b9ea6441?q=80&w=2070&auto=format&fit=crop" alt="Biology" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                        <div class="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                            <div class="w-14 h-14 bg-accentRed rounded-full flex items-center justify-center">
+                                <i class="ph-fill ph-play text-white text-2xl ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">12:45</div>
+                    </div>
+                    <span class="text-accentTeal text-xs font-bold uppercase tracking-wider block mb-1">Biology • O-Level</span>
+                    <h3 class="font-bold text-lg leading-tight group-hover:text-accentTeal transition-colors">Muundo wa Seli ya Mimea (Plant Cell Structure)</h3>
+                </div>
+
+                <!-- Video Item -->
+                <div class="flex-shrink-0 w-80 snap-start group cursor-pointer">
+                    <div class="relative w-full h-48 rounded-xl overflow-hidden mb-3">
+                        <div class="w-full h-full bg-blue-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                           <i class="ph ph-math-operations text-7xl text-white/30"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                        <div class="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                            <div class="w-14 h-14 bg-accentRed rounded-full flex items-center justify-center">
+                                <i class="ph-fill ph-play text-white text-2xl ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">24:10</div>
+                    </div>
+                    <span class="text-accentTeal text-xs font-bold uppercase tracking-wider block mb-1">Mathematics • A-Level</span>
+                    <h3 class="font-bold text-lg leading-tight group-hover:text-accentTeal transition-colors">Integration by Parts (Hatua kwa Hatua)</h3>
+                </div>
+
+                <!-- Video Item -->
+                <div class="flex-shrink-0 w-80 snap-start group cursor-pointer">
+                    <div class="relative w-full h-48 rounded-xl overflow-hidden mb-3">
+                        <img src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?q=80&w=2069&auto=format&fit=crop" alt="Chemistry" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                        <div class="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                            <div class="w-14 h-14 bg-accentRed rounded-full flex items-center justify-center">
+                                <i class="ph-fill ph-play text-white text-2xl ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">08:30</div>
+                    </div>
+                    <span class="text-accentTeal text-xs font-bold uppercase tracking-wider block mb-1">Chemistry • O-Level</span>
+                    <h3 class="font-bold text-lg leading-tight group-hover:text-accentTeal transition-colors">Volumetric Analysis (Titration Practical)</h3>
+                </div>
+
+                <!-- Video Item -->
+                <div class="flex-shrink-0 w-80 snap-start group cursor-pointer">
+                    <div class="relative w-full h-48 rounded-xl overflow-hidden mb-3">
+                        <img src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?q=80&w=1974&auto=format&fit=crop" alt="Geography" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                        <div class="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                            <div class="w-14 h-14 bg-accentRed rounded-full flex items-center justify-center">
+                                <i class="ph-fill ph-play text-white text-2xl ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs font-medium text-white">15:05</div>
+                    </div>
+                    <span class="text-accentTeal text-xs font-bold uppercase tracking-wider block mb-1">Geography • Msingi</span>
+                    <h3 class="font-bold text-lg leading-tight group-hover:text-accentTeal transition-colors">Mfumo wa Jua na Sayari Zake (Solar System)</h3>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primaryBlue text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <a href="index.html" class="flex items-center gap-2 mb-6">
+                        <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                        <span class="font-display font-bold text-2xl tracking-tight text-white uppercase">Lupanulla</span>
+                    </a>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                        Lango lako kuu la raslimali za elimu, habari, na miongozo ya kitaaluma kwa wanafunzi, walimu, na wazazi nchini Tanzania.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 transition-colors"><i class="ph-fill ph-youtube-logo text-xl"></i></a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Chunguza</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="masomo.html" class="hover:text-white transition-colors">Masomo Yote</a></li>
+                        <li><a href="mitihani.html" class="hover:text-white transition-colors">Maktaba ya Mitihani</a></li>
+                        <li><a href="viwango.html" class="hover:text-white transition-colors">Viwango vya Shule</a></li>
+                        <li><a href="videos.html" class="hover:text-white transition-colors">Lupa+ Video</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Kalenda ya Elimu</a></li>
+                    </ul>
+                </div>
+
+                <!-- Tools -->
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Zana & Huduma</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="fisimaji.html" class="hover:text-accentTeal text-accentTeal transition-colors flex items-center gap-1"><i class="ph-fill ph-robot"></i> Lupanulla AI</a></li>
+                        <li><a href="calculator.html" class="hover:text-white transition-colors">Kikokotoo cha Ufaulu</a></li>
+                        <li><a href="vyuo.html" class="hover:text-white transition-colors">Taarifa za Vyuo (TCU/NACTE)</a></li>
+                        <li><a href="https://www.heslb.go.tz" target="_blank" rel="noopener" class="hover:text-white transition-colors">Bodi ya Mikopo (HESLB)</a></li>
+                    </ul>
+                </div>
+
+                <!-- Mobile App -->
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Pata App Yetu</h4>
+                    <p class="text-gray-400 text-sm mb-4">Jifunze popote, muda wowote kupitia simu yako ya mkononi.</p>
+                    <div class="flex flex-col gap-3">
+                        <a href="#" class="bg-black border border-gray-700 rounded-lg px-4 py-2 flex items-center gap-3 hover:border-gray-500 transition-colors">
+                            <i class="ph-fill ph-google-play-logo text-2xl text-green-400"></i>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] text-gray-400 leading-none">PAKUA KUTOKA</span>
+                                <span class="text-sm font-bold leading-tight">Google Play</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <p>&copy; 2024 Lupanulla Elimu Hub. Haki zote zimehifadhiwa.</p>
+                <div class="flex gap-4">
+                    <a href="terms.html" class="hover:text-white">Vigezo na Masharti</a>
+                    <a href="privacy.html" class="hover:text-white">Sera ya Faragha</a>
+                    <a href="mailto:lupanulla.co.tz@gmail.com" class="hover:text-white">Wasiliana Nasi</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('ph-x');
+                menuIcon.classList.add('ph-list');
+            } else {
+                menuIcon.classList.remove('ph-list');
+                menuIcon.classList.add('ph-x');
+            }
+        });
+
+        // "Matukio Muhimu" floating ticker: pause on hover/touch, plus a manual toggle button
+        const tickerTrack = document.getElementById('ticker-track');
+        const tickerViewport = document.getElementById('ticker-viewport');
+        const tickerToggle = document.getElementById('ticker-toggle');
+        const tickerToggleIcon = document.getElementById('ticker-toggle-icon');
+        let tickerManuallyPaused = false;
+
+        if (tickerTrack && tickerViewport) {
+            tickerViewport.addEventListener('mouseenter', () => tickerTrack.classList.add('is-paused'));
+            tickerViewport.addEventListener('mouseleave', () => {
+                if (!tickerManuallyPaused) tickerTrack.classList.remove('is-paused');
+            });
+            tickerViewport.addEventListener('touchstart', () => tickerTrack.classList.add('is-paused'), { passive: true });
+        }
+
+        if (tickerToggle && tickerTrack && tickerToggleIcon) {
+            tickerToggle.addEventListener('click', () => {
+                tickerManuallyPaused = !tickerManuallyPaused;
+                tickerTrack.classList.toggle('is-paused', tickerManuallyPaused);
+                tickerToggleIcon.classList.toggle('ph-pause', !tickerManuallyPaused);
+                tickerToggleIcon.classList.toggle('ph-play', tickerManuallyPaused);
+            });
+        }
+    </script>
+</body>
+</html>

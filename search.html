@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tafuta | Lupanulla</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+                    colors: { bgDark: '#f8fafc', panelLight: '#ffffff', textMain: '#0f172a', textMuted: '#64748b', primaryBlue: '#020617', accentTeal: '#0891b2', accentRed: '#e11d48' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased font-sans bg-bgDark min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="flex items-center gap-2">
+                    <img src="https://placehold.co/100x100/0891b2/ffffff?text=L" alt="Logo" class="w-10 h-10 rounded-lg object-cover">
+                    <span class="font-display font-bold text-2xl text-primaryBlue uppercase">Lupanulla</span>
+                </a>
+                <div class="hidden lg:flex space-x-1 font-display font-medium text-lg">
+                    <a href="index.html" class="px-4 py-2 text-textMain hover:text-accentTeal">Mwanzo</a>
+                    <a href="masomo.html" class="px-4 py-2 text-textMain hover:text-accentTeal">Masomo</a>
+                    <a href="mitihani.html" class="px-4 py-2 text-textMain hover:text-accentTeal">Mitihani</a>
+                    <a href="fisimaji.html" class="px-4 py-2 text-purple-600 flex items-center gap-1"><i class="ph-fill ph-robot"></i> AI</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl mx-auto w-full px-4 sm:px-6 py-10">
+        
+        <!-- Search Header -->
+        <div class="text-center mb-10">
+            <h1 class="font-display font-bold text-3xl md:text-4xl text-primaryBlue mb-6">Unatafuta Nini?</h1>
+            
+            <div class="relative max-w-2xl mx-auto">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="ph ph-magnifying-glass text-2xl text-gray-400"></i>
+                </div>
+                <input type="text" class="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-accentTeal focus:border-transparent transition-all" placeholder="Tafuta notisi, mitihani (past papers), video..." autofocus>
+                <button class="absolute inset-y-2 right-2 bg-accentTeal hover:bg-cyan-700 text-white font-bold px-6 rounded-xl transition-colors">
+                    Tafuta
+                </button>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap justify-center gap-2 mt-6">
+                <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-primaryBlue text-white">Zote</button>
+                <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-300 text-textMain hover:bg-gray-50">Notisi & Masomo</button>
+                <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-300 text-textMain hover:bg-gray-50">Mitihani (Past Papers)</button>
+                <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-white border border-gray-300 text-textMain hover:bg-gray-50">Lupa+ (Video)</button>
+            </div>
+        </div>
+
+        <!-- Search Results (Kielelezo) -->
+        <div class="space-y-4">
+            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4 border-b border-gray-200 pb-2">Matokeo (4)</h3>
+            
+            <!-- Result 1 -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-4 hover:border-accentTeal transition-colors group cursor-pointer">
+                <div class="w-16 h-16 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 text-blue-600">
+                    <i class="ph-fill ph-book-open text-3xl"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-accentTeal uppercase">Notisi • Physics Kidato cha 3</span>
+                    <h4 class="font-bold text-lg text-primaryBlue group-hover:text-accentTeal transition-colors">Friction (Msuguano)</h4>
+                    <p class="text-sm text-textMuted mt-1 line-clamp-1">Kuelewa maana ya msuguano, aina zake (Static & Dynamic), na jinsi ya kufanya mahesabu.</p>
+                </div>
+            </div>
+
+            <!-- Result 2 -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-4 hover:border-orange-500 transition-colors group cursor-pointer">
+                <div class="w-16 h-16 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0 text-orange-600">
+                    <i class="ph-fill ph-exam text-3xl"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-orange-500 uppercase">Mtihani • NECTA CSEE</span>
+                    <h4 class="font-bold text-lg text-primaryBlue group-hover:text-orange-500 transition-colors">Biology Past Paper 2022</h4>
+                    <p class="text-sm text-textMuted mt-1 line-clamp-1">Mtihani wa Taifa Biology 2022 pamoja na majibu yake (Marking Scheme).</p>
+                </div>
+            </div>
+
+             <!-- Result 3 -->
+             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-4 hover:border-red-500 transition-colors group cursor-pointer">
+                <div class="w-24 h-16 rounded-lg bg-red-900 overflow-hidden relative flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1628126235206-5260b9ea6441?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-70">
+                    <div class="absolute inset-0 flex items-center justify-center"><i class="ph-fill ph-play text-white text-2xl"></i></div>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-red-500 uppercase">Video • Lupa+</span>
+                    <h4 class="font-bold text-lg text-primaryBlue group-hover:text-red-500 transition-colors">Jinsi ya Kusolve Quadratic Equations</h4>
+                    <p class="text-sm text-textMuted mt-1 line-clamp-1">Mafunzo ya video kwa vitendo hatua kwa hatua.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Mfupi -->
+    <footer class="bg-primaryBlue text-white py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-400">
+            &copy; 2024 Lupanulla Elimu Hub. Haki zote zimehifadhiwa.
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masomo Yote | Lupanulla</title>
+
+    <!-- Meta tags -->
+    <meta name="description" content="Chagua darasa lako na anza kujifunza masomo yote ya mtaala wa Tanzania bure.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- jsPDF (for generating downloadable notes) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], },
+                    colors: {
+                        bgDark: '#0a0a0f', panelDark: '#12121a', borderDark: '#2a2a35',
+                        neonTeal: '#00f0ff', neonPurple: '#b026ff', textMain: '#e2e8f0', textMuted: '#94a3b8'
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: theme('colors.bgDark'); color: theme('colors.textMain'); }
+        .glass-nav { background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-card { background: rgba(18, 18, 26, 0.6); backdrop-filter: blur(12px); border: 1px solid theme('colors.borderDark'); transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: theme('colors.bgDark'); }
+        ::-webkit-scrollbar-thumb { background: theme('colors.borderDark'); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: theme('colors.textMuted'); }
+
+        /* Accordion */
+        .accordion-item:hover { border-color: rgba(0, 240, 255, 0.25); }
+        .accordion-header { cursor: pointer; }
+        .chevron-icon, .chevron-icon-sm { transition: transform 0.25s ease; }
+        .chevron-icon.rotate-180, .chevron-icon-sm.rotate-180 { transform: rotate(180deg); }
+
+        /* Subject chip */
+        .subject-chip { background: rgba(255, 255, 255, 0.03); border: 1px solid theme('colors.borderDark'); cursor: pointer; transition: all 0.2s ease; width: 100%; }
+        .subject-chip:hover { border-color: theme('colors.neonTeal'); background: rgba(0, 240, 255, 0.06); transform: translateY(-2px); }
+
+        .combo-row-header { cursor: pointer; }
+        .combo-row:hover { border-color: rgba(176, 38, 255, 0.4); }
+
+        /* Document viewer */
+        #viewer-overlay { animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <nav class="fixed w-full top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <img src="/assets/images/logo.png" alt="" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-bold text-xl tracking-wider text-white">LUPANULLA</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-2 items-center">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Nyumbani</a>
+                    <a href="masomo.html" class="px-3 py-2 rounded-md text-sm font-medium text-neonTeal bg-neonTeal/10">Masomo</a>
+                    <a href="mitihani.html" class="px-3 py-2 rounded-md text-sm font-medium text-textMuted hover:text-white transition-colors">Mitihani</a>
+                    <a href="fisimaji.html" class="px-3 py-2 rounded-md text-sm font-medium text-neonPurple hover:bg-white/5 transition-colors flex items-center gap-1">
+                        <i class="ph-fill ph-robot"></i> Fisi Maji AI
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMuted hover:text-white p-2">
+                        <i class="ph ph-list text-2xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden bg-panelDark border-b border-borderDark absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Nyumbani</a>
+                <a href="masomo.html" class="block px-3 py-2 rounded-md text-base font-medium text-neonTeal bg-neonTeal/10">Masomo Yote</a>
+                <a href="mitihani.html" class="block px-3 py-2 rounded-md text-base font-medium text-textMuted hover:text-white">Mitihani</a>
+                <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-base font-medium text-neonPurple hover:bg-white/5 flex items-center gap-2"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen">
+
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Gundua <span class="text-neonTeal">Masomo</span></h1>
+            <p class="text-lg text-textMuted mb-8">Chagua ngazi yako ya elimu, fungua somo, soma notes papo hapo kisha pakua PDF bure — kama vile Scribd.</p>
+
+            <!-- Utafutaji (Search) -->
+            <div class="relative max-w-xl mx-auto">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-textMuted text-xl"></i>
+                <input id="search-input" type="text" placeholder="Tafuta somo, mfano: Biology, Hisabati..." class="w-full bg-panelDark border border-borderDark rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-neonTeal focus:ring-1 focus:ring-neonTeal transition-all">
+            </div>
+            <p id="no-results" class="hidden text-sm text-textMuted mt-4">Hakuna somo lililopatikana. Jaribu neno lingine.</p>
+        </div>
+
+        <div class="space-y-16">
+
+            <!-- O-Level -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-8 w-1 bg-neonTeal rounded-full"></div>
+                    <h2 class="text-2xl font-bold text-white">Sekondari (O-Level)</h2>
+                </div>
+                <div id="o-level-list" class="space-y-3"></div>
+            </div>
+
+            <!-- A-Level -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-8 w-1 bg-neonPurple rounded-full"></div>
+                    <h2 class="text-2xl font-bold text-white">Sekondari (A-Level)</h2>
+                </div>
+                <div id="a-level-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Primary -->
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-8 w-1 bg-green-500 rounded-full"></div>
+                    <h2 class="text-2xl font-bold text-white">Shule ya Msingi</h2>
+                </div>
+                <div id="primary-list" class="space-y-3"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Document Viewer (Scribd-style) -->
+    <div id="viewer-overlay" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="viewer-backdrop" class="absolute inset-0"></div>
+        <div class="relative w-full max-w-2xl max-h-[88vh] bg-panelDark border border-borderDark rounded-2xl flex flex-col overflow-hidden shadow-2xl">
+            <!-- Header -->
+            <div class="flex items-start justify-between gap-4 p-5 border-b border-borderDark flex-shrink-0">
+                <div class="min-w-0">
+                    <h3 id="viewer-subject" class="text-xl font-bold text-white truncate"></h3>
+                    <p class="text-sm text-textMuted">Notes za <span id="viewer-grade" class="text-neonTeal"></span></p>
+                </div>
+                <button type="button" data-close-modal class="text-textMuted hover:text-white p-2 -mr-2 -mt-2 flex-shrink-0">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <!-- Stats bar -->
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-1 px-5 py-3 text-xs text-textMuted border-b border-borderDark/60 bg-white/[0.02] flex-shrink-0">
+                <span class="flex items-center gap-1"><i class="ph ph-files"></i> <span id="viewer-pages-count"></span></span>
+                <span class="flex items-center gap-1"><i class="ph ph-download-simple"></i> <span id="viewer-downloads-count"></span></span>
+                <span class="flex items-center gap-1"><i class="ph-fill ph-star text-yellow-400"></i> <span id="viewer-rating"></span></span>
+                <span class="flex items-center gap-1 text-green-400"><i class="ph-fill ph-seal-check"></i> Bure kabisa</span>
+            </div>
+            <!-- Body -->
+            <div id="viewer-body" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+            <!-- Footer -->
+            <div class="p-4 border-t border-borderDark flex items-center justify-between gap-3 bg-white/[0.02] flex-shrink-0">
+                <button type="button" data-close-modal class="px-4 py-2.5 rounded-lg text-sm text-textMuted hover:text-white transition-colors">Funga</button>
+                <button type="button" id="download-btn" data-download-btn class="flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-neonTeal to-neonPurple text-bgDark font-semibold text-sm hover:opacity-90 transition-opacity">
+                    <i class="ph ph-download-simple text-lg"></i> Pakua PDF (Bure)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================== MOBILE MENU =====================
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            if(menu.classList.contains('hidden')) {
+                icon.classList.remove('ph-x'); icon.classList.add('ph-list');
+            } else {
+                icon.classList.remove('ph-list'); icon.classList.add('ph-x');
+            }
+        });
+
+        // ===================== DATA =====================
+        const SUBJECT_ICONS = {
+            'Hisabati': 'ph-function', 'Kiingereza': 'ph-text-aa', 'Kiswahili': 'ph-chats-circle',
+            'Fizikia': 'ph-atom', 'Kemia': 'ph-flask', 'Biolojia': 'ph-leaf',
+            'Jiografia': 'ph-globe-hemisphere-west', 'Historia': 'ph-scroll', 'Uraia': 'ph-bank',
+            'Uhasibu': 'ph-calculator', 'TEHAMA': 'ph-desktop-tower', 'Dini': 'ph-book-bookmark',
+            'Biashara': 'ph-storefront', 'Kilimo': 'ph-plant', 'Uchumi': 'ph-trend-up',
+            'Sayansi na Teknolojia': 'ph-test-tube', 'Maarifa ya Jamii': 'ph-users-three',
+            'Stadi za Kazi': 'ph-hammer', 'Michezo na Sanaa': 'ph-paint-brush'
+        };
+
+        const SUBJECT_TOPICS = {
+            'Hisabati': ['Nambari na Mahesabu ya Msingi','Aljebra na Milinganyo','Jiometri na Maumbo','Uwiano, Asilimia na Riba','Takwimu na Uwezekano','Mazoezi ya Maisha Halisi'],
+            'Kiingereza': ['Grammar Foundations','Reading Comprehension','Composition na Insha','Msamiati na Matumizi ya Maneno','Listening na Speaking Skills','Uchambuzi wa Fasihi'],
+            'Kiswahili': ['Sarufi ya Kiswahili','Ufahamu na Ufasaha','Insha na Uandishi','Fasihi Simulizi','Fasihi Andishi','Methali na Misemo'],
+            'Fizikia': ['Vipimo na Vitengo','Nguvu na Mwendo','Joto na Nishati','Mawimbi na Sauti','Umeme na Sumaku','Mazoezi ya Maabara'],
+            'Kemia': ['Muundo wa Atomu','Jedwali la Mara kwa Mara','Tendo za Kemikali','Asidi, Besi na Chumvi','Kemia ya Kaboni','Usalama wa Maabara'],
+            'Biolojia': ['Seli na Muundo Wake','Mfumo wa Uhai wa Binadamu','Uzazi na Ukuaji','Ikolojia na Mazingira','Jenetiki na Urithi','Uainishaji wa Viumbe'],
+            'Jiografia': ['Dunia na Sayari Zake','Hali ya Hewa na Tabianchi','Maliasili na Matumizi Yake','Idadi ya Watu na Makazi','Ramani na Stadi za Kijiografia','Mazingira na Maendeleo Endelevu'],
+            'Historia': ['Asili ya Binadamu na Jamii za Awali','Biashara ya Utumwa na Ukoloni','Mapambano ya Uhuru Afrika','Uongozi na Tawala za Kiafrika','Tanzania Baada ya Uhuru','Mahusiano ya Kimataifa'],
+            'Uraia': ['Katiba na Utawala Bora','Haki na Wajibu wa Raia','Demokrasia na Uchaguzi','Umoja wa Kitaifa','Taasisi za Serikali','Uraia wa Kimataifa'],
+            'Uhasibu': ['Misingi ya Uhasibu','Daftari la Jumla (Ledger)','Mizania ya Mizani','Taarifa za Fedha','Uhasibu wa Kampuni','Mazoezi ya Vitendo'],
+            'TEHAMA': ['Vifaa vya Kompyuta','Programu za Kompyuta','Uandishi wa Nyaraka','Lahajedwali','Mtandao na Usalama Mtandaoni','Uanzilishi wa Programu'],
+            'Dini': ['Misingi ya Imani','Maadili na Tabia Njema','Historia ya Dini','Ibada na Desturi','Maandiko Matakatifu','Maadili katika Jamii'],
+            'Biashara': ['Misingi ya Biashara','Soko na Ugavi','Aina za Biashara','Fedha na Benki','Uuzaji na Matangazo','Maadili ya Kibiashara'],
+            'Kilimo': ['Aina za Udongo','Mazao ya Chakula na Biashara','Ufugaji wa Mifugo','Zana na Teknolojia ya Kilimo','Uhifadhi wa Mazao','Kilimo Endelevu'],
+            'Uchumi': ['Misingi ya Uchumi','Mahitaji na Ugavi','Soko na Bei','Uchumi wa Taifa','Biashara ya Kimataifa','Sera za Kiuchumi'],
+            'Sayansi na Teknolojia': ['Viumbe Hai na Mazingira','Maada na Mabadiliko Yake','Nishati na Matumizi Yake','Mwili wa Binadamu','Teknolojia Rahisi','Majaribio Madogo ya Sayansi'],
+            'Maarifa ya Jamii': ['Familia na Jamii','Utamaduni wa Mtanzania','Jiografia ya Tanzania','Historia Fupi ya Taifa','Uchumi wa Nyumbani','Uraia Mwema'],
+            'Stadi za Kazi': ['Ufundi wa Mikono','Kilimo cha Bustani','Ushonaji na Ufumaji','Sanaa na Ubunifu','Ujasiriamali wa Awali','Usafi na Mazingira'],
+            'Michezo na Sanaa': ['Michezo ya Kuongoza Mwili','Sanaa za Maonyesho','Muziki na Ngoma','Mchoro na Ufundi','Maadili ya Michezo','Kazi za Vikundi']
+        };
+
+        const O_LEVEL_12 = ['Hisabati','Kiingereza','Kiswahili','Fizikia','Kemia','Biolojia','Jiografia','Historia','Uraia','Uhasibu','TEHAMA','Dini'];
+        const O_LEVEL_14 = O_LEVEL_12.concat(['Biashara', 'Kilimo']);
+
+        const PRIMARY_LOWER = ['Kiswahili','Kiingereza','Hisabati','Maarifa ya Jamii','Dini','Michezo na Sanaa','Stadi za Kazi'];
+        const PRIMARY_UPPER = ['Kiswahili','Kiingereza','Hisabati','Sayansi na Teknolojia','Maarifa ya Jamii','Uraia','Dini','TEHAMA','Michezo na Sanaa','Stadi za Kazi'];
+
+        const COMBO_BANK = [
+            {code:'PCM', subjects:['Fizikia','Kemia','Hisabati']},
+            {code:'PCB', subjects:['Fizikia','Kemia','Biolojia']},
+            {code:'CBG', subjects:['Kemia','Biolojia','Jiografia']},
+            {code:'EGM', subjects:['Uchumi','Jiografia','Hisabati']},
+            {code:'HGL', subjects:['Historia','Jiografia','Kiingereza']},
+            {code:'HGK', subjects:['Historia','Jiografia','Kiswahili']},
+            {code:'ECA', subjects:['Uchumi','Biashara','Uhasibu']},
+            {code:'HKL', subjects:['Historia','Kiswahili','Kiingereza']}
+        ];
+
+        const SECTIONS = [
+            { id:'o-level', accent:'neonTeal', grades:[
+                {name:'Kidato cha 1', subjects:O_LEVEL_12},
+                {name:'Kidato cha 2', subjects:O_LEVEL_12},
+                {name:'Kidato cha 3', subjects:O_LEVEL_14},
+                {name:'Kidato cha 4', subjects:O_LEVEL_14}
+            ]},
+            { id:'a-level', accent:'neonPurple', grades:[
+                {name:'Kidato cha 5', combos:COMBO_BANK},
+                {name:'Kidato cha 6', combos:COMBO_BANK}
+            ]},
+            { id:'primary', accent:'green-500', grades:[
+                {name:'Darasa 1', subjects:PRIMARY_LOWER},
+                {name:'Darasa 2', subjects:PRIMARY_LOWER},
+                {name:'Darasa 3', subjects:PRIMARY_UPPER},
+                {name:'Darasa 4', subjects:PRIMARY_UPPER},
+                {name:'Darasa 5', subjects:PRIMARY_UPPER},
+                {name:'Darasa 6', subjects:PRIMARY_UPPER},
+                {name:'Darasa 7', subjects:PRIMARY_UPPER}
+            ]}
+        ];
+
+        // ===================== HELPERS =====================
+        function hashStr(s) {
+            let h = 0;
+            for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) >>> 0; }
+            return h;
+        }
+        function statsFor(subject, grade) {
+            const h = hashStr(subject + grade);
+            return {
+                pages: 4 + (h % 6),
+                downloads: 600 + (h % 14000),
+                rating: (4.2 + ((h >> 3) % 8) / 10).toFixed(1)
+            };
+        }
+        function formatNumber(n) {
+            return n >= 1000 ? (n / 1000).toFixed(1).replace('.0', '') + 'K' : String(n);
+        }
+
+        // ===================== RENDER =====================
+        function renderSubjectChip(subject) {
+            const icon = SUBJECT_ICONS[subject] || 'ph-book-open';
+            return '<button type="button" class="subject-chip rounded-lg p-3 flex items-center gap-3 text-left" data-search="' + subject.toLowerCase() + '" data-subject="' + subject + '">' +
+                '<span class="w-9 h-9 rounded-md bg-white/5 flex items-center justify-center flex-shrink-0"><i class="ph ' + icon + ' text-lg"></i></span>' +
+                '<span class="min-w-0">' +
+                    '<span class="block text-sm font-medium text-white truncate">' + subject + '</span>' +
+                    '<span class="block text-xs text-textMuted">Bonyeza kusoma</span>' +
+                '</span>' +
+            '</button>';
+        }
+
+        function renderComboRow(combo) {
+            const subjectNames = combo.subjects.join(', ');
+            return '<div class="combo-row rounded-lg border border-borderDark overflow-hidden" data-search="' + (combo.code + ' ' + subjectNames).toLowerCase() + '">' +
+                '<button type="button" class="combo-row-header w-full flex items-center justify-between gap-3 p-3 bg-white/[0.02] text-left">' +
+                    '<span>' +
+                        '<span class="text-sm font-semibold text-white">' + combo.code + '</span>' +
+                        '<span class="block text-xs text-textMuted">' + subjectNames + '</span>' +
+                    '</span>' +
+                    '<i class="ph ph-caret-down chevron-icon-sm text-textMuted"></i>' +
+                '</button>' +
+                '<div class="combo-body hidden p-3 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-2">' +
+                    combo.subjects.map(renderSubjectChip).join('') +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderGradeItem(section, grade) {
+            const isCombos = !!grade.combos;
+            const count = isCombos ? grade.combos.length : grade.subjects.length;
+            const countLabel = isCombos ? ('Michepuo ' + count) : ('Masomo ' + count);
+            const innerHtml = isCombos
+                ? '<div class="space-y-2">' + grade.combos.map(renderComboRow).join('') + '</div>'
+                : '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">' + grade.subjects.map(renderSubjectChip).join('') + '</div>';
+
+            return '<div class="accordion-item glass-card rounded-xl overflow-hidden" data-grade-name="' + grade.name + '">' +
+                '<button type="button" class="accordion-header w-full flex items-center justify-between gap-4 p-5 text-left" aria-expanded="false">' +
+                    '<span class="flex items-center gap-3">' +
+                        '<span class="h-8 w-1 bg-' + section.accent + ' rounded-full inline-block"></span>' +
+                        '<span>' +
+                            '<span class="block text-lg font-semibold text-white">' + grade.name + '</span>' +
+                            '<span class="block text-sm text-textMuted">' + countLabel + '</span>' +
+                        '</span>' +
+                    '</span>' +
+                    '<i class="ph ph-caret-down chevron-icon text-textMuted text-xl flex-shrink-0"></i>' +
+                '</button>' +
+                '<div class="accordion-body hidden px-5 pb-5 pt-1 border-t border-borderDark/60">' + innerHtml + '</div>' +
+            '</div>';
+        }
+
+        function renderSection(section) {
+            const container = document.getElementById(section.id + '-list');
+            container.innerHTML = section.grades.map(g => renderGradeItem(section, g)).join('');
+        }
+
+        function renderAll() { SECTIONS.forEach(renderSection); }
+        document.addEventListener('DOMContentLoaded', renderAll);
+
+        // ===================== ACCORDION TOGGLING =====================
+        function toggleAccordion(item) {
+            const body = item.querySelector('.accordion-body');
+            const chevron = item.querySelector('.accordion-header .chevron-icon');
+            const header = item.querySelector('.accordion-header');
+            const willOpen = body.classList.contains('hidden');
+            body.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+            header.setAttribute('aria-expanded', String(willOpen));
+        }
+        function toggleCombo(row) {
+            const body = row.querySelector('.combo-body');
+            const chevron = row.querySelector('.chevron-icon-sm');
+            body.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // ===================== DOCUMENT VIEWER =====================
+        let currentViewer = null;
+
+        function renderPage(topic, num) {
+            return '<div class="bg-white/[0.03] border border-borderDark rounded-xl p-5">' +
+                '<span class="inline-block text-xs font-mono text-neonTeal bg-neonTeal/10 rounded px-2 py-1 mb-2">Sura ' + num + '</span>' +
+                '<h4 class="text-white font-semibold mb-2">' + topic + '</h4>' +
+                '<p class="text-sm text-textMuted leading-relaxed">Sehemu hii inakupa maelezo ya msingi, mifano halisi, na mazoezi yanayokusaidia kuelewa &quot;' + topic + '&quot; kwa kina, sambamba na mtaala wa NECTA.</p>' +
+                '<p class="mt-3 text-xs text-textMuted/60 text-right">Ukurasa ' + num + '</p>' +
+            '</div>';
+        }
+
+        function openViewer(subject, grade) {
+            const topics = SUBJECT_TOPICS[subject] || ['Utangulizi','Mada Kuu','Mazoezi','Marudio'];
+            const stats = statsFor(subject, grade);
+            currentViewer = { subject, grade, topics, stats };
+
+            document.getElementById('viewer-subject').textContent = subject;
+            document.getElementById('viewer-grade').textContent = grade;
+            document.getElementById('viewer-pages-count').textContent = stats.pages + ' kurasa';
+            document.getElementById('viewer-downloads-count').textContent = formatNumber(stats.downloads) + ' wamepakua';
+            document.getElementById('viewer-rating').textContent = stats.rating;
+
+            const visibleCount = Math.min(2, topics.length);
+            let bodyHtml = '';
+            for (let i = 0; i < visibleCount; i++) { bodyHtml += renderPage(topics[i], i + 1); }
+
+            const lockedTopics = topics.slice(visibleCount);
+            if (lockedTopics.length) {
+                let lockedHtml = '';
+                lockedTopics.forEach((t, i) => { lockedHtml += renderPage(t, visibleCount + i + 1); });
+                bodyHtml += '<div class="relative mt-2">' +
+                    '<div class="space-y-4 blur-sm select-none pointer-events-none opacity-60">' + lockedHtml + '</div>' +
+                    '<div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 bg-gradient-to-b from-transparent via-bgDark/70 to-bgDark/95">' +
+                        '<i class="ph-fill ph-lock-key text-3xl text-neonTeal mb-2"></i>' +
+                        '<p class="text-white font-medium mb-1">Kurasa ' + lockedTopics.length + ' zaidi zimefichwa</p>' +
+                        '<p class="text-sm text-textMuted">Pakua PDF bure ili kuendelea kusoma kurasa zote</p>' +
+                    '</div>' +
+                '</div>';
+            }
+
+            document.getElementById('viewer-body').innerHTML = bodyHtml;
+            document.getElementById('viewer-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeViewer() {
+            document.getElementById('viewer-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
+            currentViewer = null;
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && currentViewer) closeViewer();
+        });
+
+        // ===================== PDF DOWNLOAD =====================
+        function downloadCurrentNotes() {
+            if (!currentViewer) return;
+            const { subject, grade, topics } = currentViewer;
+            const btn = document.getElementById('download-btn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Inatengeneza PDF...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    doc.setFillColor(10, 10, 15);
+                    doc.rect(0, 0, 210, 30, 'F');
+                    doc.setTextColor(0, 240, 255);
+                    doc.setFontSize(20);
+                    doc.text('LUPANULLA', 14, 16);
+                    doc.setFontSize(10);
+                    doc.setTextColor(180, 180, 190);
+                    doc.text('Daftari la Masomo Bure - Mtaala wa Tanzania', 14, 23);
+
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(16);
+                    doc.text(subject + ' - Notes za ' + grade, 14, 42);
+                    doc.setDrawColor(220);
+                    doc.line(14, 46, 196, 46);
+
+                    let y = 56;
+                    topics.forEach((t, i) => {
+                        if (y > 265) { doc.addPage(); y = 20; }
+                        doc.setFontSize(13);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor(20, 20, 20);
+                        doc.text('Sura ' + (i + 1) + ': ' + t, 14, y);
+                        y += 7;
+                        doc.setFont(undefined, 'normal');
+                        doc.setFontSize(10);
+                        doc.setTextColor(90, 90, 90);
+                        const body = 'Sehemu hii inakupa maelezo ya msingi, mifano halisi, na mazoezi yanayokusaidia kuelewa "' + t + '" kwa kina, sambamba na mtaala wa NECTA.';
+                        const lines = doc.splitTextToSize(body, 180);
+                        doc.text(lines, 14, y);
+                        y += lines.length * 5 + 10;
+                    });
+
+                    const pageCount = doc.internal.getNumberOfPages();
+                    for (let p = 1; p <= pageCount; p++) {
+                        doc.setPage(p);
+                        doc.setFontSize(8);
+                        doc.setTextColor(150);
+                        doc.text('Lupanulla - Ukurasa ' + p + ' wa ' + pageCount, 14, 290);
+                    }
+
+                    doc.save((subject + '-' + grade + '-Lupanulla').replace(/\s+/g, '_') + '.pdf');
+                } catch (err) {
+                    console.error(err);
+                    alert('Samahani, kuna hitilafu. Jaribu tena.');
+                } finally {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }
+            }, 350);
+        }
+
+        // ===================== EVENT DELEGATION =====================
+        document.addEventListener('click', (e) => {
+            const accHeader = e.target.closest('.accordion-header');
+            if (accHeader) { toggleAccordion(accHeader.closest('.accordion-item')); return; }
+
+            const comboHeader = e.target.closest('.combo-row-header');
+            if (comboHeader) { toggleCombo(comboHeader.closest('.combo-row')); return; }
+
+            const chip = e.target.closest('.subject-chip');
+            if (chip) {
+                const subject = chip.dataset.subject;
+                const gradeItem = chip.closest('.accordion-item');
+                const gradeName = gradeItem ? gradeItem.dataset.gradeName : '';
+                openViewer(subject, gradeName);
+                return;
+            }
+
+            if (e.target.closest('[data-download-btn]')) { downloadCurrentNotes(); return; }
+            if (e.target.id === 'viewer-backdrop' || e.target.closest('[data-close-modal]')) { closeViewer(); return; }
+        });
+
+        // ===================== SEARCH =====================
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const noResults = document.getElementById('no-results');
+
+            searchInput.addEventListener('input', (e) => {
+                const q = e.target.value.trim().toLowerCase();
+                let totalMatches = 0;
+
+                document.querySelectorAll('.accordion-item').forEach(item => {
+                    const body = item.querySelector('.accordion-body');
+                    const chevron = item.querySelector('.accordion-header .chevron-icon');
+                    const chips = item.querySelectorAll('.accordion-body > div > .subject-chip');
+                    const combos = item.querySelectorAll('.combo-row');
+                    let itemMatch = false;
+
+                    chips.forEach(chip => {
+                        const match = q === '' || chip.dataset.search.includes(q);
+                        chip.style.display = match ? '' : 'none';
+                        if (match && q !== '') itemMatch = true;
+                    });
+
+                    combos.forEach(combo => {
+                        const match = q === '' || combo.dataset.search.includes(q);
+                        combo.style.display = match ? '' : 'none';
+                        if (match && q !== '') itemMatch = true;
+                    });
+
+                    if (q === '') {
+                        body.classList.add('hidden');
+                        chevron.classList.remove('rotate-180');
+                    } else if (itemMatch) {
+                        body.classList.remove('hidden');
+                        chevron.classList.add('rotate-180');
+                        totalMatches++;
+                    } else {
+                        body.classList.add('hidden');
+                        chevron.classList.remove('rotate-180');
+                    }
+                });
+
+                noResults.classList.toggle('hidden', q === '' || totalMatches > 0);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sera ya Faragha | Lupanulla</title>
+    <meta name="description" content="Sera ya Faragha ya jukwaa la elimu la Lupanulla - jinsi tunavyokusanya, kutumia, na kulinda taarifa zako.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+                    colors: {
+                        bgLight: '#f8fafc', panelLight: '#ffffff', textMain: '#0f172a', textMuted: '#64748b',
+                        primaryBlue: '#020617', accentTeal: '#0891b2', accentRed: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: theme('colors.bgLight'); color: theme('colors.textMain'); }
+        .legal h2 { font-family: 'Oswald', sans-serif; font-weight: 600; color: theme('colors.primaryBlue'); margin-top: 2rem; margin-bottom: 0.75rem; font-size: 1.35rem; }
+        .legal p, .legal li { color: theme('colors.textMain'); margin-bottom: 0.75rem; line-height: 1.7; }
+        .legal ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Nav rahisi -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="/assets/images/logo.png" alt="" class="w-9 h-9 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                <span class="font-display font-bold text-xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+            </a>
+            <a href="index.html" class="text-sm font-medium text-textMuted hover:text-accentTeal flex items-center gap-1">
+                <i class="ph ph-arrow-left"></i> Rudi Nyumbani
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+        <span class="text-accentTeal text-sm font-bold uppercase tracking-wider">Lupanulla Education &amp; Health Foundation</span>
+        <h1 class="font-display font-bold text-3xl sm:text-4xl text-primaryBlue mt-2 mb-2">Sera ya Faragha</h1>
+        <p class="text-textMuted text-sm mb-8">Ilisasishwa: Juni 2026</p>
+
+        <div class="legal">
+            <p>Lupanulla ("sisi", "yetu") ni jukwaa la elimu la kidijitali la <strong>Lupanulla Education &amp; Health Foundation</strong> linalotoa huduma za kujifunzia kwa wanafunzi, walimu, na wazazi nchini Tanzania kupitia tovuti hii (lupanulla.co.tz). Sera hii inaeleza jinsi tunavyokusanya, kutumia, na kulinda taarifa zako unapotumia huduma zetu.</p>
+
+            <h2>1. Taarifa Tunazokusanya</h2>
+            <ul>
+                <li>Taarifa za usajili: jina, barua pepe, namba ya simu (hasa kwa walimu wanapojisajili kwenye Teacher Portal).</li>
+                <li>Taarifa za uthibitisho wa akaunti (Firebase Authentication) - ikiwemo barua pepe/nenosiri, Google Sign-In, au uthibitisho wa namba ya simu (OTP).</li>
+                <li>Taarifa za matumizi: kurasa unazotembelea, maudhui unayopakua (notisi, mitihani ya zamani, video), na takwimu za jumla za matumizi ya tovuti.</li>
+                <li>Taarifa za kifaa: aina ya kivinjari, mfumo wa uendeshaji, na anuani ya IP kwa madhumuni ya usalama na uchambuzi.</li>
+            </ul>
+
+            <h2>2. Jinsi Tunavyotumia Taarifa Zako</h2>
+            <ul>
+                <li>Kukuruhusu kuingia kwenye akaunti yako na kufikia maudhui ya kujifunzia kulingana na ngazi yako ya elimu.</li>
+                <li>Kuboresha jukwaa - kwa mfano kuongeza masomo, video, au mitihani inayohitajika zaidi.</li>
+                <li>Kuwasiliana nawe kuhusu masuala ya akaunti yako au matangazo muhimu ya kielimu.</li>
+                <li>Kuzuia matumizi mabaya ya mfumo na kulinda usalama wa watumiaji wengine.</li>
+            </ul>
+
+            <h2>3. Huduma za Wahusika Wengine</h2>
+            <p>Tunatumia huduma za <strong>Google Firebase</strong> (Authentication, Firestore Database, na Storage) kuhifadhi na kulinda taarifa za akaunti na maudhui ya jukwaa. Huduma hizi zina sera zao za faragha zinazosimamia jinsi data inavyohifadhiwa kiufundi. Hatuuzi wala kukodisha taarifa zako binafsi kwa makampuni ya tatu kwa madhumuni ya matangazo.</p>
+
+            <h2>4. Faragha ya Wanafunzi Wadogo</h2>
+            <p>Sehemu kubwa ya watumiaji wa Lupanulla ni wanafunzi wa shule za msingi na sekondari, ambao wengi wao ni watoto chini ya miaka 18. Hatukusanyi taarifa zaidi ya zinazohitajika kutoa huduma ya elimu, hatutumii data za wanafunzi kwa matangazo yaliyolengwa, na tunahimiza wazazi/walezi na walimu kusimamia matumizi ya akaunti za wanafunzi wadogo. Tunaomba mzazi/mlezi awasiliane nasi ikiwa anaona taarifa za mtoto wake zimewekwa bila ridhaa sahihi.</p>
+
+            <h2>5. Vidakuzi (Cookies)</h2>
+            <p>Tovuti hutumia vidakuzi vidogo kuhifadhi mapendeleo yako (mfano: lugha, hali ya kuingia kwenye akaunti) na kuboresha uzoefu wako wa kutumia jukwaa. Unaweza kuzima vidakuzi kupitia mipangilio ya kivinjari chako, ingawa baadhi ya huduma zinaweza kutofanya kazi vizuri.</p>
+
+            <h2>6. Usalama wa Taarifa</h2>
+            <p>Tunatumia hatua za kiufundi (kama usimbaji wa nenosiri na sheria za usalama za Firebase) kulinda taarifa zako. Hata hivyo, hakuna mfumo wa kidijitali ulio salama kwa asilimia mia moja, na tunashauri usishiriki nenosiri lako na mtu mwingine.</p>
+
+            <h2>7. Haki Zako</h2>
+            <p>Una haki ya kuona, kusahihisha, au kuomba ufutwaji wa taarifa zako za kibinafsi tulizonazo, kwa kutuma ombi kupitia barua pepe iliyoorodheshwa hapa chini.</p>
+
+            <h2>8. Mabadiliko ya Sera Hii</h2>
+            <p>Tunaweza kusasisha sera hii mara kwa mara. Mabadiliko makubwa yatatangazwa kwenye tovuti hii pamoja na tarehe mpya ya usasishaji.</p>
+
+            <h2>9. Wasiliana Nasi</h2>
+            <p>Kwa maswali yoyote kuhusu faragha yako, wasiliana nasi:</p>
+            <ul>
+                <li>Barua pepe: <a href="mailto:lupanulla.co.tz@gmail.com" class="text-accentTeal font-medium">lupanulla.co.tz@gmail.com</a></li>
+                <li>Simu: <a href="tel:+255743548225" class="text-accentTeal font-medium">+255 743 548 225</a></li>
+            </ul>
+
+            <p class="text-xs text-textMuted border-t border-gray-200 pt-4 mt-8">Kumbuka: Hii ni waraka wa kawaida (template) uliotengenezwa kuelekeza msingi wa sera ya faragha kwa Lupanulla. Inashauriwa kupitiwa na mtaalamu wa sheria nchini Tanzania kabla ya kuchapishwa rasmi, ili kuhakikisha inakidhi matakwa yote ya kisheria (k.m. Sheria ya Ulinzi wa Taarifa Binafsi).</p>
+        </div>
+    </main>
+
+    <footer class="bg-primaryBlue text-white text-center py-6 mt-12 text-sm">
+        <p>&copy; 2026 Lupanulla Education &amp; Health Foundation. Haki zote zimehifadhiwa.</p>
+        <div class="mt-2">
+            <a href="terms.html" class="text-gray-400 hover:text-white mx-2">Vigezo na Masharti</a>|
+            <a href="index.html" class="text-gray-400 hover:text-white mx-2">Nyumbani</a>
+        </div>
+    </footer>
+</body>
+</html>

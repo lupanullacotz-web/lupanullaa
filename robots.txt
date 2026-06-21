@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /dashboard%20(1).html
+Disallow: /components/
+Disallow: /README.md
+
+Sitemap: https://lupanulla.co.tz/sitemap.xml

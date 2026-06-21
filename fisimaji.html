@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupanulla AI | Msaidizi wa Elimu Tanzania</title>
+    <meta name="description" content="Lupanulla AI — Msaidizi wa elimu anayetumia akili ya bandia kusaidia wanafunzi Tanzania na data sahihi za NECTA, TCU, HESLB.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        bgDark: '#f8fafc',
+                        panelLight: '#ffffff',
+                        textMain: '#0f172a',
+                        textMuted: '#64748b',
+                        primaryBlue: '#020617',
+                        accentTeal: '#0891b2',
+                        accentRed: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html, body { height: 100%; margin: 0; }
+        body { display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Typing animation */
+        .typing-dot {
+            width: 7px; height: 7px;
+            background: #0891b2; border-radius: 50%;
+            animation: typingBounce 1.3s ease-in-out infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-7px); opacity: 1; }
+        }
+
+        /* Message entrance animation */
+        .msg-enter { animation: msgIn 0.25s ease-out; }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Streaming cursor */
+        .stream-cursor {
+            display: inline-block; width: 2px; height: 1em;
+            background: #0891b2; margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.8s step-start infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Markdown rendering */
+        .ai-md { line-height: 1.65; font-size: 0.9rem; }
+        .ai-md h1 { font-family: 'Oswald', sans-serif; font-size: 1.2em; font-weight: 700; margin: 12px 0 6px; color: #020617; }
+        .ai-md h2 { font-family: 'Oswald', sans-serif; font-size: 1.08em; font-weight: 700; margin: 10px 0 5px; color: #020617; }
+        .ai-md h3 { font-size: 0.95em; font-weight: 600; margin: 8px 0 4px; color: #0f172a; }
+        .ai-md p  { margin: 5px 0; }
+        .ai-md ul { list-style: disc; padding-left: 18px; margin: 5px 0; }
+        .ai-md ol { list-style: decimal; padding-left: 18px; margin: 5px 0; }
+        .ai-md li { margin: 3px 0; }
+        .ai-md strong { font-weight: 600; }
+        .ai-md em { font-style: italic; }
+        .ai-md code {
+            background: #f1f5f9; border: 1px solid #e2e8f0;
+            padding: 1px 5px; border-radius: 4px;
+            font-family: 'Courier New', monospace; font-size: 0.85em;
+        }
+        .ai-md pre {
+            background: #0f172a; color: #e2e8f0;
+            padding: 12px 14px; border-radius: 8px;
+            overflow-x: auto; margin: 8px 0;
+            font-family: 'Courier New', monospace; font-size: 0.82em; line-height: 1.6;
+        }
+        .ai-md pre code { background: none; border: none; padding: 0; color: inherit; }
+        .ai-md blockquote {
+            border-left: 3px solid #0891b2; padding-left: 10px;
+            color: #64748b; margin: 6px 0;
+        }
+        .ai-md hr { border: none; border-top: 1px solid #e2e8f0; margin: 10px 0; }
+        .ai-md table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 0.88em; }
+        .ai-md th, .ai-md td { border: 1px solid #e2e8f0; padding: 6px 10px; text-align: left; }
+        .ai-md th { background: #f8fafc; font-weight: 600; }
+        .ai-md a { color: #0891b2; text-decoration: underline; }
+
+        /* Sidebar scrollbar */
+        #sidebar::-webkit-scrollbar { width: 3px; }
+        #sidebar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 2px; }
+
+        /* Chat scrollbar */
+        #messages::-webkit-scrollbar { width: 5px; }
+        #messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+        /* Subject button active */
+        .sub-btn.active {
+            background: rgba(8,145,178,0.18);
+            color: #0891b2;
+            padding-left: 10px;
+            border-left: 3px solid #0891b2;
+        }
+
+        /* Suggestion chip */
+        .chip { transition: all 0.18s; }
+        .chip:hover { background: #0891b2; color: white; border-color: #0891b2; }
+
+        /* Textarea */
+        #inp { resize: none; max-height: 130px; overflow-y: auto; }
+        #inp:focus { outline: none; }
+        #inp::-webkit-scrollbar { width: 4px; }
+        #inp::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+
+        /* Mobile sidebar */
+        @media (max-width: 767px) {
+            #sidebar {
+                position: fixed; left: -272px; top: 0; height: 100vh;
+                z-index: 200; transition: left 0.3s ease; box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            }
+            #sidebar.open { left: 0; }
+        }
+        .level-btn.active {
+            background: rgba(8,145,178,0.2);
+            color: #0891b2;
+            border-color: rgba(8,145,178,0.4);
+        }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans text-textMain bg-bgDark">
+
+    <!-- ═══ TOP BAR ═══ -->
+    <div class="bg-primaryBlue text-white text-xs py-1.5 px-4 hidden md:flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="text-accentTeal font-medium flex items-center gap-1.5">
+                <i class="ph-fill ph-cpu"></i> Lupanulla AI — Data za NECTA, TIE & TCU Zimethibitishwa
+            </span>
+        </div>
+        <div class="flex items-center gap-4 text-gray-400">
+            <a href="index.html" class="hover:text-white transition-colors">← Rudi Nyumbani</a>
+            <a href="#" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-user"></i> Ingia</a>
+        </div>
+    </div>
+
+    <!-- ═══ NAV ═══ -->
+    <nav class="bg-panelLight border-b border-gray-200 flex-shrink-0 z-50 shadow-sm">
+        <div class="px-4 sm:px-6">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2.5">
+                    <img src="/assets/images/logo.png" alt="" class="w-9 h-9 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-display font-bold text-xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+                </a>
+
+                <!-- Desktop Links -->
+                <div class="hidden lg:flex items-center gap-0.5 font-display font-medium">
+                    <a href="index.html"     class="px-3 py-2 text-sm text-textMuted hover:text-accentTeal transition-colors">Habari</a>
+                    <a href="masomo.html"    class="px-3 py-2 text-sm text-textMuted hover:text-accentTeal transition-colors">Masomo</a>
+                    <a href="mitihani.html"  class="px-3 py-2 text-sm text-textMuted hover:text-accentTeal transition-colors">Mitihani</a>
+                    <a href="videos.html"    class="px-3 py-2 text-sm text-textMuted hover:text-accentTeal transition-colors">Lupa+ Video</a>
+                    <a href="lupanulla-ai.html" class="px-3 py-2 text-sm text-accentTeal border-b-2 border-accentTeal font-bold">Lupanulla AI</a>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center gap-2">
+                    <button id="sidebarToggle" class="md:hidden flex items-center gap-1.5 text-xs font-medium bg-gray-100 hover:bg-gray-200 text-textMain px-3 py-2 rounded-full transition-colors">
+                        <i class="ph ph-books text-sm"></i> Masomo
+                    </button>
+                    <div class="hidden md:flex items-center gap-1.5 text-xs bg-green-50 text-green-700 px-3 py-1.5 rounded-full border border-green-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> AI Iko Tayari
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══ MAIN LAYOUT ═══ -->
+    <div class="flex flex-1 overflow-hidden relative">
+
+        <!-- ═══ SIDEBAR ═══ -->
+        <aside id="sidebar" class="w-64 bg-primaryBlue text-white flex flex-col overflow-y-auto flex-shrink-0">
+
+            <!-- AI Identity -->
+            <div class="p-5 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-accentTeal/20 border border-accentTeal/40 flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-cpu text-accentTeal text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-display font-bold text-base tracking-wide leading-tight">Lupanulla AI</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5">Msaidizi wa Elimu • Tanzania</div>
+                    </div>
+                </div>
+                <div class="mt-3 text-[11px] text-gray-400 leading-relaxed">
+                    Data kutoka NECTA, TIE, TCU, NACTE na HESLB
+                </div>
+            </div>
+
+            <!-- Level Filter -->
+            <div class="p-4 border-b border-white/10">
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-2.5 font-medium">Ngazi ya Elimu</div>
+                <div class="flex flex-col gap-1.5">
+                    <button onclick="setLevel('msingi')"  data-lv="msingi"  class="level-btn active flex items-center gap-2.5 px-3 py-2 rounded-lg border border-transparent text-sm text-left transition-all">
+                        <i class="ph ph-pencil-line text-base text-blue-400"></i> Shule ya Msingi
+                    </button>
+                    <button onclick="setLevel('olevel')" data-lv="olevel"  class="level-btn flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 text-gray-300 text-sm text-left transition-all">
+                        <i class="ph ph-book-open text-base text-yellow-400"></i> O-Level (Kid. 1-4)
+                    </button>
+                    <button onclick="setLevel('alevel')" data-lv="alevel"  class="level-btn flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 text-gray-300 text-sm text-left transition-all">
+                        <i class="ph ph-graduation-cap text-base text-purple-400"></i> A-Level (Kid. 5-6)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Subjects -->
+            <div class="p-4 flex-1">
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-2.5 font-medium">Somo la Haraka</div>
+                <div id="subList" class="flex flex-col gap-0.5"></div>
+            </div>
+
+            <!-- New Chat Button -->
+            <div class="p-4 border-t border-white/10">
+                <button onclick="newChat()" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors">
+                    <i class="ph ph-plus-circle"></i> Mazungumzo Mapya
+                </button>
+            </div>
+        </aside>
+
+        <!-- Mobile overlay -->
+        <div id="overlay" onclick="closeSidebar()" class="hidden fixed inset-0 bg-black/60 z-[150] md:hidden"></div>
+
+        <!-- ═══ CHAT AREA ═══ -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+
+            <!-- Chat Header -->
+            <div class="bg-panelLight border-b border-gray-200 px-5 py-3 flex items-center justify-between flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-accentTeal/15 border border-accentTeal/30 flex items-center justify-center">
+                        <i class="ph-fill ph-cpu text-accentTeal text-base"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-sm">Lupanulla AI</div>
+                        <div id="subDisplay" class="text-xs text-textMuted">Masomo Yote • Tanzania</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1.5 text-xs text-green-600">
+                    <i class="ph ph-shield-check"></i>
+                    <span class="hidden sm:inline">Data sahihi • NECTA &amp; TIE</span>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="messages" class="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+
+                <!-- Welcome block (replaced on first user message) -->
+                <div id="welcome">
+                    <div class="flex items-start gap-3 msg-enter" style="max-width:88%">
+                        <div class="w-8 h-8 rounded-full bg-accentTeal flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="ph-fill ph-cpu text-white text-sm"></i>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 shadow-sm">
+                            <div class="ai-md">
+                                <p><strong>Habari! Mimi ni Lupanulla AI 🎓</strong></p>
+                                <p>Niko hapa kukusaidia na masomo yako. Ninajua mambo yafuatayo:</p>
+                                <ul>
+                                    <li>Masomo ya O-Level na A-Level — Hisabati, Fizikia, Kemia, Baiolojia, Historia, Jiografia, Kiingereza, na zaidi</li>
+                                    <li>Mitihani ya NECTA — PSLE, FTNA, CSEE (O-Level), ACSEE (A-Level)</li>
+                                    <li>Vyuo vikuu Tanzania (TCU), mikopo ya HESLB, na taasisi za elimu</li>
+                                    <li>Mbinu za kusoma, kutafsiri maswali ya mtihani, na mazoezi</li>
+                                </ul>
+                                <p>Una swali gani leo? 👇</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suggestion chips -->
+                    <div class="mt-4 ml-11">
+                        <div class="text-xs text-textMuted mb-2">Maswali ya kawaida:</div>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">📐 Nielezezesha trigonometria (O-Level)</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">🔬 Maswali ya Kemia — Electrolysis</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">📋 Daraja la CSEE linafanyaje kazi?</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">🎓 Vyuo vikuu Tanzania (TCU)</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">💡 Mbinu bora za kusoma</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">⚡ Elezea Ohm's Law kwa mfano</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">🧬 Jinsi Mitosis inavyotofautiana na Meiosis</button>
+                            <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">💰 Mikopo ya HESLB — jinsi ya kuomba</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /messages -->
+
+            <!-- Input -->
+            <div class="bg-panelLight border-t border-gray-200 px-4 py-3 flex-shrink-0">
+                <div class="max-w-3xl mx-auto">
+                    <div id="inputWrap" class="flex items-end gap-2.5 bg-white border-2 border-gray-200 rounded-2xl px-4 py-3 focus-within:border-accentTeal transition-colors shadow-sm">
+                        <textarea id="inp"
+                            placeholder="Andika swali lako la masomo hapa... (Enter = tuma, Shift+Enter = mstari mpya)"
+                            rows="1"
+                            class="flex-1 bg-transparent text-textMain text-sm leading-relaxed placeholder-gray-400"
+                            onkeydown="onKey(event)"
+                            oninput="grow(this)">
+                        </textarea>
+                        <button id="sendBtn" onclick="send()"
+                            class="flex-shrink-0 w-9 h-9 bg-accentTeal hover:bg-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors">
+                            <i class="ph-fill ph-paper-plane-tilt text-base"></i>
+                        </button>
+                    </div>
+                    <p class="text-center mt-1.5 text-[10px] text-gray-400">
+                        Lupanulla AI inategemea data za NECTA, TIE, TCU · Daima thibitisha na mwalimu wako
+                    </p>
+                </div>
+            </div>
+
+        </main>
+    </div><!-- /main layout -->
+
+    <script>
+    // ══════════════════════════════════════════
+    // SUBJECTS DATA
+    // ══════════════════════════════════════════
+    const SUBJECTS = {
+        msingi: [
+            { id:'hisabati',  name:'Hisabati',          icon:'ph-math-operations', col:'text-blue-400'    },
+            { id:'sayansi',   name:'Sayansi',            icon:'ph-flask',           col:'text-green-400'   },
+            { id:'kiswahili', name:'Kiswahili',          icon:'ph-chat-text',       col:'text-yellow-400'  },
+            { id:'kiingereza',name:'Kiingereza',         icon:'ph-globe',           col:'text-purple-400'  },
+            { id:'maarifa',   name:'Maarifa ya Jamii',   icon:'ph-map-trifold',     col:'text-orange-400'  },
+            { id:'uraia',     name:'Uraia',              icon:'ph-scales',          col:'text-red-400'     },
+        ],
+        olevel: [
+            { id:'hisabati',  name:'Hisabati',           icon:'ph-math-operations', col:'text-blue-400'    },
+            { id:'fizikia',   name:'Fizikia',            icon:'ph-lightning',       col:'text-yellow-400'  },
+            { id:'kemia',     name:'Kemia',              icon:'ph-flask',           col:'text-green-400'   },
+            { id:'baiolojia', name:'Baiolojia',          icon:'ph-dna',             col:'text-emerald-400' },
+            { id:'historia',  name:'Historia',           icon:'ph-hourglass',       col:'text-orange-400'  },
+            { id:'jiografia', name:'Jiografia',          icon:'ph-globe-hemisphere-east', col:'text-cyan-400' },
+            { id:'kiingereza',name:'Kiingereza',         icon:'ph-book-open',       col:'text-purple-400'  },
+            { id:'kiswahili', name:'Kiswahili',          icon:'ph-chat-text',       col:'text-pink-400'    },
+            { id:'uraia',     name:'Uraia',              icon:'ph-scales',          col:'text-red-400'     },
+            { id:'uchumi',    name:'Uchumi',             icon:'ph-chart-line-up',   col:'text-teal-400'    },
+        ],
+        alevel: [
+            { id:'hisabati',  name:'Hisabati Advanced',  icon:'ph-math-operations', col:'text-blue-400'    },
+            { id:'fizikia',   name:'Fizikia Advanced',   icon:'ph-lightning',       col:'text-yellow-400'  },
+            { id:'kemia',     name:'Kemia Advanced',     icon:'ph-flask',           col:'text-green-400'   },
+            { id:'baiolojia', name:'Baiolojia Advanced', icon:'ph-dna',             col:'text-emerald-400' },
+            { id:'jiografia', name:'Jiografia Advanced', icon:'ph-globe-hemisphere-east', col:'text-cyan-400' },
+            { id:'historia',  name:'Historia Advanced',  icon:'ph-hourglass',       col:'text-orange-400'  },
+            { id:'uchumi',    name:'Uchumi Advanced',    icon:'ph-chart-line-up',   col:'text-teal-400'    },
+        ]
+    };
+
+    // ══════════════════════════════════════════
+    // SYSTEM PROMPT — DATA SAHIHI ZA TANZANIA
+    // ══════════════════════════════════════════
+    const SYSTEM = `Wewe ni Lupanulla AI — msaidizi rasmi wa elimu wa Lupanulla Education Hub, jukwaa la kwanza la kidijitali Tanzania linalounganisha mtaala mzima wa elimu. Unaongea KISWAHILI kwa hali ya kawaida, au Kiingereza iwapo mtumiaji ataandika kwa Kiingereza.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DATA SAHIHI — MFUMO WA ELIMU WA TANZANIA (2024)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 NECTA (National Examinations Council of Tanzania)
+Tovuti: www.necta.go.tz | Ofisi: Dar es Salaam
+Inasimamia mitihani yote ya taifa.
+
+MITIHANI RASMI:
+
+1️⃣ PSLE — Darasa la 7 (Primary School Leaving Examination)
+   Masomo: Kiswahili, Kiingereza, Hisabati, Sayansi, Maarifa ya Jamii, Uraia
+   Madaraja ya Alama:
+     A = 75–100    B = 65–74    C = 45–64    D = 30–44    F = 0–29
+
+2️⃣ FTNA — Kidato cha 2 (Form Two National Assessment)
+   Tathmini ya kitaifa TU — haipati cheti rasmi.
+   Masomo yote ya O-Level yanashughulikiwa (Hisabati, Sayansi, Lugha, n.k.)
+
+3️⃣ CSEE — Kidato cha 4 / O-Level (Certificate of Secondary Education Examination)
+   Masomo ya LAZIMA (Compulsory): Hisabati, Kiingereza, Kiswahili, Uraia, Historia
+   Masomo ya SAYANSI (Science Cluster): Baiolojia, Kemia, Fizikia
+   Masomo ya BIASHARA (Commercial): Uhasibu (Book-keeping), Biashara, Uchumi
+   Masomo ya SANAA (Arts/Humanities): Lugha za Kigeni, Sanaa, Muziki
+
+   MADARAJA YA ALAMA (kwa kila somo):
+     A = 81–100  |  B = 61–80  |  C = 41–60  |  D = 21–40  |  F = 0–20
+
+   MFUMO WA POINTI (Division System):
+   Kila somo la A-F linapata pointi 1–7 (A=1, B=2, C=3, D=4, F=7)
+   Masomo 7 bora yanachukuliwa. Jumla ndogo = Daraja juu.
+     Daraja la I   = Pointi  7–14
+     Daraja la II  = Pointi 15–21
+     Daraja la III = Pointi 22–25
+     Daraja la IV  = Pointi 26–33
+     Daraja la 0   = Pointi 34+  (halifanyi kazi vizuri)
+
+4️⃣ ACSEE — Kidato cha 6 / A-Level (Advanced Certificate of Secondary Education Examination)
+   Masomo ya SAYANSI: Physics, Chemistry, Biology, Mathematics, Geography
+   Masomo ya SANAA: History, Geography, Economics, Kiswahili, English
+   Masomo ya KAWAIDA (compulsory): General Studies (GS) — masomo yote
+   Kila mwanafunzi huchagua masomo 3 ya Principal + GS
+
+   MADARAJA A-LEVEL:
+     A (80–100) = 1 pointi    B (60–79) = 2 pointi
+     C (45–59)  = 3 pointi    D (30–44) = 4 pointi
+     E (25–29)  = 5 pointi    S (20–24) = 6 pointi
+     F (0–19)   = 7 pointi
+
+━━━ TAASISI ZA ELIMU ━━━
+
+🏛️ TCU (Tanzania Commission for Universities) — www.tcu.go.tz
+Inafanya: Kuratibu uandikishaji na kutoa ithibati kwa vyuo vikuu Tanzania.
+
+VYUO VIKUU VYA SERIKALI (Public Universities):
+• UDSM — University of Dar es Salaam (DSM) — kikuu zaidi, 1970
+• SUA — Sokoine University of Agriculture (Morogoro) — kilimo, misitu, mazingira
+• MUHAS — Muhimbili University of Health and Allied Sciences (DSM) — dawa/afya
+• UDOM — University of Dodoma (Dodoma) — chuo kikuu cha taifa, kikubwa sana
+• Mzumbe University (Mzumbe, Morogoro) — biashara, usimamizi, sheria
+• OUT — Open University of Tanzania (DSM) — masomo ya mbali (distance learning)
+• MUST — Mbeya University of Science and Technology (Mbeya) — uhandisi, sayansi
+• Ardhi University (DSM) — upimaji ardhi, usanifu majengo, mazingira
+• DUCE — Dar es Salaam University College of Education — ualimu
+• MUCE — Mkwawa University College of Education (Iringa) — ualimu
+• SUZA — State University of Zanzibar — Zanzibar pekee
+• IFM — Institute of Finance Management — fedha, bima, benki
+• MU — Moshi Co-operative University (Moshi)
+
+🔧 NACTE (National Accreditation Council for Technical Education) — www.nacte.go.tz
+Inasimamia elimu ya ufundi na ualimu (Technical & Vocational Education)
+Vyeti: NTA Level 4 (Certificate) → Level 5 (Diploma) → Level 6 (Full Diploma)
+
+💰 HESLB (Higher Education Students' Loans Board) — www.heslb.go.tz
+Inatoa mikopo kwa wanafunzi wenye uhitaji katika elimu ya juu nchini Tanzania.
+Aina za mikopo: Ada ya masomo, Chakula, Malazi, Vitabu, Usafiri
+Maombi: mtandaoni kupitia www.heslb.go.tz kila mwaka (kawaida Julai–Agosti)
+
+📖 TIE (Tanzania Institute of Education) — www.tie.go.tz
+Inatengeneza na kusimamia mitaala ya shule za msingi na sekondari Tanzania.
+
+🏝️ ZANEC — Zanzibar National Examinations Council (kwa wanafunzi wa Zanzibar)
+
+━━━ MTAALA WA KINA — O-LEVEL ━━━
+
+📐 HISABATI (Mathematics):
+Mada: Nambari na Shughuli, Sehemu & Desimali & Asilimia, Algebra (milinganyo ya 1 na 2),
+Jiometri (pembe, pembetatu, mduara, maumbo ya 3D), Pythagorean theorem,
+Trigonometria (Sin/Cos/Tan, Sheria za Sine & Cosine, graphs),
+Takwimu (mean/median/mode, histogram, frequency polygon, ogive),
+Uwezekano (probability, tree diagrams), Vekta, Vipande (matrices),
+Utendakazi (functions, domain, range, composite, inverse),
+Mwendobora (translation, reflection, rotation, enlargement),
+Logarithm & Exponential, Mfululizo wa Arithmetic & Geometric, Loci, 3D coordinates
+
+⚡ FIZIKIA (Physics):
+Mada: Ukimo na Msongamano, Kinematics (mwendo sare, mwendo wa kuharakisha),
+Newton's Laws (nguvu, gerezani, msuguano), Pressure (solid/liquid/gas),
+Kazi, Nguvu, Nishati (work-energy theorem), Mawimbi (sauti, sifa za mawimbi),
+Joto (thermometer, upitishaji joto, upanukaji), Mwanga (macho/optics),
+Reflection, Refraction, Total internal reflection, Lenses (convex & concave),
+Umeme Tuli (static electricity, capacitors), Ohm's Law, Circuits (series & parallel),
+Kirchhoff's Laws, Sumaku (magnets, electromagnetic induction, motors & generators),
+Semiconductor (diodes, transistors), Radioactivity (alpha, beta, gamma, half-life)
+
+🧪 KEMIA (Chemistry):
+Mada: Muundo wa Atomu (proton/neutron/electron, isotopes, electron configuration),
+Periodic Table (vikundi, periods, mwenendo wa sifa), Vifungo vya Kemikali (ionic, covalent, metallic),
+Aina za Miitikio (combination, decomposition, displacement, redox, acid-base),
+Hali za Gesi (Boyle's Law, Charles' Law), Suluhisho (solubility, concentration, molarity),
+Asidi & Besi & Chumvi (pH scale, neutralisation), Electrolysis (electrodes, products),
+Reactivity Series ya Metali, Utenganishaji wa metali (extraction),
+Kemikali ya Organiku (alkanes, alkenes, alcohols, acids, esters),
+Mazingira (uchafuzi wa hewa, matibabu ya maji)
+
+🧬 BAIOLOJIA (Biology):
+Mada: Seli (muundo, organelles, cell membrane, osmosis, diffusion),
+Mgawanyo wa Seli (Mitosis & Meiosis — hatua kwa hatua),
+Lishe (photosynthesis, enzymes, digestion in humans),
+Upumuaji (aerobic vs anaerobic respiration, gas exchange),
+Usafirishaji (mfumo wa damu, moyo, mishipa ya damu, lymph system),
+Transpiration na Water transport in plants,
+Mfumo wa Neva (neurons, brain, reflex arc, sense organs),
+Mfumo wa Homoni (endocrine glands, feedback mechanisms),
+Usiri (kidneys, liver, lungs, skin),
+Uzazi wa Binadamu (menstrual cycle, pregnancy, birth),
+Uzazi wa Mimea (pollination, fertilization, seed dispersal),
+Vinasaba (DNA, genes, chromosomes, Mendel's Laws, blood groups ABO),
+Ikolojia (food chains, food webs, energy flow, nutrient cycling, population),
+Mageuzi (Darwin's theory, natural selection, adaptation),
+Viumbe Vidogo (bacteria, viruses, fungi, protozoa, diseases, immunisation)
+
+🌍 JIOGRAFIA (Geography):
+Mada: Hali ya Hewa (climate, weather, rainfall patterns Tanzania),
+Ardhi ya Tanzania (mountains—Kilimanjaro, Meru; maziwa—Victoria, Tanganyika, Nyasa),
+Kilimo Tanzania (mazao ya biashara na chakula), Madini & Raslimali (dhahabu, almasi, gesi),
+Miji na Maeneo ya Tanzania, Uchumi wa Tanzania & Dunia,
+Ramani na GIS (scale, coordinates, contour lines), Mabadiliko ya Tabianchi
+
+📜 HISTORIA (History):
+Mada: Afrika Mashariki Kabla ya Ukoloni, Utumwa na Biashara ya Watumwa,
+Ukoloni wa Kiingereza/Kijerumani Tanzania, Mwamko wa Kitaifa,
+Uhuru wa Tanzania 1961 (Julius Nyerere & TANU), Mapinduzi ya Zanzibar 1964,
+Muungano wa Tanzania 1964, Sera ya Ujamaa na Kujitegemea (Azimio la Arusha 1967),
+Afrika Mashariki (EAC, SADCC/SADC, AU), WWI na WWII katika Afrika
+
+⚖️ URAIA (Civics):
+Mada: Katiba ya Tanzania (1977, marekebisho 1984/1992/2000/2005),
+Nguvu Tatu (Bunge, Mahakama, Serikali/Mtendaji),
+Uchaguzi Tanzania, Haki za Binadamu & Wajibu wa Raia,
+Serikali za Mitaa (LGA), Taasisi za Kimataifa (UN, AU, SADC, EAC, WHO)
+
+💼 UCHUMI (Economics):
+Mada: Dhana za msingi (scarcity, opportunity cost, demand & supply),
+Uchumi wa Soko vs. Uchumi wa Mipango, Biashara ya Kimataifa,
+Fedha na Benki, Bajeti ya Serikali, GDP na maendeleo ya uchumi
+
+━━━ MBINU ZA KUSOMA ━━━
+1. Panga ratiba thabiti ya masomo kila siku
+2. Cornell Notes — divide page into notes, cues, summary
+3. Fanya past papers za NECTA kwa muda uliowekwa
+4. Tengeneza mind maps kwa mada zenye uhusiano
+5. Spaced repetition — rudia masomo kwa muda
+6. Tumia mifano ya maisha halisi kuelewa dhana ngumu
+7. Jiulize maswali baada ya kusoma kila mada (self-quizzing)
+8. Pumzika vya kutosha — usingizi muhimu kwa kumbukumbu
+9. Jiepushe na simu wakati wa masomo (pomodoro technique: soma 25min, pumzika 5min)
+
+━━━ MAELEKEZO YA UJIBU ━━━
+• Jibu KWA KISWAHILI hasa — isipokuwa mtumiaji ataandike kwa Kiingereza
+• Toa maelezo kamili, sahihi, na ya msaada wa kweli
+• Tumia mifano halisi ya Tanzania inapofaa
+• Kwa Sayansi na Hisabati: onyesha njia kamili hatua kwa hatua
+• Tumia vichwa vya habari, orodha, na muundo mzuri kurahisisha uelewa
+• Saidia wanafunzi KUJIFUNZA, si tu kupata majibu — uliza maswali ya kuchunguza uelewa
+• Ikiwa mtumiaji anauliza swali la mtihani, toa jibu na kisha elezea kwa undani
+• Ikiwa hujui kitu: sema wazi bila kudanganya
+• Kuwa mkarimu, mvumilivu, na wa kusaidia kila wakati`;
+
+    // ══════════════════════════════════════════
+    // STATE
+    // ══════════════════════════════════════════
+    let history = [];         // {role, content}
+    let currentLevel = 'msingi';
+    let currentSub   = null;
+    let busy         = false;
+
+    // ══════════════════════════════════════════
+    // INIT
+    // ══════════════════════════════════════════
+    renderSubs();
+
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('overlay').classList.remove('hidden');
+    });
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.add('hidden');
+    }
+
+    // ══════════════════════════════════════════
+    // LEVEL & SUBJECTS
+    // ══════════════════════════════════════════
+    function setLevel(lv) {
+        currentLevel = lv;
+        currentSub   = null;
+        document.querySelectorAll('.level-btn').forEach(b => {
+            b.className = b.dataset.lv === lv
+                ? 'level-btn active flex items-center gap-2.5 px-3 py-2 rounded-lg border border-transparent text-sm text-left transition-all'
+                : 'level-btn flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 text-gray-300 text-sm text-left transition-all';
+        });
+        renderSubs();
+        refreshDisplay();
+    }
+
+    function renderSubs() {
+        const list = document.getElementById('subList');
+        list.innerHTML = (SUBJECTS[currentLevel] || []).map(s => `
+            <button onclick="selSub('${s.id}','${s.name}')"
+                class="sub-btn ${currentSub===s.id?'active':''} flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-white/10 text-gray-300 text-sm text-left transition-all w-full"
+                data-id="${s.id}">
+                <i class="ph-fill ${s.icon} ${s.col} text-base"></i>
+                <span>${s.name}</span>
+            </button>`).join('');
+    }
+
+    function selSub(id, name) {
+        currentSub = id;
+        renderSubs();
+        refreshDisplay(name);
+        document.getElementById('inp').placeholder = `Andika swali lako la ${name} hapa...`;
+        if (window.innerWidth < 768) closeSidebar();
+        document.getElementById('inp').focus();
+    }
+
+    const lvNames = { msingi:'Shule ya Msingi', olevel:'O-Level', alevel:'A-Level' };
+
+    function refreshDisplay(subName=null) {
+        const d = document.getElementById('subDisplay');
+        d.textContent = subName
+            ? `${subName} • ${lvNames[currentLevel]} • Tanzania`
+            : `${lvNames[currentLevel]} • Tanzania`;
+    }
+
+    // ══════════════════════════════════════════
+    // MARKDOWN RENDERER
+    // ══════════════════════════════════════════
+    function esc(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function inline(s) {
+        return esc(s)
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g,     '<em>$1</em>')
+            .replace(/`([^`]+)`/g,     '<code>$1</code>')
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    }
+
+    function md(text) {
+        // Extract code blocks
+        const cbs = [];
+        text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+            cbs.push({ lang, code: code.trim() });
+            return `\x00CB${cbs.length-1}\x00`;
+        });
+
+        const lines = text.split('\n');
+        let html = '', i = 0;
+        let inList = false, listTag = '';
+
+        const closeList = () => { if (inList) { html += `</${listTag}>`; inList = false; } };
+
+        while (i < lines.length) {
+            const l = lines[i];
+
+            // Code block placeholder
+            const cbm = l.match(/^\x00CB(\d+)\x00$/);
+            if (cbm) {
+                closeList();
+                const cb = cbs[+cbm[1]];
+                html += `<pre><code>${esc(cb.code)}</code></pre>`;
+                i++; continue;
+            }
+
+            // Horizontal rule
+            if (/^[━\-=]{3,}$/.test(l.trim())) {
+                closeList();
+                html += '<hr>'; i++; continue;
+            }
+
+            // Header
+            const hm = l.match(/^(#{1,3})\s+(.+)/);
+            if (hm) {
+                closeList();
+                html += `<h${hm[1].length}>${inline(hm[2])}</h${hm[1].length}>`;
+                i++; continue;
+            }
+
+            // Blockquote
+            if (l.startsWith('> ')) {
+                closeList();
+                html += `<blockquote>${inline(l.slice(2))}</blockquote>`;
+                i++; continue;
+            }
+
+            // List items
+            const ulm = l.match(/^[\-\*•]\s+(.*)/);
+            const olm = l.match(/^\d+[.)]\s+(.*)/);
+            if (ulm || olm) {
+                const tag = ulm ? 'ul' : 'ol';
+                const txt = ulm ? ulm[1] : olm[1];
+                if (!inList || listTag !== tag) {
+                    closeList();
+                    html += `<${tag}>`; inList = true; listTag = tag;
+                }
+                html += `<li>${inline(txt)}</li>`;
+                i++; continue;
+            }
+
+            // Empty line
+            if (!l.trim()) {
+                closeList();
+                i++; continue;
+            }
+
+            // Regular paragraph
+            closeList();
+            html += `<p>${inline(l)}</p>`;
+            i++;
+        }
+        closeList();
+        return html;
+    }
+
+    // ══════════════════════════════════════════
+    // CHAT
+    // ══════════════════════════════════════════
+    function newChat() {
+        history = [];
+        const box = document.getElementById('messages');
+        box.innerHTML = `
+            <div id="welcome">
+                <div class="flex items-start gap-3 msg-enter" style="max-width:88%">
+                    <div class="w-8 h-8 rounded-full bg-accentTeal flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="ph-fill ph-cpu text-white text-sm"></i>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 shadow-sm">
+                        <div class="ai-md"><p><strong>Mazungumzo mapya yameanza! 🎓</strong></p><p>Niko tayari. Una swali gani la masomo leo?</p></div>
+                    </div>
+                </div>
+                <div class="mt-4 ml-11">
+                    <div class="text-xs text-textMuted mb-2">Maswali ya kawaida:</div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">📐 Nielezezesha trigonometria (O-Level)</button>
+                        <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">📋 Daraja la CSEE linafanyaje kazi?</button>
+                        <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">💡 Mbinu bora za kusoma</button>
+                        <button class="chip border border-gray-300 bg-white text-textMain text-xs px-3.5 py-1.5 rounded-full" onclick="useChip(this)">🎓 Vyuo vikuu Tanzania (TCU)</button>
+                    </div>
+                </div>
+            </div>`;
+        document.getElementById('inp').value = '';
+        grow(document.getElementById('inp'));
+        document.getElementById('inp').placeholder = 'Andika swali lako la masomo hapa...';
+    }
+
+    function useChip(btn) {
+        // Strip emoji prefix
+        const text = btn.textContent.replace(/^[\p{Emoji}\s]+/u, '').trim();
+        document.getElementById('inp').value = text;
+        send();
+    }
+
+    function onKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+    }
+
+    function grow(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 130) + 'px';
+    }
+
+    function addUser(text) {
+        const box = document.getElementById('messages');
+        // Remove welcome on first message
+        const w = document.getElementById('welcome');
+        if (w) w.remove();
+
+        const d = document.createElement('div');
+        d.className = 'flex items-start gap-3 flex-row-reverse msg-enter';
+        d.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-primaryBlue flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="ph-fill ph-user text-white text-sm"></i>
+            </div>
+            <div class="bg-accentTeal text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm" style="max-width:75%">
+                <p class="text-sm leading-relaxed">${esc(text).replace(/\n/g,'<br>')}</p>
+            </div>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function showTyping() {
+        const box = document.getElementById('messages');
+        const d = document.createElement('div');
+        d.id = 'typing';
+        d.className = 'flex items-start gap-3 msg-enter';
+        d.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-accentTeal flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="ph-fill ph-cpu text-white text-sm"></i>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3.5 shadow-sm">
+                <div class="flex items-center gap-1.5">
+                    <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+                </div>
+            </div>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function removeTyping() {
+        const el = document.getElementById('typing');
+        if (el) el.remove();
+    }
+
+    function addAI(text) {
+        const box = document.getElementById('messages');
+        const d = document.createElement('div');
+        d.className = 'flex items-start gap-3 msg-enter';
+        d.style.maxWidth = '90%';
+        d.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-accentTeal flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="ph-fill ph-cpu text-white text-sm"></i>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 shadow-sm flex-1 min-w-0">
+                <div class="ai-md text-sm">${md(text)}</div>
+            </div>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    async function send() {
+        if (busy) return;
+        const inp = document.getElementById('inp');
+        const raw = inp.value.trim();
+        if (!raw) return;
+
+        // Build message with optional subject context
+        let userMsg = raw;
+        if (currentSub) {
+            const sub = (SUBJECTS[currentLevel]||[]).find(s=>s.id===currentSub);
+            if (sub) userMsg = `[Somo: ${sub.name} — ${lvNames[currentLevel]}]\n${raw}`;
+        }
+
+        inp.value = '';
+        grow(inp);
+        busy = true;
+        document.getElementById('sendBtn').disabled = true;
+
+        addUser(raw);
+        history.push({ role: 'user', content: userMsg });
+        showTyping();
+
+        try {
+            const res = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-6',
+                    max_tokens: 1000,
+                    system: SYSTEM,
+                    messages: history
+                })
+            });
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            const reply = data.content?.[0]?.text || 'Samahani, sikuweza kupata jibu. Tafadhali jaribu tena.';
+
+            removeTyping();
+            addAI(reply);
+            history.push({ role: 'assistant', content: reply });
+
+            // Keep history manageable (last 20 turns)
+            if (history.length > 20) history = history.slice(history.length - 20);
+
+        } catch (err) {
+            removeTyping();
+            addAI(`**Hitilafu imetokea ⚠️**\n\nSamahani, kuna tatizo la muunganisho na seva.\n\nTafadhali:\n- Angalia muunganisho wako wa intaneti\n- Jaribu tena baada ya sekunde chache\n\n*Kama tatizo linaendelea, wasiliana na Lupanulla kwa lupanulla.co.tz@gmail.com*`);
+            console.error('[LupanullaAI Error]', err);
+        } finally {
+            busy = false;
+            document.getElementById('sendBtn').disabled = false;
+            inp.focus();
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        }
+    }
+    </script>
+</body>
+</html>

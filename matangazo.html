@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matangazo & Kuhusu Sisi | Lupanulla</title>
+    <meta name="description" content="Habari, matangazo muhimu, na taarifa za Lupanulla Education & Health Foundation.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+                    colors: {
+                        bgLight: '#f8fafc', panelLight: '#ffffff', textMain: '#0f172a', textMuted: '#64748b',
+                        primaryBlue: '#020617', accentTeal: '#0891b2', accentRed: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: theme('colors.bgLight'); color: theme('colors.textMain'); }
+        .ann-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .ann-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -8px rgba(0,0,0,0.1); }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Nav rahisi -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="/assets/images/logo.png" alt="" class="w-9 h-9 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                <span class="font-display font-bold text-xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+            </a>
+            <a href="index.html" class="text-sm font-medium text-textMuted hover:text-accentTeal flex items-center gap-1">
+                <i class="ph ph-arrow-left"></i> Rudi Nyumbani
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="bg-primaryBlue text-white py-12 sm:py-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+            <span class="text-accentTeal text-sm font-bold uppercase tracking-wider">Lupanulla Education &amp; Health Foundation</span>
+            <h1 class="font-display font-bold text-3xl sm:text-4xl mt-2 mb-3">Matangazo &amp; Kuhusu Sisi</h1>
+            <p class="text-gray-300 max-w-xl mx-auto">Jifunze • Kua • Fanikiwa — taarifa muhimu, matangazo ya kielimu, na maelezo zaidi kuhusu sisi.</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+
+        <!-- Matangazo Mapya -->
+        <section id="matangazo">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-8 w-1 bg-accentTeal rounded-full"></div>
+                <h2 class="font-display font-bold text-2xl text-primaryBlue uppercase">Matangazo Mapya</h2>
+            </div>
+            <div class="space-y-4">
+                <a href="#" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
+                    <span class="text-xs text-textMuted block mb-1">Leo</span>
+                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">Nafasi za kujiunga na kidato cha tano kwa shule za serikali zimetangazwa.</h3>
+                    <p class="text-sm text-textMuted mt-1">Wanafunzi waliofaulu mtihani wa kidato cha nne wanahimizwa kuangalia mfumo rasmi wa uchaguzi wa shule.</p>
+                </a>
+                <a href="#" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
+                    <span class="text-xs text-textMuted block mb-1">Jana</span>
+                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">HESLB yafungua dirisha la maombi ya mikopo kwa mwaka 2024/2025.</h3>
+                    <p class="text-sm text-textMuted mt-1">Wanafunzi wa vyuo vikuu wanashauriwa kuwasilisha maombi mapema kabla ya tarehe ya mwisho.</p>
+                </a>
+                <a href="#" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
+                    <span class="text-xs text-textMuted block mb-1">Siku 3 zilizopita</span>
+                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">Mabadiliko katika muundo wa mtihani wa Civics kidato cha nne.</h3>
+                    <p class="text-sm text-textMuted mt-1">NECTA imetoa mwongozo mpya wa muundo wa karatasi - soma maelezo kamili kwenye ukurasa wa Mitihani.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Kuhusu Sisi -->
+        <section id="kuhusu">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-8 w-1 bg-accentRed rounded-full"></div>
+                <h2 class="font-display font-bold text-2xl text-primaryBlue uppercase">Kuhusu Sisi</h2>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-6 sm:p-8 leading-relaxed text-textMain space-y-4">
+                <p>
+                    <strong>Lupanulla</strong> ni jukwaa la kidijitali la elimu lililoanzishwa Tanzania chini ya
+                    <strong>Lupanulla Education &amp; Health Foundation</strong>, likiwa na lengo la kuwafikia wanafunzi
+                    wa Shule ya Msingi, Sekondari (O-Level na A-Level), pamoja na Vyuo, kwa rasilimali za kujifunzia
+                    zinazofuata mtaala wa NECTA.
+                </p>
+                <p>
+                    Dhamira yetu ni kuhakikisha kila mwanafunzi wa Kitanzania - awe mjini au kijijini - anapata fursa
+                    sawa ya kujifunza kupitia simu yake ya mkononi: notisi, mitihani ya zamani, video za mafunzo, na
+                    msaidizi wa kidijitali wa <em>Fisi Maji AI</em>.
+                </p>
+                <p>
+                    Tunatamani kukua kutoka Tanzania kwenda kuwa jukwaa linalogusa wanafunzi wengi zaidi Afrika na
+                    duniani, huku tukidumisha kauli mbiu yetu: <span class="font-display font-semibold text-accentTeal">"Jifunze • Kua • Fanikiwa."</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- Wasiliana Nasi -->
+        <section id="wasiliana">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-8 w-1 bg-green-500 rounded-full"></div>
+                <h2 class="font-display font-bold text-2xl text-primaryBlue uppercase">Wasiliana Nasi</h2>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-6 sm:p-8">
+                <p class="text-textMuted mb-4">Tunafurahi kusikia kutoka kwako. Tumia njia zifuatazo kuwasiliana nasi:</p>
+                <div class="space-y-3">
+                    <a href="mailto:lupanulla.co.tz@gmail.com" class="flex items-center gap-3 text-primaryBlue font-medium hover:text-accentTeal transition-colors">
+                        <i class="ph-fill ph-envelope text-accentTeal text-xl"></i> lupanulla.co.tz@gmail.com
+                    </a>
+                    <a href="tel:+255743548225" class="flex items-center gap-3 text-primaryBlue font-medium hover:text-accentTeal transition-colors">
+                        <i class="ph-fill ph-phone text-accentTeal text-xl"></i> +255 743 548 225
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-primaryBlue text-white text-center py-6 text-sm">
+        <p>&copy; 2026 Lupanulla Education &amp; Health Foundation. Haki zote zimehifadhiwa.</p>
+        <div class="mt-2">
+            <a href="terms.html" class="text-gray-400 hover:text-white mx-2">Vigezo na Masharti</a>|
+            <a href="privacy.html" class="text-gray-400 hover:text-white mx-2">Sera ya Faragha</a>|
+            <a href="index.html" class="text-gray-400 hover:text-white mx-2">Nyumbani</a>
+        </div>
+    </footer>
+</body>
+</html>

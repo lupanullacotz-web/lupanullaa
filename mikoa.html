@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viwango kwa Mikoa | Lupanulla</title>
+    <meta name="description" content="Linganisha ufaulu wa shule kwa mikoa yote ya Tanzania kulingana na matokeo ya NECTA - CSEE, PSLE na ACSEE.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Oswald', 'sans-serif'] },
+                    colors: {
+                        bgDark: '#f8fafc', panelLight: '#ffffff', textMain: '#0f172a', textMuted: '#64748b',
+                        primaryBlue: '#020617', accentTeal: '#0891b2', accentRed: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: theme('colors.bgDark'); color: theme('colors.textMain'); overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .region-card { transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+        .region-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -8px rgba(0,0,0,0.12); }
+        .region-card.is-active { border-color: theme('colors.accentTeal'); box-shadow: 0 0 0 2px theme('colors.accentTeal'); }
+
+        .bar-fill { transition: width 0.6s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.35s ease; }
+    </style>
+  <meta name="theme-color" content="#0891b2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body class="antialiased font-sans">
+
+    <!-- Top Small Bar -->
+    <div class="bg-primaryBlue text-white text-xs py-2 px-4 hidden md:block">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1 text-accentTeal font-medium"><i class="ph-fill ph-check-circle"></i> Mtaala wa NECTA Zinasasishwa</span>
+                <span class="text-gray-400">|</span>
+                <a href="dashboard.html" class="hover:text-white transition-colors">Toleo la Shule</a>
+                <a href="walimu.html" class="hover:text-white transition-colors">Kwa Walimu</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-translate"></i> Swahili</a>
+                <a href="#" class="hover:text-white transition-colors flex items-center gap-1"><i class="ph ph-user"></i> Ingia</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bg-panelLight border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+                    <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                    <span class="font-display font-bold text-2xl tracking-tight text-primaryBlue uppercase">Lupanulla</span>
+                </a>
+
+                <div class="hidden lg:flex space-x-1 items-center font-display font-medium text-lg">
+                    <a href="blogu.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Habari</a>
+                    <a href="masomo.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Masomo</a>
+                    <a href="mitihani.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Mitihani (Past Papers)</a>
+                    <a href="mikoa.html" class="px-4 py-2 text-accentTeal border-b-2 border-accentTeal">Viwango (Rankings)</a>
+                    <a href="videos.html" class="px-4 py-2 text-textMain hover:text-accentTeal hover:bg-gray-50 rounded-t-md transition-colors">Lupa+ (Video)</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <button class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-textMain hover:bg-gray-200 transition-colors">
+                        <i class="ph ph-magnifying-glass text-xl"></i>
+                    </button>
+                    <a href="fisimaji.html" class="flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-medium hover:bg-purple-200 transition-colors">
+                        <i class="ph-fill ph-robot"></i> Fisi Maji AI
+                    </a>
+                </div>
+
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMain p-2">
+                        <i class="ph ph-list text-3xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 bg-white">
+            <div class="px-4 py-3 space-y-1 font-display font-medium">
+                <a href="blogu.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Habari</a>
+                <a href="masomo.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Masomo</a>
+                <a href="mitihani.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Mitihani (Past Papers)</a>
+                <a href="mikoa.html" class="block px-3 py-2 rounded-md text-accentTeal bg-accentTeal/10">Viwango (Rankings)</a>
+                <a href="videos.html" class="block px-3 py-2 rounded-md text-textMain hover:bg-gray-50">Lupa+ (Video)</a>
+                <a href="fisimaji.html" class="block px-3 py-2 rounded-md text-purple-700 flex items-center gap-2"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="bg-primaryBlue text-white py-12 sm:py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span class="text-accentTeal text-sm font-bold uppercase tracking-wider">Viwango vya NECTA</span>
+            <h1 class="font-display font-bold text-3xl sm:text-4xl md:text-5xl mt-2 mb-4">Ufaulu wa Shule kwa Mikoa</h1>
+            <p class="text-gray-300 max-w-2xl mb-8">Chagua mkoa uone shule zilizofanya vizuri zaidi kwenye matokeo ya hivi karibuni ya CSEE, PSLE na ACSEE. Data inasasishwa kila baada ya NECTA kutangaza matokeo rasmi.</p>
+
+            <div class="flex flex-wrap gap-6">
+                <div>
+                    <p class="font-display font-bold text-3xl text-white">31</p>
+                    <p class="text-gray-400 text-sm">Mikoa ya Tanzania</p>
+                </div>
+                <div class="border-l border-white/10 pl-6">
+                    <p class="font-display font-bold text-3xl text-white">10</p>
+                    <p class="text-gray-400 text-sm">Mikoa yenye data kamili</p>
+                </div>
+                <div class="border-l border-white/10 pl-6">
+                    <p class="font-display font-bold text-3xl text-white">CSEE 2025</p>
+                    <p class="text-gray-400 text-sm">Mzunguko wa sasa wa matokeo</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Search + Legend -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div class="relative w-full sm:max-w-sm">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-textMuted text-xl"></i>
+                <input id="region-search" type="text" placeholder="Tafuta mkoa, mfano: Mbeya..." class="w-full bg-white border border-gray-200 rounded-xl py-3 pl-12 pr-4 text-textMain focus:outline-none focus:border-accentTeal focus:ring-1 focus:ring-accentTeal transition-all">
+            </div>
+            <div class="flex items-center gap-4 text-xs text-textMuted">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-accentTeal"></span> Data ipo</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span> Inakusanywa</span>
+            </div>
+        </div>
+
+        <!-- Region Grid -->
+        <div id="region-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+            <!-- Cards injected by JS -->
+        </div>
+        <p id="no-region-results" class="hidden text-center text-textMuted py-8">Hakuna mkoa uliopatikana. Jaribu jina tofauti.</p>
+
+        <!-- Detail Panel -->
+        <section class="mt-10 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-6 sm:p-8 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="text-accentTeal text-xs font-bold uppercase tracking-wider" id="detail-zone">Pwani</span>
+                    <h2 class="font-display font-bold text-2xl sm:text-3xl text-primaryBlue" id="detail-name">Dar es Salaam</h2>
+                </div>
+                <div class="flex gap-6">
+                    <div>
+                        <p class="text-xs text-textMuted uppercase tracking-wider">Shule Zinazofuatiliwa</p>
+                        <p class="font-display font-bold text-xl text-primaryBlue" id="detail-count">—</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-textMuted uppercase tracking-wider">Ufaulu wa Wastani</p>
+                        <p class="font-display font-bold text-xl text-accentTeal" id="detail-avg">—</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="detail-table-wrap" class="p-6 sm:p-8 fade-in">
+                <!-- Table or empty state injected by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primaryBlue text-white pt-16 pb-8 mt-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <a href="index.html" class="flex items-center gap-2 mb-6">
+                        <img src="/assets/images/logo.png" alt="" class="w-10 h-10 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+                        <span class="font-display font-bold text-2xl tracking-tight text-white uppercase">Lupanulla</span>
+                    </a>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                        Lango lako kuu la raslimali za elimu, habari, na miongozo ya kitaaluma kwa wanafunzi, walimu, na wazazi nchini Tanzania.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accentTeal transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-red-600 transition-colors"><i class="ph-fill ph-youtube-logo text-xl"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Chunguza</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="masomo.html" class="hover:text-white transition-colors">Masomo Yote</a></li>
+                        <li><a href="mitihani.html" class="hover:text-white transition-colors">Maktaba ya Mitihani</a></li>
+                        <li><a href="mikoa.html" class="hover:text-white transition-colors">Viwango vya Shule</a></li>
+                        <li><a href="videos.html" class="hover:text-white transition-colors">Lupa+ Video</a></li>
+                        <li><a href="ajira.html" class="hover:text-white transition-colors">Ajira za Kielimu</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Zana &amp; Huduma</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="fisimaji.html" class="hover:text-accentTeal text-accentTeal transition-colors flex items-center gap-1"><i class="ph-fill ph-robot"></i> Fisi Maji AI</a></li>
+                        <li><a href="calculator.html" class="hover:text-white transition-colors">Kikokotoo cha Ufaulu</a></li>
+                        <li><a href="vyuo.html" class="hover:text-white transition-colors">Taarifa za Vyuo (TCU/NACTE)</a></li>
+                        <li><a href="https://www.heslb.go.tz" target="_blank" rel="noopener" class="hover:text-white transition-colors">Bodi ya Mikopo (HESLB)</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-lg mb-4 uppercase tracking-wider">Pata App Yetu</h4>
+                    <p class="text-gray-400 text-sm mb-4">Jifunze popote, muda wowote kupitia simu yako ya mkononi.</p>
+                    <div class="flex flex-col gap-3">
+                        <a href="#" class="bg-black border border-gray-700 rounded-lg px-4 py-2 flex items-center gap-3 hover:border-gray-500 transition-colors">
+                            <i class="ph-fill ph-google-play-logo text-2xl text-green-400"></i>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] text-gray-400 leading-none">PAKUA KUTOKA</span>
+                                <span class="text-sm font-bold leading-tight">Google Play</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+                <p>&copy; 2026 Lupanulla Elimu Hub. Haki zote zimehifadhiwa.</p>
+                <div class="flex gap-4">
+                    <a href="terms.html" class="hover:text-white">Vigezo na Masharti</a>
+                    <a href="privacy.html" class="hover:text-white">Sera ya Faragha</a>
+                    <a href="mailto:lupanulla.co.tz@gmail.com" class="hover:text-white">Wasiliana Nasi</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('ph-x'); menuIcon.classList.add('ph-list');
+            } else {
+                menuIcon.classList.remove('ph-list'); menuIcon.classList.add('ph-x');
+            }
+        });
+
+        // ---- Region data ----
+        // 31 mikoa rasmi ya Tanzania (Bara + Zanzibar)
+        const allRegions = [
+            { slug: 'arusha', name: 'Arusha', zone: 'Kaskazini' },
+            { slug: 'dar-es-salaam', name: 'Dar es Salaam', zone: 'Pwani' },
+            { slug: 'dodoma', name: 'Dodoma', zone: 'Kati' },
+            { slug: 'geita', name: 'Geita', zone: 'Magharibi ya Ziwa' },
+            { slug: 'iringa', name: 'Iringa', zone: 'Nyanda za Juu Kusini' },
+            { slug: 'kagera', name: 'Kagera', zone: 'Magharibi ya Ziwa' },
+            { slug: 'katavi', name: 'Katavi', zone: 'Magharibi' },
+            { slug: 'kigoma', name: 'Kigoma', zone: 'Magharibi' },
+            { slug: 'kilimanjaro', name: 'Kilimanjaro', zone: 'Kaskazini' },
+            { slug: 'lindi', name: 'Lindi', zone: 'Kusini' },
+            { slug: 'manyara', name: 'Manyara', zone: 'Kaskazini' },
+            { slug: 'mara', name: 'Mara', zone: 'Magharibi ya Ziwa' },
+            { slug: 'mbeya', name: 'Mbeya', zone: 'Nyanda za Juu Kusini' },
+            { slug: 'morogoro', name: 'Morogoro', zone: 'Mashariki' },
+            { slug: 'mtwara', name: 'Mtwara', zone: 'Kusini' },
+            { slug: 'mwanza', name: 'Mwanza', zone: 'Magharibi ya Ziwa' },
+            { slug: 'njombe', name: 'Njombe', zone: 'Nyanda za Juu Kusini' },
+            { slug: 'pwani', name: 'Pwani', zone: 'Pwani' },
+            { slug: 'rukwa', name: 'Rukwa', zone: 'Magharibi' },
+            { slug: 'ruvuma', name: 'Ruvuma', zone: 'Kusini' },
+            { slug: 'shinyanga', name: 'Shinyanga', zone: 'Magharibi ya Ziwa' },
+            { slug: 'simiyu', name: 'Simiyu', zone: 'Magharibi ya Ziwa' },
+            { slug: 'singida', name: 'Singida', zone: 'Kati' },
+            { slug: 'songwe', name: 'Songwe', zone: 'Nyanda za Juu Kusini' },
+            { slug: 'tabora', name: 'Tabora', zone: 'Magharibi' },
+            { slug: 'tanga', name: 'Tanga', zone: 'Kaskazini' },
+            { slug: 'kaskazini-unguja', name: 'Kaskazini Unguja', zone: 'Zanzibar' },
+            { slug: 'kusini-unguja', name: 'Kusini Unguja', zone: 'Zanzibar' },
+            { slug: 'mjini-magharibi', name: 'Mjini Magharibi', zone: 'Zanzibar' },
+            { slug: 'kaskazini-pemba', name: 'Kaskazini Pemba', zone: 'Zanzibar' },
+            { slug: 'kusini-pemba', name: 'Kusini Pemba', zone: 'Zanzibar' },
+        ];
+
+        // Data kamili kwa mikoa 10 (sample/illustrative)
+        const regionData = {
+            'dar-es-salaam': { count: 312, avg: 81, schools: [
+                ['Azania Sekondari', 'Day', 97], ['Jangwani Girls', 'Boarding', 95], ['Feza Boys', 'Boarding', 93],
+                ['Kibasila Sekondari', 'Day', 88], ['Tambaza Sekondari', 'Day', 85], ['Benjamin Mkapa', 'Day', 80],
+            ]},
+            'kilimanjaro': { count: 198, avg: 79, schools: [
+                ['Old Moshi Sekondari', 'Boarding', 94], ['Kibosho Girls', 'Boarding', 92], ['Marangu Sekondari', 'Day', 87],
+                ['Moshi Sekondari', 'Boarding', 85], ['Uru Seminari', 'Boarding', 83], ['Korogwe Day', 'Day', 76],
+            ]},
+            'arusha': { count: 176, avg: 76, schools: [
+                ['St. Constantine\'s', 'Boarding', 96], ['Arusha Sekondari', 'Day', 89], ['Meru Sekondari', 'Day', 84],
+                ['Lutheran Uhuru', 'Boarding', 82], ['Kilimanjaro Adventist', 'Boarding', 80], ['Themi Sekondari', 'Day', 74],
+            ]},
+            'mwanza': { count: 221, avg: 74, schools: [
+                ['Bwiru Boys', 'Boarding', 91], ['Bwiru Girls', 'Boarding', 90], ['St. Mary\'s Mwanza', 'Boarding', 86],
+                ['Nyakato Sekondari', 'Day', 79], ['Pamba Sekondari', 'Day', 76], ['Ilemela Day', 'Day', 70],
+            ]},
+            'mbeya': { count: 154, avg: 73, schools: [
+                ['Mbeya Sekondari', 'Boarding', 90], ['Loleza Girls', 'Boarding', 88], ['Ihungo-Mbeya', 'Day', 81],
+                ['Itetemia Sekondari', 'Day', 77], ['Iyunga Sekondari', 'Boarding', 75], ['Forest Hill', 'Day', 70],
+            ]},
+            'dodoma': { count: 167, avg: 72, schools: [
+                ['Dodoma Sekondari', 'Boarding', 89], ['Msalato Girls', 'Boarding', 85], ['St. Peter Mazengo', 'Boarding', 82],
+                ['Chamwino Sekondari', 'Day', 75], ['Hombolo Sekondari', 'Day', 71], ['Kikuyu Day', 'Day', 67],
+            ]},
+            'morogoro': { count: 183, avg: 71, schools: [
+                ['Kilakala Girls', 'Boarding', 92], ['Mzumbe Sekondari', 'Boarding', 90], ['Morogoro Day', 'Day', 78],
+                ['Kingolwira Sekondari', 'Day', 74], ['Mikese Sekondari', 'Day', 69], ['Bigwa Sisters', 'Boarding', 80],
+            ]},
+            'kagera': { count: 142, avg: 68, schools: [
+                ['Rugambwa Sekondari', 'Boarding', 87], ['Nyakahanga Girls', 'Boarding', 80], ['Kashasha Girls', 'Boarding', 78],
+                ['Bukoba Sekondari', 'Day', 72], ['Kahororo Sekondari', 'Day', 66], ['Izimbya Sekondari', 'Day', 60],
+            ]},
+            'iringa': { count: 138, avg: 75, schools: [
+                ['Mkwawa High School', 'Boarding', 93], ['Tosamaganga Sekondari', 'Boarding', 84], ['Ilboru-Iringa', 'Day', 78],
+                ['Lugalo Sekondari', 'Day', 73], ['Kihesa Sekondari', 'Day', 69], ['Kleruu Sekondari', 'Day', 65],
+            ]},
+            'tanga': { count: 161, avg: 70, schools: [
+                ['Tanga Sekondari', 'Boarding', 88], ['Korogwe Girls', 'Boarding', 81], ['Usagara Sekondari', 'Day', 76],
+                ['Pongwe Sekondari', 'Day', 71], ['Mzizima Day', 'Day', 65], ['Mnazi Mmoja', 'Day', 60],
+            ]},
+        };
+
+        const grid = document.getElementById('region-grid');
+        const noResults = document.getElementById('no-region-results');
+        const searchInput = document.getElementById('region-search');
+
+        function buildCard(region) {
+            const has = !!regionData[region.slug];
+            const badge = has
+                ? `<span class="text-accentTeal font-bold">${regionData[region.slug].avg}%</span>`
+                : `<span class="text-gray-400">Inakusanywa</span>`;
+            const dot = has ? 'bg-accentTeal' : 'bg-gray-300';
+            const card = document.createElement('button');
+            card.type = 'button';
+            card.dataset.slug = region.slug;
+            card.dataset.name = region.name.toLowerCase();
+            card.className = 'region-card text-left bg-white border border-gray-200 rounded-xl p-4';
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <i class="ph ph-map-pin text-textMuted"></i>
+                    <span class="w-2 h-2 rounded-full ${dot}"></span>
+                </div>
+                <h3 class="font-bold text-sm text-primaryBlue leading-tight mb-1">${region.name}</h3>
+                <p class="text-xs text-textMuted mb-2">${region.zone}</p>
+                <p class="text-xs font-medium">${badge}</p>
+            `;
+            card.addEventListener('click', () => selectRegion(region));
+            return card;
+        }
+
+        allRegions.forEach(r => grid.appendChild(buildCard(r)));
+
+        function setActiveCard(slug) {
+            document.querySelectorAll('.region-card').forEach(c => {
+                c.classList.toggle('is-active', c.dataset.slug === slug);
+            });
+        }
+
+        function selectRegion(region) {
+            setActiveCard(region.slug);
+            document.getElementById('detail-zone').textContent = region.zone;
+            document.getElementById('detail-name').textContent = region.name;
+
+            const wrap = document.getElementById('detail-table-wrap');
+            const data = regionData[region.slug];
+
+            if (!data) {
+                document.getElementById('detail-count').textContent = '—';
+                document.getElementById('detail-avg').textContent = '—';
+                wrap.innerHTML = `
+                    <div class="text-center py-10">
+                        <i class="ph ph-hourglass-medium text-4xl text-gray-300 mb-3 block"></i>
+                        <p class="text-textMuted">Taarifa za ufaulu wa ${region.name} zinakusanywa kutoka ofisi za elimu za mkoa. Rudi hivi karibuni.</p>
+                    </div>`;
+                wrap.classList.remove('fade-in'); void wrap.offsetWidth; wrap.classList.add('fade-in');
+                return;
+            }
+
+            document.getElementById('detail-count').textContent = data.count.toLocaleString();
+            document.getElementById('detail-avg').textContent = data.avg + '%';
+
+            const rows = data.schools.map((s, i) => `
+                <tr class="border-b border-gray-100 last:border-0">
+                    <td class="py-3 pr-3 font-display font-bold text-textMuted w-8">${i + 1}</td>
+                    <td class="py-3 pr-3 font-bold text-primaryBlue">${s[0]}</td>
+                    <td class="py-3 pr-3 text-textMuted text-sm hidden sm:table-cell">${s[1]}</td>
+                    <td class="py-3 pr-3 w-40">
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="bar-fill h-full bg-accentTeal rounded-full" style="width:${s[2]}%"></div>
+                            </div>
+                            <span class="text-xs font-bold text-primaryBlue w-9 text-right">${s[2]}%</span>
+                        </div>
+                    </td>
+                </tr>`).join('');
+
+            wrap.innerHTML = `
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-xs text-textMuted uppercase tracking-wider text-left">
+                            <th class="pb-2 font-medium">#</th>
+                            <th class="pb-2 font-medium">Shule</th>
+                            <th class="pb-2 font-medium hidden sm:table-cell">Aina</th>
+                            <th class="pb-2 font-medium">Ufaulu</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+            wrap.classList.remove('fade-in'); void wrap.offsetWidth; wrap.classList.add('fade-in');
+        }
+
+        // Default selection
+        selectRegion(allRegions.find(r => r.slug === 'dar-es-salaam'));
+
+        // Search
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim().toLowerCase();
+            let visible = 0;
+            document.querySelectorAll('.region-card').forEach(card => {
+                const show = card.dataset.name.includes(q);
+                card.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            noResults.classList.toggle('hidden', visible !== 0);
+        });
+    </script>
+</body>
+</html>
