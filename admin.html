@@ -7,68 +7,779 @@
   <meta name="description" content="Dashibodi ya msimamizi wa Lupanulla.">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <meta name="theme-color" content="#0891b2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            bgDark: '#0a0a0f', panelDark: '#12121a', borderDark: '#2a2a35',
+            neonTeal: '#00f0ff', neonPurple: '#b026ff', textMain: '#e2e8f0', textMuted: '#94a3b8'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: theme('colors.bgDark'); color: theme('colors.textMain'); }
+    .glass-nav { background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid theme('colors.borderDark'); }
+    .doc-card { background: theme('colors.panelDark'); border: 1px solid theme('colors.borderDark'); }
+    .lupa-focus:focus { outline: 2px solid theme('colors.neonTeal'); outline-offset: 2px; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: theme('colors.bgDark'); }
+    ::-webkit-scrollbar-thumb { background: theme('colors.borderDark'); border-radius: 4px; }
+    .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .pill { background: theme('colors.panelDark'); border: 1px solid theme('colors.borderDark'); color: theme('colors.textMuted'); white-space: nowrap; }
+    .pill.active { background: theme('colors.neonTeal'); border-color: theme('colors.neonTeal'); color: theme('colors.bgDark'); }
+    .pill:hover:not(.active) { border-color: rgba(0,240,255,0.5); color: white; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    @keyframes modalIn { from { opacity:0; transform: scale(.96); } to { opacity:1; transform: scale(1); } }
+    @keyframes toastIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+    .modal-panel { animation: modalIn .2s ease-out; }
+    .toast-item { animation: toastIn .2s ease-out; }
+
+    .drop-zone { border: 2px dashed theme('colors.borderDark'); transition: border-color .2s ease, background-color .2s ease; }
+    .drop-zone.drag-over { border-color: theme('colors.neonTeal'); background: rgba(0,240,255,0.05); }
+
+    .progress-track { background: theme('colors.borderDark'); border-radius: 999px; overflow: hidden; height: 6px; }
+    .progress-fill { background: theme('colors.neonTeal'); height: 100%; width: 0%; transition: width .15s ease; }
+
+    .spinner { border: 3px solid theme('colors.borderDark'); border-top-color: theme('colors.neonTeal'); border-radius: 50%; width: 36px; height: 36px; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    *:focus-visible { outline: 2px solid theme('colors.neonTeal'); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+  </style>
+  <meta name="theme-color" content="#0a0a0f">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <meta name="robots" content="noindex, nofollow">
 </head>
-<body class="lupa-page antialiased">
-  <main class="min-h-screen grid lg:grid-cols-[280px_1fr]">
-    <aside class="bg-slate-950 text-slate-300 p-6">
-      <a href="index.html" class="flex items-center gap-2 text-white font-extrabold">
-        <img src="/assets/images/logo.png" alt="" class="w-9 h-9 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
-        <span>Lupanulla Admin</span>
-      </a>
-      <nav class="mt-8 grid gap-1 text-sm font-semibold">
-        <a href="admin.html" class="rounded-lg bg-white/10 px-3 py-2 text-white">Muhtasari</a>
-        <a href="dashboard.html" class="rounded-lg px-3 py-2 hover:bg-white/10">Dashibodi ya mwanafunzi</a>
-        <a href="matangazo.html" class="rounded-lg px-3 py-2 hover:bg-white/10">Matangazo</a>
-        <a href="index.html" class="rounded-lg px-3 py-2 hover:bg-white/10">Tovuti</a>
-      </nav>
-    </aside>
+<body class="antialiased font-sans min-h-screen">
 
-    <section class="p-5 md:p-8">
-      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 class="text-3xl font-extrabold tracking-tight">Muhtasari wa usimamizi</h1>
-          <p class="mt-2 text-slate-600">Mfano wa dashibodi kwa maudhui, watumiaji, na matangazo.</p>
-        </div>
-        <button class="inline-flex items-center gap-2 rounded-lg bg-cyan-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-cyan-800"><i class="ph ph-plus"></i> Chapisha tangazo</button>
-      </div>
+  <!-- ======= SKRINI YA UPAKIAJI (wakati tunakagua ruhusa) ======= -->
+  <div id="loadingScreen" class="fixed inset-0 z-[300] bg-bgDark flex flex-col items-center justify-center gap-4">
+    <div class="spinner"></div>
+    <p class="text-textMuted text-sm">Inakagua ruhusa yako...</p>
+  </div>
 
-      <div class="mt-8 grid gap-5 md:grid-cols-4">
-        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Wanafunzi</p><p class="mt-2 text-3xl font-extrabold">1,248</p></div>
-        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Masomo</p><p class="mt-2 text-3xl font-extrabold">82</p></div>
-        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Video</p><p class="mt-2 text-3xl font-extrabold">36</p></div>
-        <div class="lupa-card p-5"><p class="text-sm font-bold text-slate-500">Mitihani</p><p class="mt-2 text-3xl font-extrabold">214</p></div>
-      </div>
+  <!-- ======= SKRINI YA "HUNA RUHUSA" ======= -->
+  <div id="deniedScreen" class="fixed inset-0 z-[300] bg-bgDark flex-col items-center justify-center gap-4 px-6 text-center" style="display:none;">
+    <i class="ph-fill ph-lock-key text-5xl text-red-400"></i>
+    <h1 class="text-xl font-bold text-white mt-2">Huna ruhusa ya kuingia hapa</h1>
+    <p class="text-textMuted text-sm max-w-sm">Akaunti yako haina haki za usimamizi (admin). Kama unadhani hii ni kosa, mwambie msimamizi mkuu (superadmin) akupe ruhusa kwenye Firebase Console.</p>
+    <div class="flex gap-3 mt-3">
+      <a href="dashboard.html" class="rounded-lg bg-panelDark border border-borderDark px-4 py-2.5 text-sm font-semibold text-white hover:border-neonTeal">Rudi Dashibodi</a>
+      <button id="deniedLogoutBtn" class="rounded-lg bg-red-500/10 border border-red-500/40 px-4 py-2.5 text-sm font-semibold text-red-400 hover:bg-red-500/20">Toka</button>
+    </div>
+  </div>
 
-      <div class="mt-8 grid gap-5 lg:grid-cols-[1fr_360px]">
-        <section class="lupa-card overflow-hidden">
-          <div class="p-5 border-b border-slate-200">
-            <h2 class="text-xl font-extrabold">Kazi za hivi karibuni</h2>
+  <!-- ======= APP SHELL (huonekana baada ya kuthibitishwa kuwa admin) ======= -->
+  <div id="appShell" style="display:none;">
+
+    <nav class="fixed w-full top-0 z-50 glass-nav">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between h-16 gap-3">
+          <a href="index.html" class="flex-shrink-0 flex items-center gap-2">
+            <img src="/assets/images/logo.png" alt="" class="w-8 h-8 rounded-lg object-cover flex-shrink-0" aria-hidden="true">
+            <span class="font-bold text-lg tracking-wider text-white hidden sm:inline">LUPANULLA <span class="text-neonTeal">ADMIN</span></span>
+          </a>
+          <div class="flex items-center gap-2 sm:gap-4 text-sm min-w-0">
+            <a href="dashboard.html" class="hidden sm:inline text-textMuted hover:text-white whitespace-nowrap">Dashibodi ya mwanafunzi</a>
+            <a href="index.html" class="hidden sm:inline text-textMuted hover:text-white whitespace-nowrap">Tovuti</a>
+            <span id="adminEmail" class="text-textMuted truncate max-w-[110px] sm:max-w-[180px]" title=""></span>
+            <button id="logoutBtn" class="flex-shrink-0 rounded-lg bg-white/5 hover:bg-red-500/20 hover:text-red-400 px-3 py-1.5 text-xs font-semibold text-textMuted transition-colors">Toka</button>
           </div>
-          <table class="lupa-table">
-            <tbody>
-              <tr><td class="font-bold">Mitihani Form IV</td><td>Ilihaririwa</td><td class="text-slate-500">Leo</td></tr>
-              <tr><td class="font-bold">Tangazo la nafasi za kazi</td><td>Rasimu</td><td class="text-slate-500">Jana</td></tr>
-              <tr><td class="font-bold">Video za Biology</td><td>Zimeongezwa</td><td class="text-slate-500">Wiki hii</td></tr>
-            </tbody>
-          </table>
-        </section>
-        <section class="lupa-card p-5">
-          <h2 class="text-xl font-extrabold">Kuingia kwa msimamizi</h2>
-          <form class="mt-4 grid gap-3">
-            <label class="grid gap-1 text-sm font-bold text-slate-700">Barua pepe <input class="lupa-focus rounded-lg border border-slate-300 px-3 py-2" type="email" placeholder="admin@lupanulla.co.tz"></label>
-            <label class="grid gap-1 text-sm font-bold text-slate-700">Nenosiri <input class="lupa-focus rounded-lg border border-slate-300 px-3 py-2" type="password" placeholder="********"></label>
-            <button type="button" class="rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white hover:bg-slate-800">Ingia</button>
-          </form>
-        </section>
+        </div>
       </div>
-    </section>
-  </main>
-  <script src="assets/js/main.js" defer></script>
+    </nav>
+
+    <main class="pt-24 pb-16 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white">Dashibodi ya Msimamizi</h1>
+        <p class="text-textMuted text-sm mt-1">Pakia picha, chapisha matangazo, na ongeza mitihani moja kwa moja kwenye tovuti.</p>
+      </div>
+
+      <!-- Tab pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 mb-8" id="tabRow">
+        <button class="nav-tab pill active px-4 py-2 rounded-full text-sm font-medium" data-tab="muhtasari"><i class="ph ph-squares-four mr-1"></i> Muhtasari</button>
+        <button class="nav-tab pill px-4 py-2 rounded-full text-sm font-medium" data-tab="matangazo"><i class="ph ph-megaphone mr-1"></i> Matangazo</button>
+        <button class="nav-tab pill px-4 py-2 rounded-full text-sm font-medium" data-tab="mitihani"><i class="ph ph-exam mr-1"></i> Mitihani</button>
+        <button class="nav-tab pill px-4 py-2 rounded-full text-sm font-medium" data-tab="picha"><i class="ph ph-images mr-1"></i> Picha</button>
+      </div>
+
+      <!-- ======= PANEL: MUHTASARI ======= -->
+      <section id="panel-muhtasari" class="tab-panel active">
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="doc-card rounded-2xl p-5">
+            <p class="text-xs font-semibold text-textMuted uppercase tracking-wider">Matangazo</p>
+            <p class="mt-2 text-3xl font-bold text-white" id="countMatangazo">0</p>
+          </div>
+          <div class="doc-card rounded-2xl p-5">
+            <p class="text-xs font-semibold text-textMuted uppercase tracking-wider">Mitihani</p>
+            <p class="mt-2 text-3xl font-bold text-white" id="countMitihani">0</p>
+          </div>
+          <div class="doc-card rounded-2xl p-5">
+            <p class="text-xs font-semibold text-textMuted uppercase tracking-wider">Picha</p>
+            <p class="mt-2 text-3xl font-bold text-white" id="countMedia">0</p>
+          </div>
+        </div>
+        <div class="doc-card rounded-2xl p-5 mt-5">
+          <h2 class="font-bold text-white mb-3">Vidokezo vya haraka</h2>
+          <ul class="text-sm text-textMuted space-y-2 list-disc list-inside">
+            <li>Tumia kichupo cha <span class="text-white font-medium">Matangazo</span> kuchapisha taarifa zitakazoonekana kwenye ukurasa wa matangazo.html.</li>
+            <li>Tumia kichupo cha <span class="text-white font-medium">Mitihani</span> kupakia PDF za mitihani — zitaonekana papo hapo kwenye mitihani.html.</li>
+            <li>Tumia kichupo cha <span class="text-white font-medium">Picha</span> kupakia picha za jumla na kunakili URL yake kuitumia popote.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ======= PANEL: MATANGAZO ======= -->
+      <section id="panel-matangazo" class="tab-panel">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-white text-lg">Matangazo</h2>
+          <button id="addMatangazoBtn" class="rounded-lg bg-neonTeal px-4 py-2 text-sm font-bold text-bgDark hover:bg-neonTeal/90 flex items-center gap-1.5"><i class="ph-bold ph-plus"></i> Ongeza Tangazo</button>
+        </div>
+        <div id="matangazoList" class="space-y-3"></div>
+      </section>
+
+      <!-- ======= PANEL: MITIHANI ======= -->
+      <section id="panel-mitihani" class="tab-panel">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-white text-lg">Mitihani</h2>
+          <button id="addMitihaniBtn" class="rounded-lg bg-neonTeal px-4 py-2 text-sm font-bold text-bgDark hover:bg-neonTeal/90 flex items-center gap-1.5"><i class="ph-bold ph-plus"></i> Ongeza Mtihani</button>
+        </div>
+        <div id="mitihaniList" class="space-y-3"></div>
+      </section>
+
+      <!-- ======= PANEL: PICHA / MEDIA ======= -->
+      <section id="panel-picha" class="tab-panel">
+        <h2 class="font-bold text-white text-lg mb-4">Picha (Media Library)</h2>
+        <div id="dropZone" class="drop-zone rounded-2xl p-10 text-center cursor-pointer">
+          <i class="ph ph-upload-simple text-3xl text-neonTeal mb-2"></i>
+          <p class="text-sm text-textMuted">Bonyeza hapa kuchagua picha, au vuta na udondoshe (drag &amp; drop)</p>
+          <p class="text-xs text-textMuted/60 mt-1">Unaweza kuchagua picha zaidi ya moja kwa wakati mmoja</p>
+          <input type="file" id="mediaFileInput" accept="image/*" multiple class="hidden">
+        </div>
+        <div id="mediaProgress" class="mt-3" style="display:none;">
+          <div class="progress-track"><div class="progress-fill" id="mediaProgressFill"></div></div>
+          <p class="text-xs text-textMuted mt-1" id="mediaProgressLabel">0%</p>
+        </div>
+        <div id="mediaGallery" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======= MODAL: TANGAZO ======= -->
+  <div id="matangazoModal" class="fixed inset-0 z-[150] bg-black/70 flex items-center justify-center p-4" style="display:none;">
+    <div class="modal-panel doc-card rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <h3 id="mtModalTitle" class="font-bold text-white text-lg mb-4">Tangazo Jipya</h3>
+      <form id="matangazoForm" class="space-y-4">
+        <input type="hidden" id="mtEditId" value="">
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Kichwa cha Habari</label>
+          <input id="mtTitle" type="text" required class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="Mfano: NECTA imetoa matokeo...">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Maelezo</label>
+          <textarea id="mtDesc" required rows="3" class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="Maelezo zaidi ya tangazo..."></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Kiungo (Link) — hiari</label>
+          <input id="mtLink" type="text" class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="https://...">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Picha — hiari</label>
+          <input id="mtImage" type="file" accept="image/*" class="w-full mt-1 text-xs text-textMuted">
+          <div id="mtProgress" class="mt-2" style="display:none;">
+            <div class="progress-track"><div class="progress-fill" id="mtProgressFill"></div></div>
+            <p class="text-[11px] text-textMuted mt-1" id="mtProgressLabel">0%</p>
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" id="mtSubmitBtn" class="flex-grow rounded-lg bg-neonTeal text-bgDark font-bold text-sm py-2.5 hover:bg-neonTeal/90">Hifadhi</button>
+          <button type="button" id="mtCancelBtn" class="rounded-lg bg-white/5 text-textMuted font-semibold text-sm px-4 py-2.5 hover:bg-white/10">Funga</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======= MODAL: MTIHANI ======= -->
+  <div id="mitihaniModal" class="fixed inset-0 z-[150] bg-black/70 flex items-center justify-center p-4" style="display:none;">
+    <div class="modal-panel doc-card rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <h3 id="exModalTitle" class="font-bold text-white text-lg mb-4">Mtihani Mpya</h3>
+      <form id="mitihaniForm" class="space-y-4">
+        <input type="hidden" id="exEditId" value="">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-textMuted uppercase">Aina</label>
+            <select id="exType" required class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white">
+              <option value="NECTA">NECTA (Taifa)</option>
+              <option value="Mock">Mock (Mikoa)</option>
+              <option value="Pre-NECTA">Pre-NECTA</option>
+              <option value="Terminal">Mtihani wa Muhula</option>
+              <option value="Majibu">Majibu (Marking Scheme)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-textMuted uppercase">Ngazi/Darasa</label>
+            <select id="exLevel" required class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white">
+              <option value="Darasa la 4">Darasa la 4</option>
+              <option value="Darasa la 7">Darasa la 7</option>
+              <option value="Kidato cha 2">Kidato cha 2</option>
+              <option value="Kidato cha 4">Kidato cha 4</option>
+              <option value="Kidato cha 6">Kidato cha 6</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-textMuted uppercase">Somo</label>
+            <select id="exSubject" required class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white">
+              <option value="Hisabati">Hisabati</option>
+              <option value="Hisabati ya Ziada">Hisabati ya Ziada</option>
+              <option value="Kiingereza">Kiingereza</option>
+              <option value="Kiswahili">Kiswahili</option>
+              <option value="Baiolojia">Baiolojia</option>
+              <option value="Fizikia">Fizikia</option>
+              <option value="Kemia">Kemia</option>
+              <option value="Historia">Historia</option>
+              <option value="Uraia">Uraia</option>
+              <option value="Jiografia">Jiografia</option>
+              <option value="Sayansi">Sayansi</option>
+              <option value="Computer Studies">Computer Studies</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-textMuted uppercase">Mwaka</label>
+            <input id="exYear" type="number" required min="2000" max="2100" class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="2026">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-textMuted uppercase">Namba ya Karatasi</label>
+            <input id="exPaperNo" type="text" class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="Karatasi ya 1">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-textMuted uppercase">Idadi ya Kurasa</label>
+            <input id="exPages" type="number" min="1" class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="6">
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Kichwa cha Mtihani</label>
+          <input id="exTitle" type="text" required class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="NECTA Hisabati - Kidato cha 4 (CSEE)">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Maelezo Mafupi</label>
+          <textarea id="exDesc" rows="2" class="lupa-focus w-full mt-1 bg-bgDark border border-borderDark rounded-lg px-3 py-2.5 text-sm text-white" placeholder="Mfano: Mtihani wa Taifa wa Hisabati, CSEE 2026."></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-textMuted uppercase">Faili la PDF</label>
+          <input id="exFile" type="file" accept="application/pdf" class="w-full mt-1 text-xs text-textMuted">
+          <p id="exFileHint" class="text-[11px] text-textMuted/60 mt-1"></p>
+          <div id="exProgress" class="mt-2" style="display:none;">
+            <div class="progress-track"><div class="progress-fill" id="exProgressFill"></div></div>
+            <p class="text-[11px] text-textMuted mt-1" id="exProgressLabel">0%</p>
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" id="exSubmitBtn" class="flex-grow rounded-lg bg-neonTeal text-bgDark font-bold text-sm py-2.5 hover:bg-neonTeal/90">Hifadhi</button>
+          <button type="button" id="exCancelBtn" class="rounded-lg bg-white/5 text-textMuted font-semibold text-sm px-4 py-2.5 hover:bg-white/10">Funga</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 items-end max-w-[90vw]"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getDatabase, ref, get, push, update, remove, onValue
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+    import {
+      getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+
+    // ---------- FIREBASE INIT ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBRFJ_T4qynTutOmMb_wcuuRmFIiwJ__xE",
+      authDomain: "lupanulla.firebaseapp.com",
+      databaseURL: "https://lupanulla-default-rtdb.firebaseio.com",
+      projectId: "lupanulla",
+      storageBucket: "lupanulla.firebasestorage.app",
+      messagingSenderId: "168472987630",
+      appId: "1:168472987630:web:8b2e4aa3bc8fb4a0f3b0ff",
+      measurementId: "G-3CS888WRWH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    const ALLOWED_ROLES = ['admin', 'superadmin'];
+
+    // ---------- HELPERS ----------
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str == null ? '' : String(str);
+      return div.innerHTML;
+    }
+
+    function showToast(msg, icon) {
+      const el = document.createElement('div');
+      el.className = 'toast-item bg-panelDark border border-borderDark text-white text-sm px-4 py-3 rounded-xl flex items-center gap-2 shadow-lg';
+      el.innerHTML = `<i class="${icon || 'ph-bold ph-check-circle'} text-neonTeal"></i> <span>${escapeHtml(msg)}</span>`;
+      document.getElementById('toastContainer').appendChild(el);
+      setTimeout(() => {
+        el.style.transition = 'opacity .3s';
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      }, 3200);
+    }
+
+    function uploadFile(file, path, onProgress) {
+      return new Promise((resolve, reject) => {
+        const fileRef = storageRef(storage, path);
+        const task = uploadBytesResumable(fileRef, file);
+        task.on('state_changed',
+          (snap) => { if (onProgress) onProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)); },
+          (err) => reject(err),
+          async () => {
+            try {
+              const url = await getDownloadURL(task.snapshot.ref);
+              resolve(url);
+            } catch (err) { reject(err); }
+          }
+        );
+      });
+    }
+
+    function showProgress(prefix, pct) {
+      const wrap = document.getElementById(prefix + 'Progress');
+      const fill = document.getElementById(prefix + 'ProgressFill');
+      const label = document.getElementById(prefix + 'ProgressLabel');
+      if (!wrap) return;
+      wrap.style.display = 'block';
+      fill.style.width = pct + '%';
+      label.textContent = pct + '%';
+    }
+    function resetProgress(prefix) {
+      const wrap = document.getElementById(prefix + 'Progress');
+      const fill = document.getElementById(prefix + 'ProgressFill');
+      if (!wrap) return;
+      wrap.style.display = 'none';
+      fill.style.width = '0%';
+    }
+
+    // ---------- AUTH GATE ----------
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'auth.html';
+        return;
+      }
+      try {
+        const snap = await get(ref(db, `users/${user.uid}/role`));
+        const role = snap.exists() ? snap.val() : null;
+        if (!ALLOWED_ROLES.includes(role)) {
+          document.getElementById('loadingScreen').style.display = 'none';
+          document.getElementById('deniedScreen').style.display = 'flex';
+          return;
+        }
+        document.getElementById('adminEmail').textContent = user.email || 'Msimamizi';
+        document.getElementById('adminEmail').title = user.email || '';
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('appShell').style.display = 'block';
+        initApp();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('deniedScreen').style.display = 'flex';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => window.location.href = 'auth.html');
+    });
+    document.getElementById('deniedLogoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => window.location.href = 'auth.html');
+    });
+
+    // ---------- TABS ----------
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.tab;
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + target));
+      });
+    });
+
+    // ---------- APP INIT (baada ya kuthibitishwa ni admin) ----------
+    let appInitialized = false;
+    function initApp() {
+      if (appInitialized) return;
+      appInitialized = true;
+
+      onValue(ref(db, 'matangazo'), snap => {
+        const n = snap.exists() ? Object.keys(snap.val()).length : 0;
+        document.getElementById('countMatangazo').textContent = n;
+      });
+      onValue(ref(db, 'mitihani'), snap => {
+        const n = snap.exists() ? Object.keys(snap.val()).length : 0;
+        document.getElementById('countMitihani').textContent = n;
+      });
+      onValue(ref(db, 'media'), snap => {
+        const n = snap.exists() ? Object.keys(snap.val()).length : 0;
+        document.getElementById('countMedia').textContent = n;
+      });
+
+      initMatangazoPanel();
+      initMitihaniPanel();
+      initMediaPanel();
+    }
+
+    // =====================================================
+    // ================  MATANGAZO PANEL  =================
+    // =====================================================
+    function initMatangazoPanel() {
+      onValue(ref(db, 'matangazo'), snap => {
+        const data = snap.val() || {};
+        const list = Object.entries(data).map(([id, v]) => ({ id, ...v }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        renderMatangazoList(list);
+      });
+    }
+
+    function renderMatangazoList(list) {
+      const el = document.getElementById('matangazoList');
+      if (!list.length) {
+        el.innerHTML = `<p class="text-textMuted text-sm text-center py-10">Hakuna tangazo bado. Bonyeza "Ongeza Tangazo" kuanza.</p>`;
+        return;
+      }
+      el.innerHTML = list.map(a => `
+        <div class="doc-card rounded-xl p-4 flex items-start gap-4">
+          ${a.imageUrl ? `<img src="${a.imageUrl}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" alt="">` : `<div class="w-16 h-16 rounded-lg bg-bgDark flex items-center justify-center flex-shrink-0"><i class="ph ph-megaphone text-textMuted text-xl"></i></div>`}
+          <div class="flex-grow min-w-0">
+            <h4 class="font-semibold text-white text-sm line-clamp-1">${escapeHtml(a.title)}</h4>
+            <p class="text-textMuted text-xs mt-1 line-clamp-2">${escapeHtml(a.desc)}</p>
+            <span class="text-[10px] text-textMuted/70">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('sw-TZ') : ''}</span>
+          </div>
+          <div class="flex flex-col gap-2 flex-shrink-0">
+            <button data-edit-ann="${a.id}" class="w-8 h-8 rounded-lg hover:bg-white/10 text-textMuted hover:text-neonTeal flex items-center justify-center" aria-label="Hariri"><i class="ph ph-pencil-simple"></i></button>
+            <button data-del-ann="${a.id}" class="w-8 h-8 rounded-lg hover:bg-white/10 text-textMuted hover:text-red-400 flex items-center justify-center" aria-label="Futa"><i class="ph ph-trash"></i></button>
+          </div>
+        </div>`).join('');
+    }
+
+    document.getElementById('matangazoList').addEventListener('click', async (ev) => {
+      const editBtn = ev.target.closest('[data-edit-ann]');
+      const delBtn = ev.target.closest('[data-del-ann]');
+      if (editBtn) openMatangazoModal(editBtn.dataset.editAnn);
+      if (delBtn) {
+        if (confirm('Una uhakika unataka kufuta tangazo hili?')) {
+          try {
+            await remove(ref(db, 'matangazo/' + delBtn.dataset.delAnn));
+            showToast('Tangazo limefutwa', 'ph-bold ph-trash');
+          } catch (err) { showToast('Imeshindikana kufuta: ' + err.message, 'ph-bold ph-x-circle'); }
+        }
+      }
+    });
+
+    document.getElementById('addMatangazoBtn').addEventListener('click', () => openMatangazoModal(null));
+    document.getElementById('mtCancelBtn').addEventListener('click', () => {
+      document.getElementById('matangazoModal').style.display = 'none';
+    });
+
+    async function openMatangazoModal(id) {
+      document.getElementById('mtEditId').value = id || '';
+      document.getElementById('mtModalTitle').textContent = id ? 'Hariri Tangazo' : 'Tangazo Jipya';
+      document.getElementById('matangazoForm').reset();
+      resetProgress('mt');
+      if (id) {
+        const snap = await get(ref(db, 'matangazo/' + id));
+        const v = snap.val() || {};
+        document.getElementById('mtTitle').value = v.title || '';
+        document.getElementById('mtDesc').value = v.desc || '';
+        document.getElementById('mtLink').value = v.link || '';
+      }
+      document.getElementById('matangazoModal').style.display = 'flex';
+    }
+
+    document.getElementById('matangazoForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const id = document.getElementById('mtEditId').value;
+      const title = document.getElementById('mtTitle').value.trim();
+      const desc = document.getElementById('mtDesc').value.trim();
+      const link = document.getElementById('mtLink').value.trim() || '#';
+      const file = document.getElementById('mtImage').files[0];
+
+      const submitBtn = document.getElementById('mtSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Inahifadhi...';
+
+      try {
+        let imageUrl = null;
+        if (file) {
+          imageUrl = await uploadFile(file, `matangazo/${Date.now()}_${file.name}`, (pct) => showProgress('mt', pct));
+        }
+        const payload = { title, desc, link };
+        if (imageUrl) payload.imageUrl = imageUrl;
+
+        if (id) {
+          await update(ref(db, 'matangazo/' + id), payload);
+          showToast('Tangazo limesasishwa', 'ph-bold ph-check-circle');
+        } else {
+          payload.createdAt = { '.sv': 'timestamp' };
+          await push(ref(db, 'matangazo'), payload);
+          showToast('Tangazo limechapishwa', 'ph-bold ph-check-circle');
+        }
+        document.getElementById('matangazoModal').style.display = 'none';
+      } catch (err) {
+        console.error(err);
+        showToast('Hitilafu: ' + err.message, 'ph-bold ph-x-circle');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Hifadhi';
+        resetProgress('mt');
+      }
+    });
+
+    // =====================================================
+    // =================  MITIHANI PANEL  ==================
+    // =====================================================
+    const TYPE_ACCENT = { 'NECTA': 'red', 'Mock': 'sky', 'Pre-NECTA': 'violet', 'Terminal': 'amber', 'Majibu': 'emerald' };
+
+    function initMitihaniPanel() {
+      onValue(ref(db, 'mitihani'), snap => {
+        const data = snap.val() || {};
+        const list = Object.entries(data).map(([id, v]) => ({ id, ...v }))
+          .sort((a, b) => (b.dateAdded || 0) - (a.dateAdded || 0));
+        renderMitihaniList(list);
+      });
+    }
+
+    function renderMitihaniList(list) {
+      const el = document.getElementById('mitihaniList');
+      if (!list.length) {
+        el.innerHTML = `<p class="text-textMuted text-sm text-center py-10">Hakuna mtihani bado. Bonyeza "Ongeza Mtihani" kuanza.</p>`;
+        return;
+      }
+      el.innerHTML = list.map(e => `
+        <div class="doc-card rounded-xl p-4 flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-bgDark flex items-center justify-center flex-shrink-0 text-red-400"><i class="ph-fill ph-file-pdf text-xl"></i></div>
+          <div class="flex-grow min-w-0">
+            <h4 class="font-semibold text-white text-sm line-clamp-1">${escapeHtml(e.title)}</h4>
+            <p class="text-textMuted text-xs mt-0.5">${escapeHtml(e.subject)} &bull; ${escapeHtml(e.level)} &bull; ${escapeHtml(e.year)} &bull; ${e.downloads || 0} pakua</p>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            ${e.fileUrl ? `<a href="${e.fileUrl}" target="_blank" class="w-8 h-8 rounded-lg hover:bg-white/10 text-textMuted hover:text-neonTeal flex items-center justify-center" title="Fungua PDF" aria-label="Fungua PDF"><i class="ph ph-eye"></i></a>` : ''}
+            <button data-edit-exam="${e.id}" class="w-8 h-8 rounded-lg hover:bg-white/10 text-textMuted hover:text-neonTeal flex items-center justify-center" aria-label="Hariri"><i class="ph ph-pencil-simple"></i></button>
+            <button data-del-exam="${e.id}" class="w-8 h-8 rounded-lg hover:bg-white/10 text-textMuted hover:text-red-400 flex items-center justify-center" aria-label="Futa"><i class="ph ph-trash"></i></button>
+          </div>
+        </div>`).join('');
+    }
+
+    document.getElementById('mitihaniList').addEventListener('click', async (ev) => {
+      const editBtn = ev.target.closest('[data-edit-exam]');
+      const delBtn = ev.target.closest('[data-del-exam]');
+      if (editBtn) openMitihaniModal(editBtn.dataset.editExam);
+      if (delBtn) {
+        if (confirm('Una uhakika unataka kufuta mtihani huu? PDF yake itafutwa pia.')) {
+          try {
+            const snap = await get(ref(db, 'mitihani/' + delBtn.dataset.delExam));
+            const v = snap.val() || {};
+            if (v.fileUrl) {
+              try { await deleteObject(storageRef(storage, v.fileUrl)); } catch (e) { /* faili huenda halipo tena */ }
+            }
+            await remove(ref(db, 'mitihani/' + delBtn.dataset.delExam));
+            showToast('Mtihani umefutwa', 'ph-bold ph-trash');
+          } catch (err) { showToast('Imeshindikana kufuta: ' + err.message, 'ph-bold ph-x-circle'); }
+        }
+      }
+    });
+
+    document.getElementById('addMitihaniBtn').addEventListener('click', () => openMitihaniModal(null));
+    document.getElementById('exCancelBtn').addEventListener('click', () => {
+      document.getElementById('mitihaniModal').style.display = 'none';
+    });
+
+    let currentExamFileUrl = null;
+    let currentExamSizeKB = null;
+
+    async function openMitihaniModal(id) {
+      document.getElementById('exEditId').value = id || '';
+      document.getElementById('exModalTitle').textContent = id ? 'Hariri Mtihani' : 'Mtihani Mpya';
+      document.getElementById('mitihaniForm').reset();
+      document.getElementById('exFileHint').textContent = '';
+      resetProgress('ex');
+      currentExamFileUrl = null;
+      currentExamSizeKB = null;
+      document.getElementById('exFile').required = !id;
+
+      if (id) {
+        const snap = await get(ref(db, 'mitihani/' + id));
+        const v = snap.val() || {};
+        document.getElementById('exType').value = v.type || 'NECTA';
+        document.getElementById('exLevel').value = v.level || 'Kidato cha 4';
+        document.getElementById('exSubject').value = v.subject || 'Hisabati';
+        document.getElementById('exYear').value = v.year || '';
+        document.getElementById('exPaperNo').value = v.paperNo || '';
+        document.getElementById('exPages').value = v.pages || '';
+        document.getElementById('exTitle').value = v.title || '';
+        document.getElementById('exDesc').value = v.desc || '';
+        currentExamFileUrl = v.fileUrl || null;
+        currentExamSizeKB = v.sizeKB || null;
+        if (v.fileUrl) document.getElementById('exFileHint').textContent = 'PDF iliyopo tayari itabaki kama hutachagua faili jipya.';
+      }
+      document.getElementById('mitihaniModal').style.display = 'flex';
+    }
+
+    document.getElementById('mitihaniForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const id = document.getElementById('exEditId').value;
+      const type = document.getElementById('exType').value;
+      const level = document.getElementById('exLevel').value;
+      const subject = document.getElementById('exSubject').value;
+      const year = Number(document.getElementById('exYear').value);
+      const paperNo = document.getElementById('exPaperNo').value.trim() || '\u2014';
+      const pages = Number(document.getElementById('exPages').value) || 1;
+      const title = document.getElementById('exTitle').value.trim();
+      const desc = document.getElementById('exDesc').value.trim();
+      const file = document.getElementById('exFile').files[0];
+
+      if (!file && !id) {
+        showToast('Tafadhali chagua faili la PDF', 'ph-bold ph-warning');
+        return;
+      }
+
+      const submitBtn = document.getElementById('exSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Inahifadhi...';
+
+      try {
+        let fileUrl = currentExamFileUrl;
+        let sizeKB = currentExamSizeKB;
+        if (file) {
+          fileUrl = await uploadFile(file, `mitihani/${Date.now()}_${file.name}`, (pct) => showProgress('ex', pct));
+          sizeKB = Math.round(file.size / 1024);
+        }
+
+        const payload = {
+          type, level, subject, year, paperNo, pages, title, desc,
+          accent: TYPE_ACCENT[type] || 'red',
+          fileUrl, sizeKB
+        };
+
+        if (id) {
+          await update(ref(db, 'mitihani/' + id), payload);
+          showToast('Mtihani umesasishwa', 'ph-bold ph-check-circle');
+        } else {
+          payload.downloads = 0;
+          payload.dateAdded = { '.sv': 'timestamp' };
+          await push(ref(db, 'mitihani'), payload);
+          showToast('Mtihani umechapishwa', 'ph-bold ph-check-circle');
+        }
+        document.getElementById('mitihaniModal').style.display = 'none';
+      } catch (err) {
+        console.error(err);
+        showToast('Hitilafu: ' + err.message, 'ph-bold ph-x-circle');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Hifadhi';
+        resetProgress('ex');
+      }
+    });
+
+    // =====================================================
+    // ===================  PICHA PANEL  ===================
+    // =====================================================
+    function initMediaPanel() {
+      onValue(ref(db, 'media'), snap => {
+        const data = snap.val() || {};
+        const list = Object.entries(data).map(([id, v]) => ({ id, ...v }))
+          .sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
+        renderMediaGallery(list);
+      });
+    }
+
+    function renderMediaGallery(list) {
+      const el = document.getElementById('mediaGallery');
+      if (!list.length) {
+        el.innerHTML = `<p class="text-textMuted text-sm text-center py-10 col-span-full">Bado hakuna picha. Pakia picha hapo juu.</p>`;
+        return;
+      }
+      el.innerHTML = list.map(m => `
+        <div class="doc-card rounded-xl overflow-hidden group relative">
+          <img src="${m.url}" class="w-full h-28 object-cover" alt="${escapeHtml(m.name)}">
+          <div class="absolute inset-0 bg-bgDark/0 group-hover:bg-bgDark/80 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+            <button data-copy-media="${m.url}" class="w-8 h-8 rounded-full bg-neonTeal text-bgDark flex items-center justify-center" title="Nakili URL" aria-label="Nakili URL"><i class="ph-bold ph-copy"></i></button>
+            <button data-del-media="${m.id}" data-del-media-url="${m.url}" class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center" title="Futa" aria-label="Futa"><i class="ph-bold ph-trash"></i></button>
+          </div>
+        </div>`).join('');
+    }
+
+    document.getElementById('mediaGallery').addEventListener('click', async (ev) => {
+      const copyBtn = ev.target.closest('[data-copy-media]');
+      const delBtn = ev.target.closest('[data-del-media]');
+      if (copyBtn) {
+        try {
+          await navigator.clipboard.writeText(copyBtn.dataset.copyMedia);
+          showToast('URL ya picha imenakiliwa', 'ph-bold ph-copy');
+        } catch (e) { showToast('Imeshindikana kunakili. Nakili kwa mkono: ' + copyBtn.dataset.copyMedia, 'ph-bold ph-warning'); }
+      }
+      if (delBtn) {
+        if (confirm('Futa picha hii?')) {
+          try {
+            try { await deleteObject(storageRef(storage, delBtn.dataset.delMediaUrl)); } catch (e) { /* faili huenda halipo tena */ }
+            await remove(ref(db, 'media/' + delBtn.dataset.delMedia));
+            showToast('Picha imefutwa', 'ph-bold ph-trash');
+          } catch (err) { showToast('Imeshindikana kufuta: ' + err.message, 'ph-bold ph-x-circle'); }
+        }
+      }
+    });
+
+    const dropZone = document.getElementById('dropZone');
+    const mediaInput = document.getElementById('mediaFileInput');
+    dropZone.addEventListener('click', () => mediaInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      handleMediaFiles(e.dataTransfer.files);
+    });
+    mediaInput.addEventListener('change', (e) => { handleMediaFiles(e.target.files); mediaInput.value = ''; });
+
+    async function handleMediaFiles(files) {
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) { showToast(`"${file.name}" si picha, imepuuzwa`, 'ph-bold ph-warning'); continue; }
+        try {
+          const url = await uploadFile(file, `media/${Date.now()}_${file.name}`, (pct) => showProgress('media', pct));
+          await push(ref(db, 'media'), { url, name: file.name, uploadedAt: { '.sv': 'timestamp' } });
+          showToast(`"${file.name}" imepakiwa`, 'ph-bold ph-check-circle');
+        } catch (err) {
+          console.error(err);
+          showToast(`Imeshindikana kupakia "${file.name}"`, 'ph-bold ph-x-circle');
+        }
+      }
+      resetProgress('media');
+    }
+  </script>
 </body>
 </html>
