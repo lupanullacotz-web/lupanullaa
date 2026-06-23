@@ -67,22 +67,8 @@
                 <div class="h-8 w-1 bg-accentTeal rounded-full"></div>
                 <h2 class="font-display font-bold text-2xl text-primaryBlue uppercase">Matangazo Mapya</h2>
             </div>
-            <div class="space-y-4">
-                <a href="#" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
-                    <span class="text-xs text-textMuted block mb-1">Leo</span>
-                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">Nafasi za kujiunga na kidato cha tano kwa shule za serikali zimetangazwa.</h3>
-                    <p class="text-sm text-textMuted mt-1">Wanafunzi waliofaulu mtihani wa kidato cha nne wanahimizwa kuangalia mfumo rasmi wa uchaguzi wa shule.</p>
-                </a>
-                <a href="#" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
-                    <span class="text-xs text-textMuted block mb-1">Jana</span>
-                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">HESLB yafungua dirisha la maombi ya mikopo kwa mwaka 2024/2025.</h3>
-                    <p class="text-sm text-textMuted mt-1">Wanafunzi wa vyuo vikuu wanashauriwa kuwasilisha maombi mapema kabla ya tarehe ya mwisho.</p>
-                </a>
-                <a href="#" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
-                    <span class="text-xs text-textMuted block mb-1">Siku 3 zilizopita</span>
-                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">Mabadiliko katika muundo wa mtihani wa Civics kidato cha nne.</h3>
-                    <p class="text-sm text-textMuted mt-1">NECTA imetoa mwongozo mpya wa muundo wa karatasi - soma maelezo kamili kwenye ukurasa wa Mitihani.</p>
-                </a>
+            <div id="matangazoContainer" class="space-y-4">
+                <p class="text-textMuted text-sm text-center py-6">Inapakia matangazo...</p>
             </div>
         </section>
 
@@ -140,5 +126,63 @@
             <a href="index.html" class="text-gray-400 hover:text-white mx-2">Nyumbani</a>
         </div>
     </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRFJ_T4qynTutOmMb_wcuuRmFIiwJ__xE",
+            authDomain: "lupanulla.firebaseapp.com",
+            databaseURL: "https://lupanulla-default-rtdb.firebaseio.com",
+            projectId: "lupanulla",
+            storageBucket: "lupanulla.firebasestorage.app",
+            messagingSenderId: "168472987630",
+            appId: "1:168472987630:web:8b2e4aa3bc8fb4a0f3b0ff",
+            measurementId: "G-3CS888WRWH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str == null ? '' : String(str);
+            return div.innerHTML;
+        }
+
+        function relativeDate(ts) {
+            if (!ts) return '';
+            const diffDays = Math.floor((Date.now() - ts) / 86400000);
+            if (diffDays <= 0) return 'Leo';
+            if (diffDays === 1) return 'Jana';
+            return `Siku ${diffDays} zilizopita`;
+        }
+
+        function renderMatangazo(list) {
+            const el = document.getElementById('matangazoContainer');
+            if (!list.length) {
+                el.innerHTML = `<p class="text-textMuted text-sm text-center py-6">Hakuna matangazo kwa sasa. Rudi tena baadaye.</p>`;
+                return;
+            }
+            el.innerHTML = list.map(a => `
+                <a href="${a.link || '#'}" class="ann-card block bg-white border border-gray-200 rounded-xl p-5 group">
+                    ${a.imageUrl ? `<img src="${a.imageUrl}" class="w-full h-40 object-cover rounded-lg mb-3" alt="">` : ''}
+                    <span class="text-xs text-textMuted block mb-1">${relativeDate(a.createdAt)}</span>
+                    <h3 class="font-bold text-primaryBlue group-hover:text-accentTeal transition-colors">${escapeHtml(a.title)}</h3>
+                    <p class="text-sm text-textMuted mt-1">${escapeHtml(a.desc)}</p>
+                </a>`).join('');
+        }
+
+        onValue(ref(db, 'matangazo'), (snapshot) => {
+            const raw = snapshot.val() || {};
+            const list = Object.entries(raw).map(([id, v]) => ({ id, ...v }))
+                .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            renderMatangazo(list);
+        }, (err) => {
+            console.error(err);
+            document.getElementById('matangazoContainer').innerHTML = `<p class="text-textMuted text-sm text-center py-6">Imeshindikana kupakia matangazo kwa sasa.</p>`;
+        });
+    </script>
 </body>
 </html>
