@@ -310,9 +310,10 @@
     import {
       getDatabase, ref, get, push, update, remove, onValue
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
-    import {
-      getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+    // ===== CLOUDINARY CONFIG =====
+    // Badilisha maadili haya 2 baada ya kuunda akaunti ya Cloudinary
+    const CLOUDINARY_CLOUD_NAME = "dfktglix3";
+    const CLOUDINARY_UPLOAD_PRESET = "lupanilla_uploads";
 
     // ---------- FIREBASE INIT ----------
     const firebaseConfig = {
@@ -330,7 +331,6 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getDatabase(app);
-    const storage = getStorage(app);
 
     const ALLOWED_ROLES = ['admin', 'superadmin'];
 
@@ -353,20 +353,34 @@
       }, 3200);
     }
 
+    // ===== UPLOAD KWA CLOUDINARY (bila kulipa!) =====
     function uploadFile(file, path, onProgress) {
       return new Promise((resolve, reject) => {
-        const fileRef = storageRef(storage, path);
-        const task = uploadBytesResumable(fileRef, file);
-        task.on('state_changed',
-          (snap) => { if (onProgress) onProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)); },
-          (err) => reject(err),
-          async () => {
-            try {
-              const url = await getDownloadURL(task.snapshot.ref);
-              resolve(url);
-            } catch (err) { reject(err); }
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`);
+
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable && onProgress) {
+            onProgress(Math.round((e.loaded / e.total) * 100));
           }
-        );
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            resolve(data.secure_url);
+          } else {
+            const errData = JSON.parse(xhr.responseText || '{}');
+            reject(new Error(errData.error?.message || 'Upload imeshindikana'));
+          }
+        });
+
+        xhr.addEventListener('error', () => reject(new Error('Tatizo la mtandao wakati wa upload')));
+        xhr.send(formData);
       });
     }
 
@@ -602,11 +616,6 @@
       if (delBtn) {
         if (confirm('Una uhakika unataka kufuta mtihani huu? PDF yake itafutwa pia.')) {
           try {
-            const snap = await get(ref(db, 'mitihani/' + delBtn.dataset.delExam));
-            const v = snap.val() || {};
-            if (v.fileUrl) {
-              try { await deleteObject(storageRef(storage, v.fileUrl)); } catch (e) { /* faili huenda halipo tena */ }
-            }
             await remove(ref(db, 'mitihani/' + delBtn.dataset.delExam));
             showToast('Mtihani umefutwa', 'ph-bold ph-trash');
           } catch (err) { showToast('Imeshindikana kufuta: ' + err.message, 'ph-bold ph-x-circle'); }
@@ -746,7 +755,6 @@
       if (delBtn) {
         if (confirm('Futa picha hii?')) {
           try {
-            try { await deleteObject(storageRef(storage, delBtn.dataset.delMediaUrl)); } catch (e) { /* faili huenda halipo tena */ }
             await remove(ref(db, 'media/' + delBtn.dataset.delMedia));
             showToast('Picha imefutwa', 'ph-bold ph-trash');
           } catch (err) { showToast('Imeshindikana kufuta: ' + err.message, 'ph-bold ph-x-circle'); }
