@@ -252,19 +252,20 @@
 
     <!-- Firebase JS SDK Implementation -->
     <script type="module">
-        // Import Firebase Functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
         import { 
-            getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, FacebookAuthProvider, 
+            getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, 
             signInWithEmailAndPassword, createUserWithEmailAndPassword, 
             RecaptchaVerifier, signInWithPhoneNumber, updateProfile
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getDatabase, ref, set, get
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-        // Firebase Config - Lupanulla
         const firebaseConfig = {
             apiKey: "AIzaSyBRFJ_T4qynTutOmMb_wcuuRmFIiwJ__xE",
             authDomain: "lupanulla.firebaseapp.com",
+            databaseURL: "https://lupanulla-default-rtdb.firebaseio.com",
             projectId: "lupanulla",
             storageBucket: "lupanulla.firebasestorage.app",
             messagingSenderId: "168472987630",
@@ -274,18 +275,22 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
 
-        // Angalia kama mtumiaji amekuja kutoka redirect ya Google/Facebook
-        getRedirectResult(auth).then((result) => {
-            if (result && result.user) {
-                redirectSuccess();
+        // Hifadhi mtumiaji mpya kwenye database (role ya kawaida: 'user')
+        async function saveUserIfNew(user, displayName) {
+            const userRef = ref(db, `users/${user.uid}`);
+            const snap = await get(userRef);
+            if (!snap.exists()) {
+                await set(userRef, {
+                    displayName: displayName || user.displayName || '',
+                    email: user.email || '',
+                    phone: user.phoneNumber || '',
+                    role: 'user',
+                    createdAt: Date.now()
+                });
             }
-        }).catch((error) => {
-            if (error.code && error.code !== 'auth/no-current-user') {
-                showAlert("Imeshindwa kuingia: " + error.message);
-            }
-        });
+        }
 
         // Providers
         const googleProvider = new GoogleAuthProvider();
@@ -393,8 +398,9 @@
 
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                // Update profile name
                 await updateProfile(userCredential.user, { displayName: name });
+                // Hifadhi mtumiaji kwenye Realtime Database
+                await saveUserIfNew(userCredential.user, name);
                 showAlert("Akaunti imetengenezwa kikamilifu!", false);
                 setTimeout(() => { window.location.href = 'index.html'; }, 1500);
             } catch (error) {
@@ -407,23 +413,29 @@
             }
         });
 
-        // 3. Google Login
+        // 3. Google Login (popup - inafanya kazi vizuri zaidi Netlify)
         window.loginWithGoogle = async function() {
             try {
-                await signInWithRedirect(auth, googleProvider);
-                // Ukurasa utaelekea Google, kisha kurudi hapa otomatiki
+                const result = await signInWithPopup(auth, googleProvider);
+                await saveUserIfNew(result.user);
+                redirectSuccess();
             } catch (error) {
-                showAlert("Imeshindwa kuanza Google login: " + error.message);
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    showAlert("Imeshindwa kuingia kwa Google: " + error.message);
+                }
             }
         };
 
-        // 4. Facebook Login
+        // 4. Facebook Login (popup - inafanya kazi vizuri zaidi Netlify)
         window.loginWithFacebook = async function() {
             try {
-                await signInWithRedirect(auth, facebookProvider);
-                // Ukurasa utaelekea Facebook, kisha kurudi hapa otomatiki
+                const result = await signInWithPopup(auth, facebookProvider);
+                await saveUserIfNew(result.user);
+                redirectSuccess();
             } catch (error) {
-                showAlert("Imeshindwa kuanza Facebook login. " + (error.code === 'auth/account-exists-with-different-credential' ? 'Barua pepe inatumika na njia nyingine.' : error.message));
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    showAlert("Imeshindwa kuingia kwa Facebook: " + (error.code === 'auth/account-exists-with-different-credential' ? 'Barua pepe inatumika na njia nyingine.' : error.message));
+                }
             }
         };
 
@@ -465,6 +477,7 @@
 
             try {
                 const result = await confirmationResult.confirm(code);
+                await saveUserIfNew(result.user);
                 redirectSuccess();
             } catch (error) {
                 showAlert("Namba ya siri (OTP) uliyoingiza si sahihi.");
