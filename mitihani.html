@@ -262,7 +262,23 @@
 
     <div id="toastContainer" class="fixed bottom-5 right-5 z-[200] flex flex-col gap-2 items-end max-w-[90vw]"></div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBRFJ_T4qynTutOmMb_wcuuRmFIiwJ__xE",
+            authDomain: "lupanulla.firebaseapp.com",
+            databaseURL: "https://lupanulla-default-rtdb.firebaseio.com",
+            projectId: "lupanulla",
+            storageBucket: "lupanulla.firebasestorage.app",
+            messagingSenderId: "168472987630",
+            appId: "1:168472987630:web:8b2e4aa3bc8fb4a0f3b0ff",
+            measurementId: "G-3CS888WRWH"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         // ---------- Mobile menu ----------
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             const menu = document.getElementById('mobile-menu');
@@ -275,30 +291,16 @@
             }
         });
 
-        // ---------- DATA ----------
-        // TODO(Yohana): Hapa ndipo utakapounganisha Firebase Realtime Database.
-        // Mfano: firebase.database().ref('mitihani').once('value').then(snap => { ...badilisha EXAMS_DATA... renderTrending(); renderGrid(); });
-        const EXAMS_DATA = [
-            { id:1,  type:'NECTA',     level:'Kidato cha 4', subject:'Hisabati',            year:2024, paperNo:'Karatasi ya 1',          title:'NECTA Hisabati - Kidato cha 4 (CSEE)',        desc:'Mtihani wa Taifa wa Hisabati ya Msingi, CSEE 2024.',        downloads:2150, sizeKB:980,  dateAdded:'2025-11-10', pages:8,  accent:'red'     },
-            { id:2,  type:'NECTA',     level:'Kidato cha 4', subject:'Kiingereza',          year:2024, paperNo:'Karatasi ya 2',          title:'NECTA English Language - Form 4',             desc:'CSEE 2024 English Language paper kamili.',                 downloads:1870, sizeKB:760,  dateAdded:'2025-11-09', pages:6,  accent:'red'     },
-            { id:3,  type:'Mock',      level:'Kidato cha 4', subject:'Baiolojia',           year:2024, paperNo:'Karatasi 1 &amp; 2',     title:'Mock Mkoa wa Arusha - Baiolojia F4',           desc:'Mtihani wa Mock wa Mkoa wa Arusha, Baiolojia.',             downloads:1340, sizeKB:1120, dateAdded:'2025-09-21', pages:10, accent:'sky'     },
-            { id:4,  type:'NECTA',     level:'Darasa la 7',  subject:'Kiswahili',           year:2023, paperNo:'&mdash;',               title:'NECTA Kiswahili - Darasa la 7 (PSLE)',         desc:'Mtihani wa kumaliza elimu ya msingi, Kiswahili.',           downloads:2890, sizeKB:540,  dateAdded:'2024-10-15', pages:5,  accent:'red'     },
-            { id:5,  type:'Pre-NECTA', level:'Kidato cha 6', subject:'Hisabati ya Ziada',   year:2024, paperNo:'Karatasi ya 1',          title:'Pre-NECTA Hisabati ya Ziada - Form 6',         desc:'Maandalizi ya ACSEE, Hisabati ya Ziada.',                   downloads:760,  sizeKB:890,  dateAdded:'2025-08-30', pages:9,  accent:'violet'  },
-            { id:6,  type:'NECTA',     level:'Kidato cha 6', subject:'Fizikia',             year:2023, paperNo:'Karatasi ya 2',          title:'NECTA Fizikia - Kidato cha 6 (ACSEE)',         desc:'Mtihani wa Taifa wa Fizikia, A-Level.',                     downloads:980,  sizeKB:1010, dateAdded:'2024-11-02', pages:7,  accent:'red'     },
-            { id:7,  type:'Terminal',  level:'Kidato cha 2', subject:'Uraia',               year:2024, paperNo:'FTNA',                   title:'FTNA Uraia - Kidato cha 2',                    desc:'Tathmini ya Taifa ya Kidato cha Pili, Uraia.',              downloads:540,  sizeKB:430,  dateAdded:'2025-06-12', pages:4,  accent:'amber'   },
-            { id:8,  type:'Majibu',    level:'Kidato cha 4', subject:'Hisabati',            year:2024, paperNo:'Mwongozo wa Kusahihisha', title:'Majibu ya Hisabati - NECTA 2024',            desc:'Mwongozo rasmi wa kusahihisha, Hisabati F4.',               downloads:1620, sizeKB:320,  dateAdded:'2025-11-12', pages:6,  accent:'emerald' },
-            { id:9,  type:'Mock',      level:'Darasa la 7',  subject:'Hisabati',            year:2024, paperNo:'Mkoa wa Dodoma',         title:'Mock Mkoa wa Dodoma - Hisabati D.7',           desc:'Mtihani wa Mock kabla ya PSLE, Hisabati.',                  downloads:690,  sizeKB:480,  dateAdded:'2025-07-18', pages:5,  accent:'sky'     },
-            { id:10, type:'NECTA',     level:'Kidato cha 4', subject:'Kemia',               year:2022, paperNo:'Karatasi ya 1',          title:'NECTA Kemia - Kidato cha 4',                   desc:'Mtihani wa Taifa wa Kemia, CSEE 2022.',                     downloads:1450, sizeKB:870,  dateAdded:'2023-10-20', pages:8,  accent:'red'     },
-            { id:11, type:'Mock',      level:'Kidato cha 4', subject:'Historia',            year:2024, paperNo:'Mkoa wa Mwanza',         title:'Mock Mkoa wa Mwanza - Historia F4',            desc:'Mtihani wa Mock, Historia ya Tanzania na Dunia.',           downloads:410,  sizeKB:610,  dateAdded:'2025-08-05', pages:6,  accent:'sky'     },
-            { id:12, type:'Pre-NECTA', level:'Kidato cha 4', subject:'Jiografia',           year:2024, paperNo:'Karatasi ya 2',          title:'Pre-NECTA Jiografia - Form 4',                 desc:'Maandalizi ya CSEE, Jiografia Karatasi ya 2.',              downloads:330,  sizeKB:590,  dateAdded:'2025-09-02', pages:7,  accent:'violet'  },
-            { id:13, type:'NECTA',     level:'Kidato cha 6', subject:'Kiingereza',          year:2023, paperNo:'Karatasi ya 1',          title:'NECTA English - Kidato cha 6 (ACSEE)',         desc:'ACSEE 2023, Lugha ya Kiingereza.',                          downloads:720,  sizeKB:700,  dateAdded:'2024-11-05', pages:6,  accent:'red'     },
-            { id:14, type:'Terminal',  level:'Darasa la 7',  subject:'Sayansi',             year:2024, paperNo:'Muhula wa Pili',         title:'Mtihani wa Muhula - Sayansi D.7',              desc:'Mtihani wa muhula wa pili, Sayansi Darasa la 7.',           downloads:290,  sizeKB:380,  dateAdded:'2025-07-25', pages:4,  accent:'amber'   },
-            { id:15, type:'Majibu',    level:'Kidato cha 2', subject:'Hisabati',            year:2023, paperNo:'Mwongozo wa FTNA',       title:'Majibu FTNA - Hisabati Kidato 2',              desc:'Mwongozo wa kusahihisha FTNA Hisabati.',                    downloads:880,  sizeKB:260,  dateAdded:'2024-07-14', pages:5,  accent:'emerald' },
-            { id:16, type:'NECTA',     level:'Kidato cha 4', subject:'Computer Studies',    year:2024, paperNo:'Karatasi ya 1',          title:'NECTA Computer Studies - Form 4',              desc:'CSEE 2024, Masomo ya Kompyuta.',                            downloads:1990, sizeKB:910,  dateAdded:'2025-11-08', pages:7,  accent:'red'     },
-            { id:17, type:'Mock',      level:'Kidato cha 6', subject:'Kemia',               year:2024, paperNo:'Mkoa wa Kilimanjaro',    title:'Mock Mkoa wa Kilimanjaro - Kemia F6',          desc:'Mtihani wa Mock, Kemia A-Level.',                           downloads:250,  sizeKB:940,  dateAdded:'2025-09-10', pages:9,  accent:'sky'     },
-            { id:18, type:'NECTA',     level:'Darasa la 4',  subject:'Hisabati',            year:2019, paperNo:'&mdash;',               title:'Mtihani wa Taifa - Hisabati Darasa la 4',      desc:'Tathmini ya kitaifa, Hisabati Darasa la 4.',                downloads:610,  sizeKB:350,  dateAdded:'2020-01-15', pages:4,  accent:'red'     },
-            { id:19, type:'Mock',      level:'Kidato cha 4', subject:'Uraia',               year:2021, paperNo:'Mkoa wa Tanga',          title:'Mock Mkoa wa Tanga - Uraia F4',                desc:'Mtihani wa Mock, Uraia kwa wanafunzi wa Kidato cha 4.',     downloads:200,  sizeKB:410,  dateAdded:'2022-08-01', pages:5,  accent:'sky'     }
-        ];
+        // ---------- DATA (Firebase Realtime Database) ----------
+        let EXAMS_DATA = [];
+
+        onValue(ref(db, 'mitihani'), (snapshot) => {
+            const raw = snapshot.val() || {};
+            EXAMS_DATA = Object.entries(raw).map(([id, v]) => ({ id, ...v }));
+            renderTrending();
+            renderGrid();
+            updateStats();
+        });
 
         const TYPE_LABELS = { 'NECTA':'NECTA', 'Mock':'Mock', 'Pre-NECTA':'Pre-NECTA', 'Terminal':'Mtihani wa Muhula', 'Majibu':'Majibu' };
         const ACCENT_CLASSES = {
@@ -441,7 +443,12 @@
         function handleDownload(id){
             const exam = EXAMS_DATA.find(x => x.id === id);
             if (!exam) return;
-            showToast(`Faili la "${exam.subject}" litapakuliwa hivi karibuni &mdash; tunakamilisha uunganisho na Firebase Storage.`, 'ph-bold ph-cloud-arrow-down');
+            if (!exam.fileUrl) {
+                showToast('Faili la PDF bado halijapakiwa kwa mtihani huu.', 'ph-bold ph-warning');
+                return;
+            }
+            runTransaction(ref(db, `mitihani/${id}/downloads`), (curr) => (curr || 0) + 1).catch(() => {});
+            window.open(exam.fileUrl, '_blank');
         }
 
         // ---------- VIEWER MODAL ----------
@@ -485,7 +492,7 @@
                 <p class="text-sm mb-4">2. Tatua tatizo lifuatalo huku ukionyesha hatua zote za kazi yako kwa ufasaha.</p>
                 <p class="text-sm">3. Linganisha na linganua dhana mbili tofauti zilizojifunzwa katika somo hili.</p>
                 <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/90 to-transparent flex items-end justify-center pb-3">
-                    <button onclick="handleDownload(${exam.id})" class="px-4 py-2 rounded-lg bg-bgDark text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-black transition-colors">
+                    <button data-download-id="${exam.id}" class="download-btn-modal px-4 py-2 rounded-lg bg-bgDark text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-black transition-colors">
                         <i class="ph-bold ph-lock-simple-open"></i> Pakua PDF Kamili Kuona Kurasa Zote
                     </button>
                 </div>
@@ -548,11 +555,11 @@
 
         function handleCardAreaClick(ev){
             const dl = ev.target.closest('.download-btn');
-            if (dl) { ev.stopPropagation(); handleDownload(Number(dl.dataset.downloadId)); return; }
+            if (dl) { ev.stopPropagation(); handleDownload(dl.dataset.downloadId); return; }
             const bm = ev.target.closest('.bookmark-btn');
-            if (bm) { ev.stopPropagation(); toggleBookmark(Number(bm.dataset.bookmarkId)); return; }
+            if (bm) { ev.stopPropagation(); toggleBookmark(bm.dataset.bookmarkId); return; }
             const card = ev.target.closest('[data-open-id]');
-            if (card) { openViewer(Number(card.dataset.openId)); }
+            if (card) { openViewer(card.dataset.openId); }
         }
         document.getElementById('examGrid').addEventListener('click', handleCardAreaClick);
         document.getElementById('trendingRow').addEventListener('click', handleCardAreaClick);
@@ -565,6 +572,11 @@
         document.getElementById('viewerPrev').addEventListener('click', () => viewerStep(-1));
         document.getElementById('viewerNext').addEventListener('click', () => viewerStep(1));
 
+        document.getElementById('viewerBody').addEventListener('click', (ev) => {
+            const btn = ev.target.closest('.download-btn-modal');
+            if (btn) handleDownload(btn.dataset.downloadId);
+        });
+
         document.addEventListener('keydown', (ev) => {
             if (ev.key === 'Escape') {
                 if (document.getElementById('viewerModal').style.display === 'flex') closeViewer();
@@ -574,15 +586,11 @@
                 const card = ev.target.closest('[data-open-id]');
                 if (card && !ev.target.closest('.download-btn') && !ev.target.closest('.bookmark-btn')) {
                     ev.preventDefault();
-                    openViewer(Number(card.dataset.openId));
+                    openViewer(card.dataset.openId);
                 }
             }
         });
 
-        // ---------- INIT ----------
-        renderTrending();
-        renderGrid();
-        updateStats();
     </script>
 </body>
 </html>
